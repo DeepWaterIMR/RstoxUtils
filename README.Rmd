@@ -13,14 +13,18 @@ This package contains utility functions for the Institute of Marine Research's (
 
 The package requires [**RstoxData**]() Stox project packages to function. These packages can be installed by following the links for each package or using the [**devtools**](https://cran.r-project.org/web/packages/devtools/index.html) package. The **RstoxUtils** package can be installed using **devtools** once all Stox project packages are installed correctly. 
 
-
-```r
+```{r eval = FALSE}
 devtools::install_github("MikkoVihtakari/RstoxUtils", upgrade = "never")
 ```
 
 The **RstoxUtils** uses multiple GIS packages developed for R. You may have to update these (Packages -> Update -> Select all -> Install updates in R Studio). 
 
-
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(fig.width=15, fig.height=8)
+library(kableExtra)
+library(knitr)
+library(RstoxUtils)
+```
 
 If the installation of a dependency fails, try installing those packages manually (using RStudio or `install.packages`).
 
@@ -32,112 +36,35 @@ The **RstoxUtils** package currently contains following functionality.
 
 The IMR database data are distributed as [.xml files of a certain structure](). The `RstoxData::readXmlFile` function reads these files, but due to the data architecture, information is spread across multiple data frames in the standard format. The `RstoxUtils::processBioticFile` function combines the data in station-based (`stnall` element in the list architecture) and individual fish-based (`indall`) formats. The `RstoxUtils::processBioticFiles` function does the same for multiple .xml files.
 
-
-```r
+```{r message=FALSE, warning=FALSE}
 xml.example <- system.file("extdata", "example.xml", package = "RstoxUtils")
 
 standard.format <- RstoxData::readXmlFile(xml.example)
-```
 
-```
-## [1] "Try to use XML namespace"
-## Parsing XML: /Library/Frameworks/R.framework/Versions/3.6/Resources/library/RstoxUtils/extdata/example.xml
-## Root: missions
-## XML namespace: nmdbioticv3
-## Using XSD: nmdbioticv3.xsd
-```
-
-```r
 ## The data are as a list organized under multiple data.frames
 names(standard.format)
-```
 
-```
-##  [1] "agedetermination"               "catchsample"                   
-##  [3] "copepodedevstagefrequencytable" "fishstation"                   
-##  [5] "individual"                     "mission"                       
-##  [7] "missions"                       "prey"                          
-##  [9] "preylengthfrequencytable"       "tag"                           
-## [11] "metadata"
-```
-
-```r
 ## Station-based data are organized under 3 data frames
 dim(standard.format$mission)
-```
-
-```
-## [1]  6 11
-```
-
-```r
 dim(standard.format$fishstation)
-```
-
-```
-## [1] 59 74
-```
-
-```r
 dim(standard.format$catchsample)
-```
 
-```
-## [1] 84 36
-```
-
-```r
 ## Individual-based data have 2 additional data frames
 dim(standard.format$individual)
-```
-
-```
-## [1] 446  56
-```
-
-```r
 dim(standard.format$agedetermination)
-```
 
-```
-## [1] 52 39
-```
-
-```r
 ## The user has to merge these data frames to work with the data
 ## RstoxUtils addresses this issue and merges the data
 
 Utils.format <- RstoxUtils::processBioticFile(xml.example)
-```
 
-```
-## [1] "Try to use XML namespace"
-## Parsing XML: /Library/Frameworks/R.framework/Versions/3.6/Resources/library/RstoxUtils/extdata/example.xml
-## Root: missions
-## XML namespace: nmdbioticv3
-## Using XSD: nmdbioticv3.xsd
-```
-
-```r
 ## Station-based data can now be found from 1 data frame
 
 dim(Utils.format$stnall)
-```
 
-```
-## [1] 84 56
-```
-
-```r
 ## The same applies for individual-based-data 
 dim(Utils.format$indall)
-```
 
-```
-## [1] 498  64
-```
-
-```r
 ## The uniting ID tags in the Utils format are
 # missionid, startyear, serialno, catchsampleid and sometimes cruise for station based format
 # The abovementioned and specimenid
@@ -155,53 +82,26 @@ The `RstoxUtils::strataPolygon` function defines the strata and requires a bathy
 
 The original strata system had been defined using longitude and depth intervals as detailed in the table below. The numbers in the cells are square nautical miles ($nm^2$; the unit ICES has chosen to use). The **RstoxUtils** package gives areas both in SI-units (square kilometers, $km^2$) and the ICES units (square nautical miles, $nm^2$). While working with the strata polygons, it is good to remember that one arcminute is approximately equivalent to one nautical mile (nm) in the latitude (y-axis) direction.  
 
-<table class="table table-striped table-condensed" style="margin-left: auto; margin-right: auto;">
-<caption>Previously used strata system definition for NEA Greenland halibut. Latitude intervals given are along rows, depth intervals along columns and the numbers represent strata areas in square nautical miles.</caption>
- <thead>
-  <tr>
-   <th style="text-align:left;">  </th>
-   <th style="text-align:right;"> 1000-1500 </th>
-   <th style="text-align:right;"> 700-1000 </th>
-   <th style="text-align:right;"> 500-700 </th>
-   <th style="text-align:right;"> 400-500 </th>
-  </tr>
- </thead>
-<tbody>
-  <tr>
-   <td style="text-align:left;"> 76-80 </td>
-   <td style="text-align:right;"> 2693 </td>
-   <td style="text-align:right;"> 1263 </td>
-   <td style="text-align:right;"> 702 </td>
-   <td style="text-align:right;"> 1440 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> 73.5-76 </td>
-   <td style="text-align:right;"> 1672 </td>
-   <td style="text-align:right;"> 761 </td>
-   <td style="text-align:right;"> 488 </td>
-   <td style="text-align:right;"> 575 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> 70.5-73.5 </td>
-   <td style="text-align:right;"> 3272 </td>
-   <td style="text-align:right;"> 1706 </td>
-   <td style="text-align:right;"> 1324 </td>
-   <td style="text-align:right;"> 1228 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> 68-70.5 </td>
-   <td style="text-align:right;"> 945 </td>
-   <td style="text-align:right;"> 1150 </td>
-   <td style="text-align:right;"> 525 </td>
-   <td style="text-align:right;"> 400 </td>
-  </tr>
-</tbody>
-</table>
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+data(nea_ghl_original_strata)
+x <- nea_ghl_original_strata
+x$lat.interval <- paste(x$lat.min, x$lat.max, sep = "-")
+names(x)[names(x) == "interval"] <- "depth.interval"
+x <- na.omit(x) 
+
+x$lat.interval <- factor(x$lat.interval, levels = unique(x$lat.interval))
+x$depth.interval <- factor(x$depth.interval, levels = unique(x$depth.interval))
+
+tab <- reshape2::dcast(x, lat.interval ~ depth.interval, value.var = "orig.nm2")
+names(tab)[names(tab) == "lat.interval"] <- ""
+
+kable(tab, caption = "Previously used strata system definition for NEA Greenland halibut. Latitude intervals given are along rows, depth intervals along columns and the numbers represent strata areas in square nautical miles.") %>%
+  kable_styling(bootstrap_options = c("striped", "condensed"))
+```
 
 To reproduce the strata system, we need to define geographic and depth limits. The `RstoxUtils::strataPolygon` function accepts these in separate arguments. The original strata system does not have longitude based limits (depth is used instead). Since we operate using bathymetry grids for the entire world, we need to limit our region down also using longitude values. The `boundary` argument in the  `RstoxUtils::strataPolygon` function clips the bathymetry grid and considerably speeds up the calculations. Let's start by defining the boundaries. You can use any map with bathymetry to eyeball the boundaries for the desired strata:
 
-
-```r
+```{r message=FALSE, warning=FALSE}
 library(RstoxUtils)
 library(tidyverse)
 
@@ -210,8 +110,7 @@ boundary.vec <- c(0, 29, 68, 80)
 
 Now we have defined that our strata lie inside the `boundary.vec`, which defines the minimum and maximum longitude and latitude (the order is rigid) as *decimal degrees*. We can proceed in trying to reproduce the original strata. The process is iterative as small areal polygons (crumbs) and holes affect the result. The `geostrata` argument accepts data frames with four columns each defining the limits in the same order than for the `boundary` argument. Rows in the `geostrata` data frame represent different strata. 
 
-
-```r
+```{r message=FALSE, warning=FALSE}
 geostrata.df <- data.frame(
   lon.min = c(3, 10, 10, 8, 17.3), 
   lon.max = c(16, 17.3, 17.3, 17.3, 29), 
@@ -222,15 +121,13 @@ geostrata.df <- data.frame(
 
 Finally we need to define the depth limits for our strata:
 
-
-```r
+```{r message=FALSE, warning=FALSE}
 depths.vec <- c(400, 500, 700, 1000, 1500)
 ```
 
 We can now proceed to estimate the strata polygons using the `RstoxUtils::strataPolygon` function. Replace the character string for `link` using the path for your GEBCO bathymetry grid (note that you need to unzip the grid after downloading). 
 
-
-```r
+```{r message=FALSE, warning=FALSE}
 link <- "../../../GIS/GEBCO bathymetry/GEBCO_2019/GEBCO_2019.nc"
 
 strata.poly <- strataPolygon(bathy = link, 
@@ -250,12 +147,9 @@ ggplot(sf::st_as_sf(strata.poly)) +
   theme(legend.position = "none")
 ```
 
-![](README_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
-
 The strata are colored based on their ID in the figure above. We notice that these strata contain small detached polygons that were not considered in the original strata definition. `RstoxUtils::strataPolygon` can get rid of such polygons, but setting the threshold values (area in $km^2$) is an iterative process and may cut unwanted parts from the polygons. At the same time, I demonstrate another way of plotting the strata on a map (although the geom_sf approach makes more sense here because it supports decimal degrees).
 
-
-```r
+```{r message=FALSE, warning=FALSE}
 strata.poly <- strataPolygon(bathy = link, 
                              depths = depths.vec, 
                              boundary = boundary.vec, 
@@ -275,12 +169,9 @@ PlotSvalbard::basemap("panarctic", limits = c("x", "lon.utm", "lat.utm"),
   theme(legend.position = "none")
 ```
 
-![](README_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
-
 Now that we have the strata polygons, we can begin examining their area. Polygonization, required by many practical GIS approaches, is essentially making a model of the underlying raster data. Such modeling always introduces a bias. Whether the bias is large enough to matter depends on the specific problem. In our case, we have polygonized very thin contour lines (remember that our resolution is 0.25 nm along the latitude axis). The `RstoxUtils::strataArea` function estimates areas directly from the bathymetry grid without polygonization and is useful in assessing the magnitude of bias introduced by polygonization. This function, however, does not remove the small detached areas and holes. This leads to a higher areal estimate than polygonizing if the `drop.crumbs` argument is used and a lower areal estimate if `remove.holes` is used. 
 
-
-```r
+```{r message=FALSE, warning=FALSE}
 rast.area <- strataArea(bathy = link, 
                         depths = depths.vec, 
                         boundary = boundary.vec, 
@@ -317,12 +208,9 @@ library(cowplot)
 cowplot::plot_grid(p1, p2, labels = "AUTO")
 ```
 
-![](README_files/figure-html/unnamed-chunk-10-1.png)<!-- -->
-
 We notice that polygonizing makes a minimal difference except for strata ID 16, which is a 400-500m stratum along the Norwegian coast including a couple of fjords (mention which ones). The larger raster area is caused by the removal of these fjords in the polygonized version. The removal makes sense as the Greenland halibut survey does not cover these fjords and we conclude that the polygonized strata work well enough in this case. We can now make a similar comparison using the original strata areas and our newly calculated ones:
 
-
-```r
+```{r message=FALSE, warning=FALSE}
 data("nea_ghl_original_strata") # Load the original strata areas
 
 x <- left_join(poly.area[!names(poly.area) %in% "area.km2"], 
@@ -350,9 +238,7 @@ library(cowplot)
 cowplot::plot_grid(p1, p2, labels = "AUTO")
 ```
 
-![](README_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
-
-We see straight away that there are some considerable differences. The Pearson correlation between the original and new strata areas is only 0.88, which is low since we want to try to replicate the original areas. We notice that the largest offsets are for strata IDs 4, 12, 14 and 16. All of these strata, except number 14 are the shallowest 400-500 m interval. 
+We see straight away that there are some considerable differences. The Pearson correlation between the original and new strata areas is only `r round(cor(x$orig.nm2, x$poly.area), 2)`, which is low since we want to try to replicate the original areas. We notice that the largest offsets are for strata IDs 4, 12, 14 and 16. All of these strata, except number 14 are the shallowest 400-500 m interval. 
 
 #### Export strata polygons to Rstox.
 

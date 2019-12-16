@@ -37,3 +37,13 @@ vignettes/*.pdf
 
 # R Environment Variables
 .Renviron
+
+# RStudio projects
+*.Rproj
+
+# Mac indexing files
+.DS_Store
+
+# HTML version of the README
+README.html
+

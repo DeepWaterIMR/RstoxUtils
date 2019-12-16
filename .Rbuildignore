@@ -1,0 +1,7 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^.*\.DS_Store$
+^README\.md$
+^README\.Rmd$
+^README\.html$
+^README_files$
