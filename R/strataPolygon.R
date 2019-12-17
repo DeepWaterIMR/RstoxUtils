@@ -8,7 +8,7 @@
 #' @param remove.holes Single numeric value specifying a threshold (area in km2) for holes which should be removed from the strata. Set to \code{NULL} to bypass the removal. Uses the \link[smoothr]{fill_holes} function. 
 #' A single logical argument or a logical vector as long as the number of rows in \code{geostrata} specifying whether holes in the strata polygons should be removed. 
 #' @param strata.names A character vector spcifying the names of \code{geostrata}. Not implemented.
-#' @param validate.polygons A logical indicating whether the function should retunr valid geometries. This option might considerably change the output, but makes it compatible with GIS software.
+#' @param validate.polygons A logical indicating whether the function should return valid geometries. This option might considerably change the output, but makes it compatible with GIS software.
 #' @param use.python Logical indicating whether the function should use gdal python script (\code{TRUE}; \code{gdal_polygonize.py}) or \code{\link[stars]{st_as_stars}} (\code{FALSE}) for polygonization of strata. The python script has a superior computing time, but requires QGIS 2.18 installed on the computer (earlier or later versions won't do). 
 #' @details Uses \href{https://www.gebco.net/data_and_products/gridded_bathymetry_data/}{GEBCO} or \href{https://www.ngdc.noaa.gov/mgg/global/}{ETOPO1} bathymetry grids to define the depth strata. Download the desired grid from the links. The bathymetry grids must be in NetCDF format.
 #' @return \link[sp]{SpatialPolygonsDataFrame} containing the estimated strata and information for them including areas. The strata are returned as decimal degrees (WGS84).
@@ -38,6 +38,7 @@
 # drop.crumbs = 500; remove.holes = FALSE; strata.names = NULL; validate.polygons = TRUE; use.python = TRUE
 # bathy = "/Users/a22357/Dropbox/Workstuff/GIS/GEBCO bathymetry/GEBCO_2019/GEBCO_2019.nc"; boundary = c(0, 35, 68, 80); depths = c(400, 500, 700, 1000, 1500); geostrata = data.frame(lon.min = c(0, 0, 0, 8, 17.5), lon.max = c(15, 17.5, 17.5, 17.5, 35), lat.min = c(76, 73.5, 70.5, 68, 72.5), lat.max = c(80, 76, 73.5, 70.5, 76)); drop.crumbs = 200; remove.holes = 1000; strata.names = NULL; validate.polygons = TRUE; use.python = TRUE
 # boundary = boundary.path
+# bathy = link; depths = seq(100, 500, 100); boundary = c(5, 13, 56, 62); geostrata = NULL; drop.crumbs = NULL; remove.holes = NULL; strata.names = NULL; validate.polygons = TRUE; use.python = FALSE
 strataPolygon <- function(bathy, depths, boundary, geostrata = NULL, drop.crumbs = NULL, remove.holes = NULL, strata.names = NULL, validate.polygons = TRUE, use.python = FALSE) {
   
   ## General checks ####
@@ -88,7 +89,7 @@ strataPolygon <- function(bathy, depths, boundary, geostrata = NULL, drop.crumbs
     }
   }
   
-  ## Open raster ####
+  ## Open raster ###
   
   ras <- raster::raster(bathy)
   
@@ -101,7 +102,7 @@ strataPolygon <- function(bathy, depths, boundary, geostrata = NULL, drop.crumbs
     ras <- raster::mask(ras, boundary)
   }
   
-  ## Reclassify raster
+  ## Reclassify raster ####
   
   if(all(depths >= 0)) depths <- sort(-1 * depths)
   
@@ -189,22 +190,28 @@ strataPolygon <- function(bathy, depths, boundary, geostrata = NULL, drop.crumbs
     }
     
     if(!is.null(remove.holes)) {
-      out <- smoothr::fill_holes(out, units::set_units(remove.holes, km^2)) # Alternative: spatialEco::remove.holes(out)
+      pol <- smoothr::fill_holes(pol, units::set_units(remove.holes, km^2)) # Alternative: spatialEco::remove.holes(out)
     }
     
-    if(validate.polygons & !rgeos::gIsValid(pol)) {
-      pol <- rgeos::gBuffer(pol, byid = TRUE, width = 0) 
+    if(validate.polygons & !suppressMessages(suppressWarnings(rgeos::gIsValid(pol)))) {
+      pol <- suppressMessages(suppressWarnings(rgeos::gBuffer(pol, byid = TRUE, width = 0)))  
       
       if(!rgeos::gIsValid(pol)) stop("Geometry validation did not work for ADD")
     }
     
+    ## Combine polygons with same depth
+    
+    pol <- raster::aggregate(pol, by = names(pol@data[1]), dissolve = TRUE)
+    pol <- pol[order(pol@data[1], decreasing = TRUE),]
+    
+    
     tmp <- pol@data
     names(tmp) <- "average"
-    tmp.rowns <- rownames(tmp)
+    # tmp.rowns <- rownames(tmp)
     
     tmp <- dplyr::left_join(tmp, cut_df, by = "average")
     
-    rownames(tmp) <- tmp.rowns
+    # rownames(tmp) <- tmp.rowns
     
     pol@data <- tmp
     

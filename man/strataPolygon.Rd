@@ -15,7 +15,7 @@ strataPolygon(bathy, depths, boundary, geostrata = NULL,
 
 \item{boundary}{Numeric vector of length 4 giving the boundaries for the overall region. See \code{\link[raster]{extent}}. Should be given as decimal degrees. The first element defines the minimum longitude, the second element the maximum longitude, the third element the minimum latitude and the fourth element the maximum latitude of the bounding box.}
 
-\item{geostrata}{A data frame defining the minimum and maximum longitude and latitude for geographically bounded strata. The data frame columns must be ordered as \code{lon.min, lon.max, lat.min, lat.max}. Column names do not matter. Each row in the data frame will be interpreted as separate geographically bounded strata.}
+\item{geostrata}{A data frame defining the minimum and maximum longitude and latitude for geographically bounded strata. The data frame columns must be ordered as \code{lon.min, lon.max, lat.min, lat.max}. Column names do not matter. Each row in the data frame will be interpreted as separate geographically bounded strata. Use \code{NULL} to ignore geostrata.}
 
 \item{drop.crumbs}{Single numeric value specifying a threshold (area in km2) for disconnected polygons which should be removed from the strata. Set to \code{NULL} to bypass the removal. Uses the \link[smoothr]{drop_crumbs} function.}
 
@@ -24,7 +24,7 @@ A single logical argument or a logical vector as long as the number of rows in \
 
 \item{strata.names}{A character vector spcifying the names of \code{geostrata}. Not implemented.}
 
-\item{validate.polygons}{A logical indicating whether the function should retunr valid geometries. This option might considerably change the output, but makes it compatible with GIS software.}
+\item{validate.polygons}{A logical indicating whether the function should return valid geometries. This option might considerably change the output, but makes it compatible with GIS software.}
 
 \item{use.python}{Logical indicating whether the function should use gdal python script (\code{TRUE}; \code{gdal_polygonize.py}) or \code{\link[stars]{st_as_stars}} (\code{FALSE}) for polygonization of strata. The python script has a superior computing time, but requires QGIS 2.18 installed on the computer (earlier or later versions won't do).}
 }
