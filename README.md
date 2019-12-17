@@ -1,3 +1,8 @@
+---
+output: 
+  html_document: 
+    keep_md: yes
+---
 # RstoxUtils
 
 **Utility functions for the Stox Project. R package, last updated 2019-12-17.**
@@ -257,7 +262,7 @@ strata.poly <- strataPolygon(bathy = link,
                              depths = depths.vec, 
                              boundary = boundary.vec, 
                              geostrata = geostrata.df,
-                             drop.crumbs = 150,
+                             drop.crumbs = 100,
                              remove.holes = 10
 )
 
@@ -273,6 +278,63 @@ PlotSvalbard::basemap("panarctic", limits = c("x", "lon.utm", "lat.utm"),
 ```
 
 ![](README_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
+
+While it was possible to remove most small detached polygons, setting the `drop.crumbs` argument any higher would remove strata polygons we are interested in. The `boundary` argument also supports spatial polygons, which can be drawn by hand using the QGIS software. We load an example boundary shape:
+
+
+```r
+boundary.path <- system.file("extdata", "boundary_shape.shp", package = "RstoxUtils")
+
+bound.poly <- rgdal::readOGR(boundary.path)
+```
+
+```
+## OGR data source with driver: ESRI Shapefile 
+## Source: "/Library/Frameworks/R.framework/Versions/3.6/Resources/library/RstoxUtils/extdata/boundary_shape.shp", layer: "boundary_shape"
+## with 1 features
+## It has 1 fields
+## Integer64 fields read as strings:  id
+```
+
+```r
+ggplot() + 
+  geom_sf(data = sf::st_as_sf(strata.poly), aes(fill = as.factor(id))) +
+  geom_sf(data = sf::st_as_sf(bound.poly), fill = NA) +
+  theme_bw() + 
+  theme(legend.position = "none")
+```
+
+![](README_files/figure-html/unnamed-chunk-10-1.png)<!-- -->
+
+The figure above shows the strata together with a customly defined boundary shape. We can now use the boundary shape to limit our strata. Note that you can use either the path to the shapefile or the `SpatialPolygonsDataFrame` object itself to define the boundary:
+
+
+```r
+strata.poly <- strataPolygon(bathy = link, 
+                             depths = depths.vec, 
+                             boundary = boundary.path,
+                             geostrata = geostrata.df,
+                             drop.crumbs = 100,
+                             remove.holes = 10
+)
+```
+
+```
+## OGR data source with driver: ESRI Shapefile 
+## Source: "/Library/Frameworks/R.framework/Versions/3.6/Resources/library/RstoxUtils/extdata/boundary_shape.shp", layer: "boundary_shape"
+## with 1 features
+## It has 1 fields
+## Integer64 fields read as strings:  id
+```
+
+```r
+ggplot(sf::st_as_sf(strata.poly)) + 
+  geom_sf(aes(fill = as.factor(id))) +
+  theme_bw() + 
+  theme(legend.position = "none")
+```
+
+![](README_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
 
 Now that we have the strata polygons, we can begin examining their area. Polygonization, required by many practical GIS approaches, is essentially making a model of the underlying raster data. Such modeling always introduces a bias. Whether the bias is large enough to matter depends on the specific problem. In our case, we have polygonized very thin contour lines (remember that our resolution is 0.25 nm along the latitude axis). The `RstoxUtils::strataArea` function estimates areas directly from the bathymetry grid without polygonization and is useful in assessing the magnitude of bias introduced by polygonization. This function, however, does not remove the small detached areas and holes. This leads to a higher areal estimate than polygonizing if the `drop.crumbs` argument is used and a lower areal estimate if `remove.holes` is used. 
 
@@ -314,7 +376,7 @@ library(cowplot)
 cowplot::plot_grid(p1, p2, labels = "AUTO")
 ```
 
-![](README_files/figure-html/unnamed-chunk-10-1.png)<!-- -->
+![](README_files/figure-html/unnamed-chunk-12-1.png)<!-- -->
 
 We notice that polygonizing makes a minimal difference except for strata ID 16, which is a 400-500m stratum along the Norwegian coast including a couple of fjords (mention which ones). The larger raster area is caused by the removal of these fjords in the polygonized version. The removal makes sense as the Greenland halibut survey does not cover these fjords and we conclude that the polygonized strata work well enough in this case. We can now make a similar comparison using the original strata areas and our newly calculated ones:
 
@@ -347,7 +409,7 @@ library(cowplot)
 cowplot::plot_grid(p1, p2, labels = "AUTO")
 ```
 
-![](README_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
+![](README_files/figure-html/unnamed-chunk-13-1.png)<!-- -->
 
 We see straight away that there are some considerable differences. The Pearson correlation between the original and new strata areas is only 0.88, which is low since we want to try to replicate the original areas. We notice that the largest offsets are for strata IDs 4, 12, 14 and 16. All of these strata, except number 14 are the shallowest 400-500 m interval. 
 

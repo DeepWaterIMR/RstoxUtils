@@ -80,7 +80,7 @@ strataArea <- function(bathy, depths, boundary, geostrata = NULL) {
     polys <- sp::SpatialPolygonsDataFrame(polys, geostrata)
     
     tmp <- lapply(1:length(polys), function(i) {
-      r_out <- crop(r, polys[i,])
+      r_out <- raster::crop(r, polys[i,])
       areas <- tapply(suppressWarnings(raster::area(r_out, na.rm = TRUE)), r_out[], sum)
       
       out <- data.frame(average = as.numeric(names(areas)), geostrata.name = LETTERS[i], stringsAsFactors = FALSE)

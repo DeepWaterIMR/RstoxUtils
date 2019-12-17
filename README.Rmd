@@ -155,7 +155,7 @@ strata.poly <- strataPolygon(bathy = link,
                              depths = depths.vec, 
                              boundary = boundary.vec, 
                              geostrata = geostrata.df,
-                             drop.crumbs = 150,
+                             drop.crumbs = 100,
                              remove.holes = 10
 )
 
@@ -168,6 +168,38 @@ PlotSvalbard::basemap("panarctic", limits = c("x", "lon.utm", "lat.utm"),
                       bathymetry = TRUE, bathy.style = "poly_greys", legends = FALSE) + 
   geom_polygon(data = x, aes(x = lon.utm, y = lat.utm, color = as.factor(id), group = group), fill = NA) +
   theme(legend.position = "none")
+```
+
+While it was possible to remove most small detached polygons, setting the `drop.crumbs` argument any higher would remove strata polygons we are interested in. The `boundary` argument also supports spatial polygons, which can be drawn by hand using the QGIS software. We load an example boundary shape:
+
+```{r message=FALSE, warning=FALSE}
+boundary.path <- system.file("extdata", "boundary_shape.shp", package = "RstoxUtils")
+
+bound.poly <- rgdal::readOGR(boundary.path)
+
+ggplot() + 
+  geom_sf(data = sf::st_as_sf(strata.poly), aes(fill = as.factor(id))) +
+  geom_sf(data = sf::st_as_sf(bound.poly), fill = NA) +
+  theme_bw() + 
+  theme(legend.position = "none")
+```
+
+The figure above shows the strata together with a customly defined boundary shape. We can now use the boundary shape to limit our strata. Note that you can use either the path to the shapefile or the `SpatialPolygonsDataFrame` object itself to define the boundary:
+
+```{r message=FALSE, warning=FALSE}
+strata.poly <- strataPolygon(bathy = link, 
+                             depths = depths.vec, 
+                             boundary = boundary.path,
+                             geostrata = geostrata.df,
+                             drop.crumbs = 100,
+                             remove.holes = 10
+)
+
+ggplot(sf::st_as_sf(strata.poly)) + 
+  geom_sf(aes(fill = as.factor(id))) +
+  theme_bw() + 
+  theme(legend.position = "none")
+
 ```
 
 Now that we have the strata polygons, we can begin examining their area. Polygonization, required by many practical GIS approaches, is essentially making a model of the underlying raster data. Such modeling always introduces a bias. Whether the bias is large enough to matter depends on the specific problem. In our case, we have polygonized very thin contour lines (remember that our resolution is 0.25 nm along the latitude axis). The `RstoxUtils::strataArea` function estimates areas directly from the bathymetry grid without polygonization and is useful in assessing the magnitude of bias introduced by polygonization. This function, however, does not remove the small detached areas and holes. This leads to a higher areal estimate than polygonizing if the `drop.crumbs` argument is used and a lower areal estimate if `remove.holes` is used. 

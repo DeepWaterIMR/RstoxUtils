@@ -3,7 +3,7 @@
 #' @param bathy String giving the path to the bathymetry NetCDF file.
 #' @param depths Numeric vector giving the cut points for depth strata (see \code{\link[base]{cut}}. Data outside the cut range will be dropped. Use limits of length two exceeding the depths of the region to avoid depth categorization (\code{c(0, 1000)} for instance).
 #' @param boundary Numeric vector of length 4 giving the boundaries for the overall region. See \code{\link[raster]{extent}}. Should be given as decimal degrees. The first element defines the minimum longitude, the second element the maximum longitude, the third element the minimum latitude and the fourth element the maximum latitude of the bounding box.
-#' @param geostrata A data frame defining the minimum and maximum longitude and latitude for geographically bounded strata. The data frame columns must be ordered as \code{lon.min, lon.max, lat.min, lat.max}. Column names do not matter. Each row in the data frame will be interpreted as separate geographically bounded strata. 
+#' @param geostrata A data frame defining the minimum and maximum longitude and latitude for geographically bounded strata. The data frame columns must be ordered as \code{lon.min, lon.max, lat.min, lat.max}. Column names do not matter. Each row in the data frame will be interpreted as separate geographically bounded strata. Use \code{NULL} to ignore geostrata.
 #' @param drop.crumbs Single numeric value specifying a threshold (area in km2) for disconnected polygons which should be removed from the strata. Set to \code{NULL} to bypass the removal. Uses the \link[smoothr]{drop_crumbs} function. 
 #' @param remove.holes Single numeric value specifying a threshold (area in km2) for holes which should be removed from the strata. Set to \code{NULL} to bypass the removal. Uses the \link[smoothr]{fill_holes} function. 
 #' A single logical argument or a logical vector as long as the number of rows in \code{geostrata} specifying whether holes in the strata polygons should be removed. 
@@ -37,16 +37,42 @@
 # bathy = "/Users/a22357/Dropbox/Workstuff/GIS/GEBCO bathymetry/GEBCO_2014_1D.nc"; boundary = c(5, 50, 69, 82); depths = c(0, 200, 500, 750)
 # drop.crumbs = 500; remove.holes = FALSE; strata.names = NULL; validate.polygons = TRUE; use.python = TRUE
 # bathy = "/Users/a22357/Dropbox/Workstuff/GIS/GEBCO bathymetry/GEBCO_2019/GEBCO_2019.nc"; boundary = c(0, 35, 68, 80); depths = c(400, 500, 700, 1000, 1500); geostrata = data.frame(lon.min = c(0, 0, 0, 8, 17.5), lon.max = c(15, 17.5, 17.5, 17.5, 35), lat.min = c(76, 73.5, 70.5, 68, 72.5), lat.max = c(80, 76, 73.5, 70.5, 76)); drop.crumbs = 200; remove.holes = 1000; strata.names = NULL; validate.polygons = TRUE; use.python = TRUE
+# boundary = boundary.path
 strataPolygon <- function(bathy, depths, boundary, geostrata = NULL, drop.crumbs = NULL, remove.holes = NULL, strata.names = NULL, validate.polygons = TRUE, use.python = FALSE) {
   
   ## General checks ####
   
+  ### The depths argument
+  
   if(!(is.vector(depths) & class(depths) %in% c("numeric", "integer"))) {
     stop("The depths parameter has to be a numeric or integer vector.")}
   
-  if(!(is.vector(boundary) & class(boundary) %in% c("numeric", "integer") & length(boundary) == 4)) {
-    stop("The boundary parameter has to be a numeric or integer vector of length 4 giving the decimal degree longitude and latitude limits for the strata region.")
+  ### The boundary argument
+  
+  if(grepl("spatialpolygons", class(boundary), ignore.case = TRUE)) {
+    
+    if(is.null(sp::proj4string(boundary))) {
+      stop("boundary misses proj4string argument.")
+    } else if(!grepl("+proj=longlat", sp::proj4string(boundary))) {
+      stop("boundary has to be defined as decimal degrees")
+    }
+    
+  } else if(class(boundary) == "character" & length(boundary) == 1) {
+    if(!file.exists(boundary)) stop("Boundary shapefile not found. Check your path")
+    
+    boundary <- rgdal::readOGR(boundary)
+    
+    if(is.null(sp::proj4string(boundary))) {
+      stop("boundary misses proj4string argument.")
+    } else if(!grepl("+proj=longlat", sp::proj4string(boundary))) {
+      stop("boundary has to be defined as decimal degrees")
+    }
+  
+  } else if(!(is.vector(boundary) & class(boundary) %in% c("numeric", "integer") & length(boundary) == 4)) {
+    stop("The boundary parameter has to be a numeric/integer vector of length 4 giving the decimal degree longitude and latitude limits for the strata region OR a character argument giving the location of the shapefile polygon.")
   }
+  
+  ### The geostrata argument
   
   if(!is.null(geostrata)) {
     if(!(is.data.frame(geostrata) & ncol(geostrata) == 4)) {
@@ -54,20 +80,26 @@ strataPolygon <- function(bathy, depths, boundary, geostrata = NULL, drop.crumbs
     }
   }
   
+  ### The drop.crumbs argument
+  
   if(!is.null(drop.crumbs)) {
     if(!(is.vector(drop.crumbs) & class(drop.crumbs) %in% c("numeric", "integer") & length(drop.crumbs) == 1)) {
       stop("The drop.crumbs parameter has to be a single value.")
     }
   }
   
-  ## Open raster
+  ## Open raster ####
   
   ras <- raster::raster(bathy)
   
-  if(is.null(proj4string(ras))) stop("bathy does not contain coordinate reference information")
-  if(proj4string(ras) != "+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0") stop("bathy has to be in decimal degree projection. Use '+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0'")
+  if(is.null(sp::proj4string(ras))) stop("bathy does not contain coordinate reference information")
+  if(sp::proj4string(ras) != "+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0") stop("bathy has to be in decimal degree projection. Use '+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0'")
   
   ras <- raster::crop(ras, raster::extent(boundary))
+  
+  if(grepl("spatialpolygons", class(boundary), ignore.case = TRUE)) {
+    ras <- raster::mask(ras, boundary)
+  }
   
   ## Reclassify raster
   
