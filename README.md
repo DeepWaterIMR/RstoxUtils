@@ -5,7 +5,7 @@ output:
 ---
 # RstoxUtils
 
-**Utility functions for the Stox Project**
+**Utility functions for the Stox Project. R package version 2019-12-17.**
 
 This package contains utility functions for the Institute of Marine Research's (IMR) Stox Project. The package has two purposes: 1) To function as a showcase and developmental platform for functions that may be included in the future releases of the Stox Project. 2) To provide a collection of functions needed in the internal workflow of the Deep-sea species group at IMR.
 
@@ -30,7 +30,7 @@ The **RstoxUtils** package currently contains following functionality.
 
 ### Read IMR .xml files
 
-The IMR database data are distributed as [.xml files of a certain structure](). The `RstoxData::readXmlFile` function reads these files, but due to the data architecture, information is spread across multiple data frames in the standard format. The `RstoxUtils::processBioticFile` function combines the data in station-based (`stnall` element in the list architecture) and individual fish-based (`indall`) formats. The `RstoxUtils::processBioticFiles` function does the same for multiple .xml files.
+The IMR database data are distributed as [.xml files of a certain structure](https://confluence.imr.no/display/API/Biotic+V3+API+documentation). The `RstoxData::readXmlFile` function reads these files, but due to the data architecture, information is spread across multiple data frames in the standard format. The `RstoxUtils::processBioticFile` function combines the data in station-based (`stnall` element in the list architecture) and individual fish-based (`indall`) formats. The `RstoxUtils::processBioticFiles` function does the same for multiple .xml files.
 
 
 ```r

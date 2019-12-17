@@ -1,27 +1,32 @@
 #' @title Polygonize raster using a Python script and QGIS
 #' @description ...
 #' @param x raster object to be polygonized
-#' @param outshape ...
+#' @param outshape The path where the converted polygon shapefile will reside. Default is \code{NULL}, which saves the shapefile to a temporary file
 #' @param gdalformat ...
 #' @param pypath ...
-#' @param readpoly ...
+#' @param readpoly Logical indicating 
 #' @param quiet ...
 #' @param rewrite ...
 #' @details Documentation and code tidying has not been written for this function yet.
 #' @import raster
-#' @author \href{(https://johnbaumgartner.wordpress.com/2012/07/26/getting-rasters-into-shape-from-r/}{John Baumgartner}. See also \href{https://gis.stackexchange.com/questions/166753/fastest-way-to-convert-big-raster-to-polyline-using-r-or-python}{StackOverflow}.
+#' @author \href{https://johnbaumgartner.wordpress.com/2012/07/26/getting-rasters-into-shape-from-r/}{John Baumgartner}. See also \href{https://gis.stackexchange.com/questions/166753/fastest-way-to-convert-big-raster-to-polyline-using-r-or-python}{StackOverflow}.
 #' @export
 
 gdalPolygonizeR <- function(x, outshape=NULL, gdalformat = 'ESRI Shapefile',
                             pypath = NULL, readpoly = TRUE, quiet = TRUE, rewrite = TRUE) {
+  
   if (isTRUE(readpoly)) require(rgdal)
+  
   if (is.null(pypath)) {
     pypath <- Sys.which('gdal_polygonize.py')
   }
+  
   if (!file.exists(pypath)) stop("Can't find gdal_polygonize.py on your system.")
+  
   owd <- getwd()
   on.exit(setwd(owd))
   setwd(dirname(pypath))
+  
   if (!is.null(outshape)) {
     outshape <- sub('\\.shp$', '', outshape)
     f.exists <- file.exists(paste(outshape, c('shp', 'shx', 'dbf'), sep='.'))

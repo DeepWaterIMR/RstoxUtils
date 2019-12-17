@@ -9,7 +9,7 @@
 #' A single logical argument or a logical vector as long as the number of rows in \code{geostrata} specifying whether holes in the strata polygons should be removed. 
 #' @param strata.names A character vector spcifying the names of \code{geostrata}. Not implemented.
 #' @param validate.polygons A logical indicating whether the function should retunr valid geometries. This option might considerably change the output, but makes it compatible with GIS software.
-#' @param use.python Logical indicating whether the function should use gdal python script (\code{TRUE}; \code{gdal_polygonize.py}) or \code{\link[raster]{rasterToPolygons}} (\code{FALSE}) for polygonization of strata. The python script has a superior computing time, but requires QGIS 2.18 installed on the computer (earlier or later versions won't do). 
+#' @param use.python Logical indicating whether the function should use gdal python script (\code{TRUE}; \code{gdal_polygonize.py}) or \code{\link[stars]{st_as_stars}} (\code{FALSE}) for polygonization of strata. The python script has a superior computing time, but requires QGIS 2.18 installed on the computer (earlier or later versions won't do). 
 #' @details Uses \href{https://www.gebco.net/data_and_products/gridded_bathymetry_data/}{GEBCO} or \href{https://www.ngdc.noaa.gov/mgg/global/}{ETOPO1} bathymetry grids to define the depth strata. Download the desired grid from the links. The bathymetry grids must be in NetCDF format.
 #' @return \link[sp]{SpatialPolygonsDataFrame} containing the estimated strata and information for them including areas. The strata are returned as decimal degrees (WGS84).
 #' @references GEBCO Compilation Group (2019) GEBCO 2019 15-arcsecond grid (doi:10.5285/836f016a-33be-6ddc-e053-6c86abc0788e). URL: \url{https://www.gebco.net/data_and_products/gridded_bathymetry_data/gebco_2019/gebco_2019_info.html}.
@@ -20,9 +20,14 @@
 #' @importFrom smoothr drop_crumbs
 #' @importFrom dplyr left_join
 #' @importFrom units set_units
+#' @importFrom sf as_Spatial st_as_sf
+#' @importFrom stars st_as_stars
 #' @author Mikko Vihtakari
+#' @seealso \code{\link{gdalPolygonizeR}} for the polygonization algorithm. 
+#' \code{\link{strataArea}} for calculating strata areas without polygonization. 
 #' @export
 
+## Developmental code
 # geostrata = data.frame(lon.min = c(0, 0, 0, 8, 17.5), lon.max = c(15, 17.5, 17.5, 17.5, 35), lat.min = c(76, 73.5, 70.5, 68, 72.5), lat.max = c(80, 76, 73.5, 70.5, 76)); boundary = c(0, 35, 68, 80); depths = c(400, 500, 700, 1000, 1500)
 # bathy = "/vsigzip//Users/a22357/Downloads/ETOPO1_Ice_g_gdal.grd.gz"
 # bathy = "/vsizip/Users/a22357/Downloads/GEBCO_2019.zip/GEBCO_2019.nc"
@@ -30,8 +35,8 @@
 # bathy = "vsigzip/ETOPO1_Ice_g_gdal.grd.gz/ETOPO1_Ice_g_gdal.grd"
 # bathy = "/Users/a22357/Dropbox/Workstuff/GIS/GEBCO bathymetry/GEBCO_2014_1D.nc"; boundary = c(5, 50, 69, 82); depths = c(0, 200, 500, 750)
 # drop.crumbs = 500; remove.holes = FALSE; strata.names = NULL; validate.polygons = TRUE; use.python = TRUE
-# bathy = "/Users/a22357/Downloads/GEBCO_2019/GEBCO_2019.nc"; boundary = c(0, 35, 68, 80); depths = c(400, 500, 700, 1000, 1500); geostrata = data.frame(lon.min = c(0, 0, 0, 8, 17.5), lon.max = c(15, 17.5, 17.5, 17.5, 35), lat.min = c(76, 73.5, 70.5, 68, 72.5), lat.max = c(80, 76, 73.5, 70.5, 76)); drop.crumbs = 200; remove.holes = 1000; strata.names = NULL; validate.polygons = TRUE; use.python = TRUE
-strataPolygon <- function(bathy, depths, boundary, geostrata = NULL, drop.crumbs = NULL, remove.holes = NULL, strata.names = NULL, validate.polygons = TRUE, use.python = TRUE) {
+# bathy = "/Users/a22357/Dropbox/Workstuff/GIS/GEBCO bathymetry/GEBCO_2019/GEBCO_2019.nc"; boundary = c(0, 35, 68, 80); depths = c(400, 500, 700, 1000, 1500); geostrata = data.frame(lon.min = c(0, 0, 0, 8, 17.5), lon.max = c(15, 17.5, 17.5, 17.5, 35), lat.min = c(76, 73.5, 70.5, 68, 72.5), lat.max = c(80, 76, 73.5, 70.5, 76)); drop.crumbs = 200; remove.holes = 1000; strata.names = NULL; validate.polygons = TRUE; use.python = TRUE
+strataPolygon <- function(bathy, depths, boundary, geostrata = NULL, drop.crumbs = NULL, remove.holes = NULL, strata.names = NULL, validate.polygons = TRUE, use.python = FALSE) {
   
   ## General checks ####
   
@@ -80,12 +85,19 @@ strataPolygon <- function(bathy, depths, boundary, geostrata = NULL, drop.crumbs
   
   r <- raster::reclassify(ras, rcl = cut_matrix, right = NA)
   
-  ## Polygonization
+  ## Polygonization ####
   
   if(use.python) {
+    
     pol <- gdalPolygonizeR(r) 
+    
   } else {
-    pol <- raster::rasterToPolygons(r)
+    
+    require(stars)
+    
+    pol <- sf::as_Spatial(sf::st_as_sf(stars::st_as_stars(r), as_points = FALSE, merge = TRUE))
+    
+    # pol <- raster::rasterToPolygons(r) # This takes forever
   }
   
   ## Geostrata ####

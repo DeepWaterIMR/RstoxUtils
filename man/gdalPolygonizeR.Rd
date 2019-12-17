@@ -10,13 +10,13 @@ gdalPolygonizeR(x, outshape = NULL, gdalformat = "ESRI Shapefile",
 \arguments{
 \item{x}{raster object to be polygonized}
 
-\item{outshape}{...}
+\item{outshape}{The path where the converted polygon shapefile will reside. Default is \code{NULL}, which saves the shapefile to a temporary file}
 
 \item{gdalformat}{...}
 
 \item{pypath}{...}
 
-\item{readpoly}{...}
+\item{readpoly}{Logical indicating}
 
 \item{quiet}{...}
 
@@ -29,5 +29,5 @@ gdalPolygonizeR(x, outshape = NULL, gdalformat = "ESRI Shapefile",
 Documentation and code tidying has not been written for this function yet.
 }
 \author{
-\href{(https://johnbaumgartner.wordpress.com/2012/07/26/getting-rasters-into-shape-from-r/}{John Baumgartner}. See also \href{https://gis.stackexchange.com/questions/166753/fastest-way-to-convert-big-raster-to-polyline-using-r-or-python}{StackOverflow}.
+\href{https://johnbaumgartner.wordpress.com/2012/07/26/getting-rasters-into-shape-from-r/}{John Baumgartner}. See also \href{https://gis.stackexchange.com/questions/166753/fastest-way-to-convert-big-raster-to-polyline-using-r-or-python}{StackOverflow}.
 }
