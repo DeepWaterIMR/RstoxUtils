@@ -1,12 +1,12 @@
 # RstoxUtils
 
-**Utility functions for the Stox Project. R package version 2019-12-17.**
+**Utility functions for the Stox Project. R package, last updated 2019-12-17.**
 
 This package contains utility functions for the Institute of Marine Research's (IMR) Stox Project. The package has two purposes: 1) To function as a showcase and developmental platform for functions that may be included in the future releases of the Stox Project. 2) To provide a collection of functions needed in the internal workflow of the Deep-sea species group at IMR.
 
 ## Installation
 
-The package requires [**RstoxData**]() Stox project packages to function. These packages can be installed by following the links for each package or using the [**devtools**](https://cran.r-project.org/web/packages/devtools/index.html) package. The **RstoxUtils** package can be installed using **devtools** once all Stox project packages are installed correctly. 
+The package requires [**RstoxData**](https://github.com/StoXProject/RstoxData/releases) [Stox project](https://github.com/StoXProject) packages to function. These packages can be installed by following the links for each package or using the [**devtools**](https://cran.r-project.org/web/packages/devtools/index.html) package. The **RstoxUtils** package can be installed using **devtools** once all Stox project packages are installed correctly. 
 
 
 ```r
@@ -101,6 +101,8 @@ dim(standard.format$agedetermination)
 ```r
 ## The user has to merge these data frames to work with the data
 ## RstoxUtils addresses this issue and merges the data
+
+library(RstoxUtils)
 
 Utils.format <- RstoxUtils::processBioticFile(xml.example)
 ```
@@ -198,7 +200,6 @@ To reproduce the strata system, we need to define geographic and depth limits. T
 
 ```r
 library(RstoxUtils)
-library(tidyverse)
 
 boundary.vec <- c(0, 29, 68, 80)
 ```
@@ -237,6 +238,7 @@ strata.poly <- strataPolygon(bathy = link,
 # sp::spplot(strata.poly, zcol = "id") # Native plotting method
 
 # A better one:
+library(tidyverse)
 library(sf)
 
 ggplot(sf::st_as_sf(strata.poly)) + 
