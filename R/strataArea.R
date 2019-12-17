@@ -1,12 +1,13 @@
 #' @title Calculate area of strata using only raster data
-#' @description The function calculates the area of strata without polygonizing the strata. Useful for checking the results of \code{\link{strataPolygons}} function.
+#' @description The function calculates the area of strata without polygonizing the strata. Useful for checking the results of \code{\link{strataPolygon}} function.
 #' @param bathy String giving the path to the bathymetry NetCDF file.
 #' @param depths Numeric vector giving the cut points for depth strata (see \code{\link[base]{cut}}. Data outside the cut range will be dropped. Use limits of length two exceeding the depths of the region to avoid depth categorization (\code{c(0, 1000)} for instance).
 #' @param boundary Numeric vector of length 4 giving the boundaries for the overall region. See \code{\link[raster]{extent}}. Should be given as decimal degrees. The first element defines the minimum longitude, the second element the maximum longitude, the third element the minimum latitude and the fourth element the maximum latitude of the bounding box.
 #' @param geostrata A data frame defining the minimum and maximum longitude and latitude for geographically bounded strata. The data frame columns must be ordered as \code{lon.min, lon.max, lat.min, lat.max}. Column names do not matter. Each row in the data frame will be interpreted as separate geographically bounded strata. 
 #' @details The function uses the \code{\link[raster]{reclassify}} and \code{\link[raster]{area}} functions to calculate the area of depth strata specified by the \code{depths} argument over a polygon specified by the \code{boundary} and \code{geostrata} arguments. 
 #' @return Returns a data frame. The areas are expressed in square kilometers (km2) and nautical miles (nm2).
-#' @import sp raster
+#' @import sp
+#' @rawNamespace import(raster, except = shift)
 #' @importFrom dplyr left_join
 #' @export
 

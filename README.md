@@ -1,3 +1,8 @@
+---
+output: 
+  html_document: 
+    keep_md: yes
+---
 # RstoxUtils
 
 **Utility functions for the Stox Project. R package version 2019-12-17.**
@@ -23,7 +28,7 @@ If the installation of a dependency fails, try installing those packages manuall
 
 The **RstoxUtils** package currently contains following functionality.
 
-### Read IMR .xml files
+### 1. Read IMR .xml files
 
 The IMR database data are distributed as [.xml files of a certain structure](https://confluence.imr.no/display/API/Biotic+V3+API+documentation). The `RstoxData::readXmlFile` function reads these files, but due to the data architecture, information is spread across multiple data frames in the standard format. The `RstoxUtils::processBioticFile` function combines the data in station-based (`stnall` element in the list architecture) and individual fish-based (`indall`) formats. The `RstoxUtils::processBioticFiles` function does the same for multiple .xml files.
 
@@ -140,7 +145,7 @@ dim(Utils.format$indall)
 
 *NOTE:* The `RstoxUtils::processBioticFile` function have not been modified to use the improvements made to the 0.6.3 version of the `RstoxData::readXmlFile` function yet. The modifications will make the `processBioticFile` quicker as some corrections from this function were implemented in the master function. Also, the ID tags have not been proofed yet. This note will disappear once the fixes have been made. 
 
-### Make strata for stock assessment
+### 2. Make strata for stock assessment
 
 The question "how much fish there is in the sea?", i.e. the abundance estimation of fish within a certain area, called strata, is the heart of stock assessment. While the question itself is difficult to answer correctly, the calculus to estimate total fish abundance in given strata from trawl survey data is surprisingly simple. The formula is $N \times A$, where N is the number or weight of fish within the strata per areal unit and A the area of given strata in the same areal units than N. Since the N is multiplied by the A, the area has a large impact on the abundance estimates. Traditionally, the abundance estimation within the IMR has been done using various routines and programs with a variable level of documentation and transparency. Standardization of the routine is required and has recently been requested by both the ICES and the IMR. As a part of the standardization, the abundance estimation has to be done using Stox software. The strata have to be defined as spatial polygons (a GIS vector data class). These polygons are then used to calculate the area and to define which stations lie inside each stratum for further abundance calculation. While the determination of strata polygons is a critical part of the new routine, there are currently no standardized methods to do it. Further, trying to reproduce the areas in the previously used abundance estimation shows to be surprisingly difficult. Changes in the area estimations may dramatically change the new abundance estimates, and consequently, the estimation of strata polygons should get more attention.  
 

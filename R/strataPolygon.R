@@ -15,7 +15,8 @@
 #' @references GEBCO Compilation Group (2019) GEBCO 2019 15-arcsecond grid (doi:10.5285/836f016a-33be-6ddc-e053-6c86abc0788e). URL: \url{https://www.gebco.net/data_and_products/gridded_bathymetry_data/gebco_2019/gebco_2019_info.html}.
 #' 
 #' ETOPO1 1 Arc-Minute Global Relief Model. \url{https://doi.org/10.7289/V5C8276M}.
-#' @import raster sp rgeos
+#' @import sp rgeos
+#' @rawNamespace import(raster, except = shift)
 #' @importFrom spatialEco remove.holes
 #' @importFrom smoothr drop_crumbs
 #' @importFrom dplyr left_join

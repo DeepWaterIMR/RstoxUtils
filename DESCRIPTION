@@ -1,19 +1,19 @@
 Package: RstoxUtils
 Type: Package
 Title: Utility functions for the Stox Project within the Institute of Marine Research, Norway
-Version: 0.1.1
+Version: 0.1.2
 Date: 2019-12-17
 Authors@R: c(person("Mikko", "Vihtakari", email = "mikko.vihtakari@hi.no",
                   role = c("aut", "cre")) 
           )
 URL: https://github.com/MikkoVihtakari/RstoxUtils
 BugReports: https://github.com/MikkoVihtakari/RstoxUtils/issues
-Description: This package contains utlity functions for the Institute of Marine Research's (IMR) Stox Project. 
-  The package has two purposes: 1) To function as a showcase and development platform for functions that may be
-  included to the future releases of the Stox Project. 2) To provide a collection of functions needed in the 
-  internal workflow of the Deep-sea species group at IMR.
+Description: This package contains utility functions for the Institute of Marine Research's (IMR) Stox Project.
+  The package has two purposes: 1) To function as a showcase and developmental platform 
+  for functions that may be included in the future releases of the Stox Project. 2) To provide a collection
+  of functions needed in the internal workflow of the Deep-sea species group at IMR.
 Depends: R (>= 2.10)
-Imports: tidyverse, dplyr, sp, rgdal, raster, rgeos, sf, smoothr, RstoxData, data.table, units, stars
+Imports: tidyverse, dplyr, sp, rgdal, raster, rgeos, sf, smoothr, RstoxData, data.table, units, stars, methods, spatialEco, wicket
 Suggests: parallel, reshape2, knitr, kableExtra, PlotSvalbard
 License: GPL-3 | file LICENSE
 Encoding: UTF-8

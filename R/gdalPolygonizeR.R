@@ -8,7 +8,7 @@
 #' @param quiet ...
 #' @param rewrite ...
 #' @details Documentation and code tidying has not been written for this function yet.
-#' @import raster
+#' @rawNamespace import(raster, except = shift)
 #' @author \href{https://johnbaumgartner.wordpress.com/2012/07/26/getting-rasters-into-shape-from-r/}{John Baumgartner}. See also \href{https://gis.stackexchange.com/questions/166753/fastest-way-to-convert-big-raster-to-polyline-using-r-or-python}{StackOverflow}.
 #' @export
 
