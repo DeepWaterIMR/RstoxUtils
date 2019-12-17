@@ -1,8 +1,3 @@
----
-output: 
-  html_document: 
-    keep_md: yes
----
 # RstoxUtils
 
 **Utility functions for the Stox Project. R package, last updated 2019-12-17.**
