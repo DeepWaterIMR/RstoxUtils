@@ -83,7 +83,7 @@ The **RstoxUtils** package contains functions to define strata based on bottom t
 
 The `RstoxUtils::strataPolygon` function defines the strata and requires a bathymetry raster file in NetCDF format. The function avoids projecting data and operates using **decimal degrees**. To follow the example, download the GEBCO grid (warning it is 11Gb). You may also use the ETOPO1 or older GECBO grids, but the areal estimations will naturally depend on the used bathymetry grid. Since GEBCO 2019 has the highest resolution of available options, we will use it in the example. 
 
-The original strata system had been defined using longitude and depth intervals as detailed in the table below. The numbers in the cells are square nautical miles ($nm^2$; the unit ICES has chosen to use). The **RstoxUtils** package gives areas both in SI-units (square kilometers, $km^2$) and the ICES units (square nautical miles, $nm^2$). While working with the strata polygons, it is good to remember that one arcminute is approximately equivalent to one nautical mile (nm) in the latitude (y-axis) direction.  
+The original strata system had been defined using latitude and depth intervals as detailed in the table below. The numbers in the cells are square nautical miles ($nm^2$; the unit ICES has chosen to use). The **RstoxUtils** package gives areas both in SI-units (square kilometers, $km^2$) and the ICES units (square nautical miles, $nm^2$). While working with the strata polygons, it is good to remember that one arcminute is approximately equivalent to one nautical mile (nm) in the latitude (y-axis) direction.  
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 data(nea_ghl_original_strata)
@@ -213,7 +213,7 @@ id.labels <- data.frame(geostrata.name = rep(LETTERS[1:5], each = 4), interval =
 ggplot(tmp) + 
   geom_sf(fill = "red", color = "red") +
   geom_sf(data = land, color = NA) + 
-  geom_text(data = id.labels, aes(x = 25, y = 79.5, label = id), fontface = 2) + 
+  geom_text(data = id.labels, aes(x = 25, y = 80, label = id), fontface = 2) + 
   facet_grid(interval ~ geostrata.name) + 
   theme_bw() + 
   theme(legend.position = "none") +
@@ -292,6 +292,8 @@ cowplot::plot_grid(p1, p2, labels = "AUTO")
 ```
 
 We see straight away that there are some considerable differences. The Pearson correlation between the original and new strata areas is only `r round(cor(x$orig.nm2, x$poly.area), 2)`, which is low since we want to try to replicate the original areas. We notice that the largest offsets are for strata IDs 4, 12, 14 and 16. All of these strata, except number 14 are the shallowest 400-500 m interval. 
+
+STILL UNDER DEVELOPMENT.
 
 #### Export strata polygons to Rstox.
 

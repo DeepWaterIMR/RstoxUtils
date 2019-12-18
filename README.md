@@ -150,7 +150,7 @@ The **RstoxUtils** package contains functions to define strata based on bottom t
 
 The `RstoxUtils::strataPolygon` function defines the strata and requires a bathymetry raster file in NetCDF format. The function avoids projecting data and operates using **decimal degrees**. To follow the example, download the GEBCO grid (warning it is 11Gb). You may also use the ETOPO1 or older GECBO grids, but the areal estimations will naturally depend on the used bathymetry grid. Since GEBCO 2019 has the highest resolution of available options, we will use it in the example. 
 
-The original strata system had been defined using longitude and depth intervals as detailed in the table below. The numbers in the cells are square nautical miles ($nm^2$; the unit ICES has chosen to use). The **RstoxUtils** package gives areas both in SI-units (square kilometers, $km^2$) and the ICES units (square nautical miles, $nm^2$). While working with the strata polygons, it is good to remember that one arcminute is approximately equivalent to one nautical mile (nm) in the latitude (y-axis) direction.  
+The original strata system had been defined using latitude and depth intervals as detailed in the table below. The numbers in the cells are square nautical miles ($nm^2$; the unit ICES has chosen to use). The **RstoxUtils** package gives areas both in SI-units (square kilometers, $km^2$) and the ICES units (square nautical miles, $nm^2$). While working with the strata polygons, it is good to remember that one arcminute is approximately equivalent to one nautical mile (nm) in the latitude (y-axis) direction.  
 
 <table class="table table-striped table-condensed" style="margin-left: auto; margin-right: auto;">
 <caption>Previously used strata system definition for NEA Greenland halibut. Latitude intervals given are along rows, depth intervals along columns and the numbers represent strata areas in square nautical miles.</caption>
@@ -319,7 +319,7 @@ id.labels <- data.frame(geostrata.name = rep(LETTERS[1:5], each = 4), interval =
 ggplot(tmp) + 
   geom_sf(fill = "red", color = "red") +
   geom_sf(data = land, color = NA) + 
-  geom_text(data = id.labels, aes(x = 25, y = 79.5, label = id), fontface = 2) + 
+  geom_text(data = id.labels, aes(x = 25, y = 80, label = id), fontface = 2) + 
   facet_grid(interval ~ geostrata.name) + 
   theme_bw() + 
   theme(legend.position = "none") +
@@ -330,7 +330,7 @@ ggplot(tmp) +
 
 ![New depth and latitude based strata system for NEA Greenland halibut made using the strataPolygons function. Subplots indicate latitude and depth based categorization along columns and rows, respectively.  Red polygons represent the strata. Numbers refer to IDs used in preceeding figures.](README_files/figure-html/unnamed-chunk-11-1.png)
 
-Now that we have the strata polygons, we can begin examining their area. Polygonization, required by many practical GIS approaches, is essentially making a model of the underlying raster data. Such modeling always introduces a bias. Whether the bias is large enough to matter depends on the specific problem. In our case, we have polygonized fairly steep continental slope using a 15-arcsecond bathymetry grid (remember that the resolution is approximately 0.25 nm along the latitude axis). The `RstoxUtils::strataArea` function estimates areas directly from the bathymetry grid without polygonization and is useful in assessing the magnitude of bias introduced by polygonization. Even though the function supports boundary polygons, it does not remove the small detached areas and holes. This leads to a higher areal estimate than polygonizing if the `drop.crumbs` argument is used and a lower areal estimate if `remove.holes` is used. 
+Now that we have the strata polygons, we can begin examining their area. Polygonization, required by many practical GIS approaches, is essentially making a model of the underlying raster data. Such modeling always introduces a bias. Whether the bias is large enough to matter depends on the specific problem. In our case, we have polygonized fairly steep continental slope using a 15-arcsecond bathymetry grid (remember that the resolution is approximately 0.25 nm along the latitude axis). The `RstoxUtils::strataArea` function estimates areas directly from the bathymetry grid without polygonization and is useful in assessing the magnitude of bias introduced by polygonization. Even though the function supports boundary polygons, it does not remove the small detached areas and holes. This makes the polygonized strata to have higher areal estimates than the raster area if `remove.holes` argument is used and lower estimates if `drop.crumbs` is used. The effect depends on the threshold area for hole and crumb removal. 
 
 
 ```r
@@ -406,6 +406,8 @@ cowplot::plot_grid(p1, p2, labels = "AUTO")
 ![](README_files/figure-html/unnamed-chunk-13-1.png)<!-- -->
 
 We see straight away that there are some considerable differences. The Pearson correlation between the original and new strata areas is only 0.88, which is low since we want to try to replicate the original areas. We notice that the largest offsets are for strata IDs 4, 12, 14 and 16. All of these strata, except number 14 are the shallowest 400-500 m interval. 
+
+STILL UNDER DEVELOPMENT.
 
 #### Export strata polygons to Rstox.
 

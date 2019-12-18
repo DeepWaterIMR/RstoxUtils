@@ -9,7 +9,7 @@
 #' A single logical argument or a logical vector as long as the number of rows in \code{geostrata} specifying whether holes in the strata polygons should be removed. 
 #' @param validate.polygons A logical indicating whether the function should return valid geometries. This option might considerably change the output, but makes it compatible with GIS software.
 #' @param use.python Logical indicating whether the function should use gdal python script (\code{TRUE}; \code{gdal_polygonize.py}) or \code{\link[stars]{st_as_stars}} (\code{FALSE}) for polygonization of strata. The python script has a superior computing time, but requires QGIS 2.18 installed on the computer (earlier or later versions won't do). 
-#' @details Uses \href{https://www.gebco.net/data_and_products/gridded_bathymetry_data/}{GEBCO} or \href{https://www.ngdc.noaa.gov/mgg/global/}{ETOPO1} bathymetry grids to define the depth strata. Download the desired grid from the links. The bathymetry grids must be in NetCDF format.
+#' @details Uses \href{https://www.gebco.net/data_and_products/gridded_bathymetry_data/}{GEBCO} or \href{https://www.ngdc.noaa.gov/mgg/global/}{ETOPO1} bathymetry grids to define the depth strata. Download the desired grid from the links. The bathymetry grids must be in NetCDF format and defined using decimal degrees.
 #' @return \link[sp]{SpatialPolygonsDataFrame} containing the estimated strata and information for them including areas. The strata are returned as decimal degrees (WGS84).
 #' @references GEBCO Compilation Group (2019) GEBCO 2019 15-arcsecond grid (doi:10.5285/836f016a-33be-6ddc-e053-6c86abc0788e). URL: \url{https://www.gebco.net/data_and_products/gridded_bathymetry_data/gebco_2019/gebco_2019_info.html}.
 #' 
@@ -193,7 +193,6 @@ strataPolygon <- function(bathy, depths, boundary, geostrata = NULL, drop.crumbs
     
     pol <- raster::aggregate(pol, by = names(pol@data[1]), dissolve = TRUE)
     pol <- pol[order(pol@data[1], decreasing = TRUE),]
-    
     
     tmp <- pol@data
     names(tmp) <- "average"
