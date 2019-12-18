@@ -11,7 +11,7 @@ strataArea(bathy, depths, boundary, geostrata = NULL)
 
 \item{depths}{Numeric vector giving the cut points for depth strata (see \code{\link[base]{cut}}. Data outside the cut range will be dropped. Use limits of length two exceeding the depths of the region to avoid depth categorization (\code{c(0, 1000)} for instance).}
 
-\item{boundary}{Numeric vector of length 4 giving the boundaries for the overall region. See \code{\link[raster]{extent}}. Should be given as decimal degrees. The first element defines the minimum longitude, the second element the maximum longitude, the third element the minimum latitude and the fourth element the maximum latitude of the bounding box.}
+\item{boundary}{A \link[sp]{SpatialPolygons}(DataFrame) object, text string defining the file path to a spatial polygon or a numeric vector of length 4 giving the boundaries for the overall region. Should be given as decimal degrees. If numeric vector, the first element defines the minimum longitude, the second element the maximum longitude, the third element the minimum latitude and the fourth element the maximum latitude of the bounding box.}
 
 \item{geostrata}{A data frame defining the minimum and maximum longitude and latitude for geographically bounded strata. The data frame columns must be ordered as \code{lon.min, lon.max, lat.min, lat.max}. Column names do not matter. Each row in the data frame will be interpreted as separate geographically bounded strata.}
 }

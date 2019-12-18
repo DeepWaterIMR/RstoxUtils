@@ -2,7 +2,7 @@
 #' @description The function calculates the area of strata without polygonizing the strata. Useful for checking the results of \code{\link{strataPolygon}} function.
 #' @param bathy String giving the path to the bathymetry NetCDF file.
 #' @param depths Numeric vector giving the cut points for depth strata (see \code{\link[base]{cut}}. Data outside the cut range will be dropped. Use limits of length two exceeding the depths of the region to avoid depth categorization (\code{c(0, 1000)} for instance).
-#' @param boundary Numeric vector of length 4 giving the boundaries for the overall region. See \code{\link[raster]{extent}}. Should be given as decimal degrees. The first element defines the minimum longitude, the second element the maximum longitude, the third element the minimum latitude and the fourth element the maximum latitude of the bounding box.
+#' @param boundary A \link[sp]{SpatialPolygons}(DataFrame) object, text string defining the file path to a spatial polygon or a numeric vector of length 4 giving the boundaries for the overall region. Should be given as decimal degrees. If numeric vector, the first element defines the minimum longitude, the second element the maximum longitude, the third element the minimum latitude and the fourth element the maximum latitude of the bounding box.
 #' @param geostrata A data frame defining the minimum and maximum longitude and latitude for geographically bounded strata. The data frame columns must be ordered as \code{lon.min, lon.max, lat.min, lat.max}. Column names do not matter. Each row in the data frame will be interpreted as separate geographically bounded strata. 
 #' @details The function uses the \code{\link[raster]{reclassify}} and \code{\link[raster]{area}} functions to calculate the area of depth strata specified by the \code{depths} argument over a polygon specified by the \code{boundary} and \code{geostrata} arguments. 
 #' @return Returns a data frame. The areas are expressed in square kilometers (km2) and nautical miles (nm2).
@@ -19,12 +19,37 @@ strataArea <- function(bathy, depths, boundary, geostrata = NULL) {
 
   ## General checks ####
   
+  ### The depths argument
+  
   if(!(is.vector(depths) & class(depths) %in% c("numeric", "integer"))) {
     stop("The depths parameter has to be a numeric or integer vector.")}
   
-  if(!(is.vector(boundary) & class(boundary) %in% c("numeric", "integer") & length(boundary) == 4)) {
-    stop("The boundary parameter has to be a numeric or integer vector of length 4 giving the decimal degree longitude and latitude limits for the strata region.")
+  ### The boundary argument
+  
+  if(grepl("spatialpolygons", class(boundary), ignore.case = TRUE)) {
+    
+    if(is.null(sp::proj4string(boundary))) {
+      stop("boundary misses proj4string argument.")
+    } else if(!grepl("+proj=longlat", sp::proj4string(boundary))) {
+      stop("boundary has to be defined as decimal degrees")
+    }
+    
+  } else if(class(boundary) == "character" & length(boundary) == 1) {
+    if(!file.exists(boundary)) stop("Boundary shapefile not found. Check your path")
+    
+    boundary <- rgdal::readOGR(boundary, verbose = FALSE)
+    
+    if(is.null(sp::proj4string(boundary))) {
+      stop("boundary misses proj4string argument.")
+    } else if(!grepl("+proj=longlat", sp::proj4string(boundary))) {
+      stop("boundary has to be defined as decimal degrees")
+    }
+    
+  } else if(!(is.vector(boundary) & class(boundary) %in% c("numeric", "integer") & length(boundary) == 4)) {
+    stop("The boundary parameter has to be a numeric/integer vector of length 4 giving the decimal degree longitude and latitude limits for the strata region OR a character argument giving the location of the shapefile polygon.")
   }
+  
+  ### The geostrata argument
   
   if(!is.null(geostrata)) {
     if(!(is.data.frame(geostrata) & ncol(geostrata) == 4)) {
@@ -40,6 +65,10 @@ strataArea <- function(bathy, depths, boundary, geostrata = NULL) {
   if(proj4string(ras) != "+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0") stop("bathy has to be in decimal degree projection. Use '+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0'")
   
   ras <- raster::crop(ras, raster::extent(boundary))
+  
+  if(grepl("spatialpolygons", class(boundary), ignore.case = TRUE)) {
+    ras <- raster::mask(ras, boundary)
+  }
   
   ## Reclassify raster
   

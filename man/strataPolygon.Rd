@@ -4,16 +4,23 @@
 \alias{strataPolygon}
 \title{Create polygon shapefiles for depth strata required by Rstox}
 \usage{
-strataPolygon(bathy, depths, boundary, geostrata = NULL,
-  drop.crumbs = NULL, remove.holes = NULL, strata.names = NULL,
-  validate.polygons = TRUE, use.python = FALSE)
+strataPolygon(
+  bathy,
+  depths,
+  boundary,
+  geostrata = NULL,
+  drop.crumbs = NULL,
+  remove.holes = NULL,
+  validate.polygons = TRUE,
+  use.python = FALSE
+)
 }
 \arguments{
 \item{bathy}{String giving the path to the bathymetry NetCDF file.}
 
 \item{depths}{Numeric vector giving the cut points for depth strata (see \code{\link[base]{cut}}. Data outside the cut range will be dropped. Use limits of length two exceeding the depths of the region to avoid depth categorization (\code{c(0, 1000)} for instance).}
 
-\item{boundary}{Numeric vector of length 4 giving the boundaries for the overall region. See \code{\link[raster]{extent}}. Should be given as decimal degrees. The first element defines the minimum longitude, the second element the maximum longitude, the third element the minimum latitude and the fourth element the maximum latitude of the bounding box.}
+\item{boundary}{A \link[sp]{SpatialPolygons}(DataFrame) object, text string defining the file path to a spatial polygon or a numeric vector of length 4 giving the boundaries for the overall region. Should be given as decimal degrees. If numeric vector, the first element defines the minimum longitude, the second element the maximum longitude, the third element the minimum latitude and the fourth element the maximum latitude of the bounding box.}
 
 \item{geostrata}{A data frame defining the minimum and maximum longitude and latitude for geographically bounded strata. The data frame columns must be ordered as \code{lon.min, lon.max, lat.min, lat.max}. Column names do not matter. Each row in the data frame will be interpreted as separate geographically bounded strata. Use \code{NULL} to ignore geostrata.}
 
@@ -21,8 +28,6 @@ strataPolygon(bathy, depths, boundary, geostrata = NULL,
 
 \item{remove.holes}{Single numeric value specifying a threshold (area in km2) for holes which should be removed from the strata. Set to \code{NULL} to bypass the removal. Uses the \link[smoothr]{fill_holes} function. 
 A single logical argument or a logical vector as long as the number of rows in \code{geostrata} specifying whether holes in the strata polygons should be removed.}
-
-\item{strata.names}{A character vector spcifying the names of \code{geostrata}. Not implemented.}
 
 \item{validate.polygons}{A logical indicating whether the function should return valid geometries. This option might considerably change the output, but makes it compatible with GIS software.}
 

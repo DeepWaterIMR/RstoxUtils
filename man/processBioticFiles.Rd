@@ -4,9 +4,17 @@
 \alias{processBioticFiles}
 \title{Read and process NMD Biotic xml files for further use in the BioticExplorer}
 \usage{
-processBioticFiles(files, lengthUnit = "cm", weightUnit = "g",
-  removeEmpty = TRUE, coreDataOnly = FALSE, returnOriginal = TRUE,
-  dataTable = TRUE, convertColumns = TRUE, mcCores = 1L)
+processBioticFiles(
+  files,
+  lengthUnit = "cm",
+  weightUnit = "g",
+  removeEmpty = TRUE,
+  coreDataOnly = FALSE,
+  returnOriginal = TRUE,
+  dataTable = TRUE,
+  convertColumns = TRUE,
+  mcCores = 1L
+)
 }
 \arguments{
 \item{lengthUnit}{character string specifying the unit for length output. Alternatives: "mm", "cm" or "m".}

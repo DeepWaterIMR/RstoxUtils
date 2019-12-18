@@ -2,12 +2,11 @@
 #' @description A helper function to define strata for stock assesment from GEBCO and ETOPO bathymetry grids.
 #' @param bathy String giving the path to the bathymetry NetCDF file.
 #' @param depths Numeric vector giving the cut points for depth strata (see \code{\link[base]{cut}}. Data outside the cut range will be dropped. Use limits of length two exceeding the depths of the region to avoid depth categorization (\code{c(0, 1000)} for instance).
-#' @param boundary Numeric vector of length 4 giving the boundaries for the overall region. See \code{\link[raster]{extent}}. Should be given as decimal degrees. The first element defines the minimum longitude, the second element the maximum longitude, the third element the minimum latitude and the fourth element the maximum latitude of the bounding box.
+#' @param boundary A \link[sp]{SpatialPolygons}(DataFrame) object, text string defining the file path to a spatial polygon or a numeric vector of length 4 giving the boundaries for the overall region. Should be given as decimal degrees. If numeric vector, the first element defines the minimum longitude, the second element the maximum longitude, the third element the minimum latitude and the fourth element the maximum latitude of the bounding box.
 #' @param geostrata A data frame defining the minimum and maximum longitude and latitude for geographically bounded strata. The data frame columns must be ordered as \code{lon.min, lon.max, lat.min, lat.max}. Column names do not matter. Each row in the data frame will be interpreted as separate geographically bounded strata. Use \code{NULL} to ignore geostrata.
 #' @param drop.crumbs Single numeric value specifying a threshold (area in km2) for disconnected polygons which should be removed from the strata. Set to \code{NULL} to bypass the removal. Uses the \link[smoothr]{drop_crumbs} function. 
 #' @param remove.holes Single numeric value specifying a threshold (area in km2) for holes which should be removed from the strata. Set to \code{NULL} to bypass the removal. Uses the \link[smoothr]{fill_holes} function. 
 #' A single logical argument or a logical vector as long as the number of rows in \code{geostrata} specifying whether holes in the strata polygons should be removed. 
-#' @param strata.names A character vector spcifying the names of \code{geostrata}. Not implemented.
 #' @param validate.polygons A logical indicating whether the function should return valid geometries. This option might considerably change the output, but makes it compatible with GIS software.
 #' @param use.python Logical indicating whether the function should use gdal python script (\code{TRUE}; \code{gdal_polygonize.py}) or \code{\link[stars]{st_as_stars}} (\code{FALSE}) for polygonization of strata. The python script has a superior computing time, but requires QGIS 2.18 installed on the computer (earlier or later versions won't do). 
 #' @details Uses \href{https://www.gebco.net/data_and_products/gridded_bathymetry_data/}{GEBCO} or \href{https://www.ngdc.noaa.gov/mgg/global/}{ETOPO1} bathymetry grids to define the depth strata. Download the desired grid from the links. The bathymetry grids must be in NetCDF format.
@@ -29,17 +28,8 @@
 #' @export
 
 ## Developmental code
-# geostrata = data.frame(lon.min = c(0, 0, 0, 8, 17.5), lon.max = c(15, 17.5, 17.5, 17.5, 35), lat.min = c(76, 73.5, 70.5, 68, 72.5), lat.max = c(80, 76, 73.5, 70.5, 76)); boundary = c(0, 35, 68, 80); depths = c(400, 500, 700, 1000, 1500)
-# bathy = "/vsigzip//Users/a22357/Downloads/ETOPO1_Ice_g_gdal.grd.gz"
-# bathy = "/vsizip/Users/a22357/Downloads/GEBCO_2019.zip/GEBCO_2019.nc"
-# bathy = "/Users/a22357/Downloads/GEBCO_2019/GEBCO_2019.nc"
-# bathy = "vsigzip/ETOPO1_Ice_g_gdal.grd.gz/ETOPO1_Ice_g_gdal.grd"
-# bathy = "/Users/a22357/Dropbox/Workstuff/GIS/GEBCO bathymetry/GEBCO_2014_1D.nc"; boundary = c(5, 50, 69, 82); depths = c(0, 200, 500, 750)
-# drop.crumbs = 500; remove.holes = FALSE; strata.names = NULL; validate.polygons = TRUE; use.python = TRUE
-# bathy = "/Users/a22357/Dropbox/Workstuff/GIS/GEBCO bathymetry/GEBCO_2019/GEBCO_2019.nc"; boundary = c(0, 35, 68, 80); depths = c(400, 500, 700, 1000, 1500); geostrata = data.frame(lon.min = c(0, 0, 0, 8, 17.5), lon.max = c(15, 17.5, 17.5, 17.5, 35), lat.min = c(76, 73.5, 70.5, 68, 72.5), lat.max = c(80, 76, 73.5, 70.5, 76)); drop.crumbs = 200; remove.holes = 1000; strata.names = NULL; validate.polygons = TRUE; use.python = TRUE
-# boundary = boundary.path
-# bathy = link; depths = seq(100, 500, 100); boundary = c(5, 13, 56, 62); geostrata = NULL; drop.crumbs = NULL; remove.holes = NULL; strata.names = NULL; validate.polygons = TRUE; use.python = FALSE
-strataPolygon <- function(bathy, depths, boundary, geostrata = NULL, drop.crumbs = NULL, remove.holes = NULL, strata.names = NULL, validate.polygons = TRUE, use.python = FALSE) {
+# bathy = link; depths = depths.vec; boundary = boundary.path; geostrata = geostrata.df; drop.crumbs = 30; remove.holes = 10; validate.polygons = TRUE; use.python = FALSE
+strataPolygon <- function(bathy, depths, boundary, geostrata = NULL, drop.crumbs = NULL, remove.holes = NULL, validate.polygons = TRUE, use.python = FALSE) {
   
   ## General checks ####
   
@@ -61,7 +51,7 @@ strataPolygon <- function(bathy, depths, boundary, geostrata = NULL, drop.crumbs
   } else if(class(boundary) == "character" & length(boundary) == 1) {
     if(!file.exists(boundary)) stop("Boundary shapefile not found. Check your path")
     
-    boundary <- rgdal::readOGR(boundary)
+    boundary <- rgdal::readOGR(boundary, verbose = FALSE)
     
     if(is.null(sp::proj4string(boundary))) {
       stop("boundary misses proj4string argument.")
@@ -89,7 +79,7 @@ strataPolygon <- function(bathy, depths, boundary, geostrata = NULL, drop.crumbs
     }
   }
   
-  ## Open raster ###
+  ## Open raster ####
   
   ras <- raster::raster(bathy)
   
@@ -127,7 +117,7 @@ strataPolygon <- function(bathy, depths, boundary, geostrata = NULL, drop.crumbs
     
   } else {
     
-    require(stars)
+    # require(stars)
     
     pol <- sf::as_Spatial(sf::st_as_sf(stars::st_as_stars(r), as_points = FALSE, merge = TRUE))
     

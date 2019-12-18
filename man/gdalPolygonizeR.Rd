@@ -4,8 +4,15 @@
 \alias{gdalPolygonizeR}
 \title{Polygonize raster using a Python script and QGIS}
 \usage{
-gdalPolygonizeR(x, outshape = NULL, gdalformat = "ESRI Shapefile",
-  pypath = NULL, readpoly = TRUE, quiet = TRUE, rewrite = TRUE)
+gdalPolygonizeR(
+  x,
+  outshape = NULL,
+  gdalformat = "ESRI Shapefile",
+  pypath = NULL,
+  readpoly = TRUE,
+  quiet = TRUE,
+  rewrite = TRUE
+)
 }
 \arguments{
 \item{x}{raster object to be polygonized}

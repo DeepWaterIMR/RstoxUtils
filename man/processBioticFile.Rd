@@ -4,9 +4,17 @@
 \alias{processBioticFile}
 \title{Read and process a NMD Biotic xml file for further use in the BioticExplorer}
 \usage{
-processBioticFile(file, lengthUnit = "cm", weightUnit = "g",
-  removeEmpty = TRUE, coreDataOnly = FALSE, returnOriginal = TRUE,
-  dataTable = TRUE, convertColumns = TRUE, missionidPrefix = NULL)
+processBioticFile(
+  file,
+  lengthUnit = "cm",
+  weightUnit = "g",
+  removeEmpty = TRUE,
+  coreDataOnly = FALSE,
+  returnOriginal = TRUE,
+  dataTable = TRUE,
+  convertColumns = TRUE,
+  missionidPrefix = NULL
+)
 }
 \arguments{
 \item{file}{character string specifying the file path to the xml file. Accepts only one file at the time.}

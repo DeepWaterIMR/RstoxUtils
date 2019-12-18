@@ -4,9 +4,14 @@
 \alias{clipShapefile}
 \title{Clip a shape file (SpatialPolygon) using a bounding area}
 \usage{
-clipShapefile(x, limits = NULL,
+clipShapefile(
+  x,
+  limits = NULL,
   proj4.limits = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0",
-  simplify = FALSE, tol = 60, return.boundary = FALSE)
+  simplify = FALSE,
+  tol = 60,
+  return.boundary = FALSE
+)
 }
 \arguments{
 \item{x}{Original shape file to be clipped. Required. Must contain \code{\link[sp]{proj4string}} information.}

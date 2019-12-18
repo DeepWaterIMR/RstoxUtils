@@ -1,6 +1,13 @@
+---
+output: 
+  html_document: 
+    keep_md: yes
+editor_options: 
+  chunk_output_type: console
+---
 # RstoxUtils
 
-**Utility functions for the Stox Project. R package, last updated 2019-12-17.**
+**Utility functions for the Stox Project. R package, updated 2019-12-18.**
 
 This package contains utility functions for the Institute of Marine Research's (IMR) Stox Project. The package has two purposes: 1) To function as a showcase and developmental platform for functions that may be included in the future releases of the Stox Project. 2) To provide a collection of functions needed in the internal workflow of the Deep-sea species group at IMR.
 
@@ -21,7 +28,7 @@ If the installation of a dependency fails, try installing those packages manuall
 
 ## Usage
 
-The **RstoxUtils** package currently contains following functionality.
+Each numbered section below demonstrates a separate functionality in the **RstoxUtils** package. 
 
 ### 1. Read IMR .xml files
 
@@ -280,18 +287,8 @@ While it was possible to remove most small detached polygons, setting the `drop.
 ```r
 boundary.path <- system.file("extdata", "boundary_shape.shp", package = "RstoxUtils")
 
-bound.poly <- rgdal::readOGR(boundary.path)
-```
+bound.poly <- rgdal::readOGR(boundary.path, verbose = FALSE)
 
-```
-## OGR data source with driver: ESRI Shapefile 
-## Source: "/Library/Frameworks/R.framework/Versions/3.6/Resources/library/RstoxUtils/extdata/boundary_shape.shp", layer: "boundary_shape"
-## with 1 features
-## It has 1 fields
-## Integer64 fields read as strings:  id
-```
-
-```r
 ggplot() + 
   geom_sf(data = sf::st_as_sf(strata.poly), aes(fill = as.factor(id))) +
   geom_sf(data = sf::st_as_sf(bound.poly), fill = NA) +
@@ -301,7 +298,7 @@ ggplot() +
 
 ![](README_files/figure-html/unnamed-chunk-10-1.png)<!-- -->
 
-The figure above shows the strata together with a customly defined boundary shape. We can now use the boundary shape to limit our strata. Note that you can use either the path to the shapefile or the `SpatialPolygonsDataFrame` object itself to define the boundary:
+The figure above shows the strata together with a customly defined boundary shape. We can now use the boundary shape to limit our strata. Since we introduce a new way of removing small detached areas, we can push the `drop.crumbs` argument a little bit down to include as much of the narrow contours of the continental slope as possible into our strata estimates. Note that you can use either the path to the shapefile or the `SpatialPolygonsDataFrame` object itself to define the boundary:
 
 
 ```r
@@ -309,35 +306,44 @@ strata.poly <- strataPolygon(bathy = link,
                              depths = depths.vec, 
                              boundary = boundary.path,
                              geostrata = geostrata.df,
-                             drop.crumbs = 100,
+                             drop.crumbs = 10,
                              remove.holes = 10
 )
-```
 
-```
-## OGR data source with driver: ESRI Shapefile 
-## Source: "/Library/Frameworks/R.framework/Versions/3.6/Resources/library/RstoxUtils/extdata/boundary_shape.shp", layer: "boundary_shape"
-## with 1 features
-## It has 1 fields
-## Integer64 fields read as strings:  id
-```
+## Modify the strata polygons
+tmp <- sf::st_as_sf(strata.poly)
+tmp$interval <- factor(tmp$interval, levels = unique(tmp$interval))
 
-```r
-ggplot(sf::st_as_sf(strata.poly)) + 
-  geom_sf(aes(fill = as.factor(id))) +
+## Add land
+data("shapefiles_panarctic", package = "PlotSvalbard")
+land <- PlotSvalbard::clip_shapefile(arctic, c(0, 40, 66, 81)) %>% 
+  st_as_sf() %>% 
+  st_transform(crs = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
+
+## Make ID labels for the plot
+id.labels <- data.frame(geostrata.name = rep(LETTERS[1:5], each = 4), interval = levels(tmp$interval), id = c(1:16, NA, NA, 17, 18))
+
+ggplot(tmp) + 
+  geom_sf(fill = "red", color = "red") +
+  geom_sf(data = land, color = NA) + 
+  geom_text(data = id.labels, aes(x = 25, y = 79.5, label = id), fontface = 2) + 
+  facet_grid(interval ~ geostrata.name) + 
   theme_bw() + 
-  theme(legend.position = "none")
+  theme(legend.position = "none") +
+  coord_sf(xlim = sf::st_bbox(tmp)[grepl("xm", names(sf::st_bbox(tmp)))],
+           ylim = sf::st_bbox(tmp)[grepl("ym", names(sf::st_bbox(tmp)))]) +
+  theme(axis.title = element_blank())
 ```
 
-![](README_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
+![New depth and latitude based strata system for NEA Greenland halibut made using the strataPolygons function. Subplots indicate latitude and depth based categorization along columns and rows, respectively.  Red polygons represent the strata. Numbers refer to IDs used in preceeding figures.](README_files/figure-html/unnamed-chunk-11-1.png)
 
-Now that we have the strata polygons, we can begin examining their area. Polygonization, required by many practical GIS approaches, is essentially making a model of the underlying raster data. Such modeling always introduces a bias. Whether the bias is large enough to matter depends on the specific problem. In our case, we have polygonized very thin contour lines (remember that our resolution is 0.25 nm along the latitude axis). The `RstoxUtils::strataArea` function estimates areas directly from the bathymetry grid without polygonization and is useful in assessing the magnitude of bias introduced by polygonization. This function, however, does not remove the small detached areas and holes. This leads to a higher areal estimate than polygonizing if the `drop.crumbs` argument is used and a lower areal estimate if `remove.holes` is used. 
+Now that we have the strata polygons, we can begin examining their area. Polygonization, required by many practical GIS approaches, is essentially making a model of the underlying raster data. Such modeling always introduces a bias. Whether the bias is large enough to matter depends on the specific problem. In our case, we have polygonized fairly steep continental slope using a 15-arcsecond bathymetry grid (remember that the resolution is approximately 0.25 nm along the latitude axis). The `RstoxUtils::strataArea` function estimates areas directly from the bathymetry grid without polygonization and is useful in assessing the magnitude of bias introduced by polygonization. Even though the function supports boundary polygons, it does not remove the small detached areas and holes. This leads to a higher areal estimate than polygonizing if the `drop.crumbs` argument is used and a lower areal estimate if `remove.holes` is used. 
 
 
 ```r
 rast.area <- strataArea(bathy = link, 
                         depths = depths.vec, 
-                        boundary = boundary.vec, 
+                        boundary = boundary.path, 
                         geostrata = geostrata.df)
 
 names(rast.area)[names(rast.area) == "area.nm2"] <- "rast.area"
@@ -373,7 +379,7 @@ cowplot::plot_grid(p1, p2, labels = "AUTO")
 
 ![](README_files/figure-html/unnamed-chunk-12-1.png)<!-- -->
 
-We notice that polygonizing makes a minimal difference except for strata ID 16, which is a 400-500m stratum along the Norwegian coast including a couple of fjords (mention which ones). The larger raster area is caused by the removal of these fjords in the polygonized version. The removal makes sense as the Greenland halibut survey does not cover these fjords and we conclude that the polygonized strata work well enough in this case. We can now make a similar comparison using the original strata areas and our newly calculated ones:
+We notice that polygonizing makes a minimal difference except for strata ID 16, which is a 400-500m stratum along the steepest part of the continental slope outside the North-Norwegian coast. This is an issue and arises from the resolution of our underlying bathymetry grid: the 400-500m contour is represented by single pixels in this region. These pixels get polygonized as separate polygons and consequently get removed by the `drop.crumbs` procedure. One can try to adjust the parameters more optimally or improve the `strataPolygon` function, but for now we will ignore this problem and continue comparing our polygonized strata with the original strata areas. 
 
 
 ```r
