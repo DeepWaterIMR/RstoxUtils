@@ -1,3 +1,10 @@
+---
+output: 
+  html_document: 
+    keep_md: yes
+editor_options: 
+  chunk_output_type: console
+---
 # RstoxUtils
 
 **Utility functions for the Stox Project. R package, updated 2019-12-18.**
@@ -258,7 +265,7 @@ strata.poly <- strataPolygon(bathy = link,
                              boundary = boundary.vec, 
                              geostrata = geostrata.df,
                              drop.crumbs = 100,
-                             remove.holes = 10
+                             remove.holes = 100
 )
 
 library(PlotSvalbard)
@@ -300,7 +307,7 @@ strata.poly <- strataPolygon(bathy = link,
                              boundary = boundary.path,
                              geostrata = geostrata.df,
                              drop.crumbs = 10,
-                             remove.holes = 10
+                             remove.holes = 100
 )
 
 ## Modify the strata polygons
@@ -411,7 +418,47 @@ STILL UNDER DEVELOPMENT.
 
 #### Export strata polygons to Rstox.
 
-Currently, Rstox requires strata for stock assessment in [Well Known Text (WKT)](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) format.
+Currently, Rstox requires strata for stock assessment in [Well Known Text (WKT)](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry) format. Writing to this format can be done using functions provided in the [FDAtools](https://github.com/Sea2Data/FDAtools/blob/master/stoxReca/stratafiles/stratafiles.R) package (another developmental) Stox project package:
+
+
+```r
+#' Writes sp::SpatialPolygonsDataFrame as Stox-WKT files (stratafiles)
+#' @param shape sp::SpatialPolygonsDataFrame stratadefinition to convert
+#' @param output filename to save output to
+#' @param namecol character string specifying the column in shape that contains strata names
+writeSpDataFrameAsWKT <- function(shape, output, namecol){
+  
+  if (file.exists(output)){
+    stop(paste("File", output, "exists already."))
+  }
+  
+  projection="+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +towgs84=0,0,0"
+  shp <- sp::spTransform(shape, sp::CRS(projection))
+  
+  f<-file(output, open="w")
+  
+  for (i in 1:nrow(shp)){
+    poly <- shp[i,]
+    write(paste(as.character(poly[[namecol]]), rgeos::writeWKT(poly, byid = F),sep="\t"), f)
+  }
+  close(f)
+  
+}
+
+#' Writes sp::SpatialPolygons as Stox-WKT files (stratafiles)
+#' @details 
+#'  strata names are assumed to be found in the ID slot of spatialPolygons
+#' @param shape sp::SpatialPolygonsDataFrame stratadefinition to convert
+#' @param output filename to save output to
+writeSpAsWKT <- function(shape, output){
+  stratanames <- sapply(methods::slot(shape, "polygons"), function(x) methods::slot(x, "ID"))
+  stratanames.df <- data.frame( ID=stratanames, row.names = stratanames)
+  areaPolygons <- sp::SpatialPolygonsDataFrame(shape, stratanames.df)
+  writeSpDataFrameAsWKT(areaPolygons, output, "ID")
+}
+
+writeSpDataFrameAsWKT(strata.poly, "Ghl strata.txt", "id")
+```
 
 ## Contributions and contact information
 
