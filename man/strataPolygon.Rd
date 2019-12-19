@@ -11,7 +11,6 @@ strataPolygon(
   geostrata = NULL,
   drop.crumbs = NULL,
   remove.holes = NULL,
-  validate.polygons = TRUE,
   use.python = FALSE
 )
 }
@@ -28,8 +27,6 @@ strataPolygon(
 
 \item{remove.holes}{Single numeric value specifying a threshold (area in km2) for holes which should be removed from the strata. Set to \code{NULL} to bypass the removal. Uses the \link[smoothr]{fill_holes} function. 
 A single logical argument or a logical vector as long as the number of rows in \code{geostrata} specifying whether holes in the strata polygons should be removed.}
-
-\item{validate.polygons}{A logical indicating whether the function should return valid geometries. This option might considerably change the output, but makes it compatible with GIS software.}
 
 \item{use.python}{Logical indicating whether the function should use gdal python script (\code{TRUE}; \code{gdal_polygonize.py}) or \code{\link[stars]{st_as_stars}} (\code{FALSE}) for polygonization of strata. The python script has a superior computing time, but requires QGIS 2.18 installed on the computer (earlier or later versions won't do).}
 }

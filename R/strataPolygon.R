@@ -7,7 +7,6 @@
 #' @param drop.crumbs Single numeric value specifying a threshold (area in km2) for disconnected polygons which should be removed from the strata. Set to \code{NULL} to bypass the removal. Uses the \link[smoothr]{drop_crumbs} function. 
 #' @param remove.holes Single numeric value specifying a threshold (area in km2) for holes which should be removed from the strata. Set to \code{NULL} to bypass the removal. Uses the \link[smoothr]{fill_holes} function. 
 #' A single logical argument or a logical vector as long as the number of rows in \code{geostrata} specifying whether holes in the strata polygons should be removed. 
-#' @param validate.polygons A logical indicating whether the function should return valid geometries. This option might considerably change the output, but makes it compatible with GIS software.
 #' @param use.python Logical indicating whether the function should use gdal python script (\code{TRUE}; \code{gdal_polygonize.py}) or \code{\link[stars]{st_as_stars}} (\code{FALSE}) for polygonization of strata. The python script has a superior computing time, but requires QGIS 2.18 installed on the computer (earlier or later versions won't do). 
 #' @details Uses \href{https://www.gebco.net/data_and_products/gridded_bathymetry_data/}{GEBCO} or \href{https://www.ngdc.noaa.gov/mgg/global/}{ETOPO1} bathymetry grids to define the depth strata. Download the desired grid from the links. The bathymetry grids must be in NetCDF format and defined using decimal degrees.
 #' @return \link[sp]{SpatialPolygonsDataFrame} containing the estimated strata and information for them including areas. The strata are returned as decimal degrees (WGS84).
@@ -28,8 +27,8 @@
 #' @export
 
 ## Developmental code
-# bathy = link; depths = depths.vec; boundary = boundary.path; geostrata = geostrata.df; drop.crumbs = 30; remove.holes = 10; validate.polygons = TRUE; use.python = FALSE
-strataPolygon <- function(bathy, depths, boundary, geostrata = NULL, drop.crumbs = NULL, remove.holes = NULL, validate.polygons = TRUE, use.python = FALSE) {
+# bathy = link; depths = depths.vec; boundary = boundary.vec; geostrata = geostrata.df; drop.crumbs = 30; remove.holes = 10; validate.polygons = TRUE; use.python = FALSE
+strataPolygon <- function(bathy, depths, boundary, geostrata = NULL, drop.crumbs = NULL, remove.holes = NULL, use.python = FALSE) {
   
   ## General checks ####
   
@@ -124,6 +123,14 @@ strataPolygon <- function(bathy, depths, boundary, geostrata = NULL, drop.crumbs
     # pol <- raster::rasterToPolygons(r) # This takes forever
   }
   
+  ### Validate the polygon
+  
+  if(!suppressMessages(suppressWarnings(rgeos::gIsValid(pol)))) {
+    pol <- suppressMessages(suppressWarnings(rgeos::gBuffer(pol, byid = TRUE, width = 0)))  
+    
+    if(!rgeos::gIsValid(pol)) stop("The initial geometry validation did not work. You are skrewed.")
+  }
+  
   ## Geostrata ####
   
   if(!is.null(geostrata)) {
@@ -145,10 +152,10 @@ strataPolygon <- function(bathy, depths, boundary, geostrata = NULL, drop.crumbs
         out <- smoothr::fill_holes(out, units::set_units(remove.holes, km^2)) # Alternative: spatialEco::remove.holes(out)
       }
       
-      if(validate.polygons & !suppressMessages(suppressWarnings(rgeos::gIsValid(out)))) {
+      if(!suppressMessages(suppressWarnings(rgeos::gIsValid(out)))) {
         out <- suppressMessages(suppressWarnings(rgeos::gBuffer(out, byid = TRUE, width = 0)))  
         
-        if(!rgeos::gIsValid(out)) stop("Geometry validation did not work for ADD")
+        if(!rgeos::gIsValid(out)) stop("The final geometry validation did not work. Adjust something.")
       }
       
       ## Combine polygons with same depth
@@ -183,10 +190,10 @@ strataPolygon <- function(bathy, depths, boundary, geostrata = NULL, drop.crumbs
       pol <- smoothr::fill_holes(pol, units::set_units(remove.holes, km^2)) # Alternative: spatialEco::remove.holes(out)
     }
     
-    if(validate.polygons & !suppressMessages(suppressWarnings(rgeos::gIsValid(pol)))) {
+    if(!suppressMessages(suppressWarnings(rgeos::gIsValid(pol)))) {
       pol <- suppressMessages(suppressWarnings(rgeos::gBuffer(pol, byid = TRUE, width = 0)))  
       
-      if(!rgeos::gIsValid(pol)) stop("Geometry validation did not work for ADD")
+      if(!rgeos::gIsValid(pol)) stop("The final geometry validation did not work. Adjust something.")
     }
     
     ## Combine polygons with same depth
