@@ -8,6 +8,7 @@
 #' @return Returns a data frame. The areas are expressed in square kilometers (km2) and nautical miles (nm2).
 #' @import sp
 #' @rawNamespace import(raster, except = shift)
+#' @importFrom rgdal readOGR
 #' @importFrom dplyr left_join
 #' @export
 

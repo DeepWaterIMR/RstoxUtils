@@ -7,7 +7,7 @@
 convertColumnTypes(df)
 }
 \arguments{
-\item{k}{a data.table}
+\item{df}{a data.table}
 }
 \value{
 Returns a data.table with corrected column types. Also corrects misinterpreted Norwegian letters and dates.

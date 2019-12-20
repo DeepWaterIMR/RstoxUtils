@@ -10,8 +10,7 @@ strataPolygon(
   boundary,
   geostrata = NULL,
   drop.crumbs = NULL,
-  remove.holes = NULL,
-  use.python = FALSE
+  remove.holes = NULL
 )
 }
 \arguments{
@@ -27,8 +26,6 @@ strataPolygon(
 
 \item{remove.holes}{Single numeric value specifying a threshold (area in km2) for holes which should be removed from the strata. Set to \code{NULL} to bypass the removal. Uses the \link[smoothr]{fill_holes} function. 
 A single logical argument or a logical vector as long as the number of rows in \code{geostrata} specifying whether holes in the strata polygons should be removed.}
-
-\item{use.python}{Logical indicating whether the function should use gdal python script (\code{TRUE}; \code{gdal_polygonize.py}) or \code{\link[stars]{st_as_stars}} (\code{FALSE}) for polygonization of strata. The python script has a superior computing time, but requires QGIS 2.18 installed on the computer (earlier or later versions won't do).}
 }
 \value{
 \link[sp]{SpatialPolygonsDataFrame} containing the estimated strata and information for them including areas. The strata are returned as decimal degrees (WGS84).
@@ -45,7 +42,6 @@ GEBCO Compilation Group (2019) GEBCO 2019 15-arcsecond grid (doi:10.5285/836f016
 ETOPO1 1 Arc-Minute Global Relief Model. \url{https://doi.org/10.7289/V5C8276M}.
 }
 \seealso{
-\code{\link{gdalPolygonizeR}} for the polygonization algorithm. 
 \code{\link{strataArea}} for calculating strata areas without polygonization.
 }
 \author{

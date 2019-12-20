@@ -1,6 +1,13 @@
+---
+output: 
+  html_document: 
+    keep_md: yes
+editor_options: 
+  chunk_output_type: console
+---
 # RstoxUtils
 
-**Utility functions for the Stox Project. R package, updated 2019-12-19.**
+**Utility functions for the Stox Project. R package, updated 2019-12-20.**
 
 This package contains utility functions for the Institute of Marine Research's (IMR) Stox Project. The package has two purposes: 1) To function as a showcase and developmental platform for functions that may be included in the future releases of the Stox Project. 2) To provide a collection of functions needed in the internal workflow of the Deep-sea species group at IMR.
 
@@ -32,27 +39,17 @@ The IMR database data are distributed as [.xml files of a certain structure](htt
 xml.example <- system.file("extdata", "example.xml", package = "RstoxUtils")
 
 standard.format <- RstoxData::readXmlFile(xml.example)
-```
 
-```
-## [1] "Try to use XML namespace"
-## Parsing XML: /Library/Frameworks/R.framework/Versions/3.6/Resources/library/RstoxUtils/extdata/example.xml
-## Root: missions
-## XML namespace: nmdbioticv3
-## Using XSD: nmdbioticv3.xsd
-```
-
-```r
 ## The data are as a list organized under multiple data.frames
 names(standard.format)
 ```
 
 ```
-##  [1] "agedetermination"               "catchsample"                   
-##  [3] "copepodedevstagefrequencytable" "fishstation"                   
-##  [5] "individual"                     "mission"                       
-##  [7] "missions"                       "prey"                          
-##  [9] "preylengthfrequencytable"       "tag"                           
+##  [1] "missions"                       "mission"                       
+##  [3] "fishstation"                    "catchsample"                   
+##  [5] "individual"                     "prey"                          
+##  [7] "agedetermination"               "preylengthfrequencytable"      
+##  [9] "copepodedevstagefrequencytable" "tag"                           
 ## [11] "metadata"
 ```
 
@@ -105,17 +102,7 @@ dim(standard.format$agedetermination)
 library(RstoxUtils)
 
 Utils.format <- RstoxUtils::processBioticFile(xml.example)
-```
 
-```
-## [1] "Try to use XML namespace"
-## Parsing XML: /Library/Frameworks/R.framework/Versions/3.6/Resources/library/RstoxUtils/extdata/example.xml
-## Root: missions
-## XML namespace: nmdbioticv3
-## Using XSD: nmdbioticv3.xsd
-```
-
-```r
 ## Station-based data can now be found from 1 data frame
 
 dim(Utils.format$stnall)

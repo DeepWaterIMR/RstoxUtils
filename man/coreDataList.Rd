@@ -13,7 +13,7 @@ coreDataList(type)
 Returns a character vector of core data types for a given data type.
 }
 \description{
-List of core data types used in \code{\link{processBioticFile}} and \code{\link{processBioticData}} functions
+List of core data types used in the \code{\link{processBioticFile}} function
 }
 \author{
 Mikko Vihtakari (Institute of Marine Research)

@@ -15,7 +15,7 @@
 \code{\link{print}} function for \code{\link[=processBioticFile]{bioticProcData}} objects
 }
 \seealso{
-\code{\link{processBioticFile}} \code{\link{processBioticData}}
+\code{\link{processBioticFile}} \code{\link{processBioticFiles}}
 }
 \author{
 Mikko Vihtakari

@@ -39,12 +39,12 @@ if(class(limits) == "SpatialPolygonsDataFrame" | class(limits) == "SpatialPolygo
   if(!is.numeric(limits)) stop("limits have to be numeric, SpatialPolygonsDataFrame or SpatialPolygons object")
   if(length(limits) == 1) {
     bd <- data.frame(lon = seq(-180, 180, by = 0.5), lat = limits)
-    bd <- transform_coord(bd, proj.out = x_proj)
-    ch <- chull(bd$lat.utm, bd$lon.utm)
+    bd <- transformCoord(bd, proj.out = x_proj)
+    ch <- grDevices::chull(bd$lat.utm, bd$lon.utm)
     coords <- as.matrix(bd[c(ch, ch[1]), 1:2])
     clip_boundary <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(coords)), ID = 1)))
 
-    if(!rgeos::gIsValid(clip_boundary)) stop("Invalid geomethry due to clip_shapefile. Add the buffering script.")
+    if(!rgeos::gIsValid(clip_boundary)) stop("Invalid geometry due to clipShapefile. Add the buffering script.")
 
     sp::proj4string(clip_boundary) <- x_proj
 

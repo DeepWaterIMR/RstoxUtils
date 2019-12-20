@@ -12,11 +12,12 @@ processBioticFiles(
   coreDataOnly = FALSE,
   returnOriginal = TRUE,
   dataTable = TRUE,
-  convertColumns = TRUE,
-  mcCores = 1L
+  convertColumns = TRUE
 )
 }
 \arguments{
+\item{files}{character string specifying the file path to the xml file. Accepts only one file at the time.}
+
 \item{lengthUnit}{character string specifying the unit for length output. Alternatives: "mm", "cm" or "m".}
 
 \item{weightUnit}{character string specifying the unit for weigth output. Alternatives: "g" or "kg".}
@@ -30,10 +31,6 @@ processBioticFiles(
 \item{dataTable}{logical indicating whether the output should be returned as \link[data.table]{data.table}s instead of \link{data.frame}s. Setting this to \code{TRUE} speeds up further calculations using the data (but requires the \link[data.table]{data.table} syntax).}
 
 \item{convertColumns}{logical indicating whether the column types should be converted. See \code{link{convertColumnTypes}}. Setting this to \code{FALSE} considerably speeds up the function.}
-
-\item{mcCores}{integer indicating the number of processors to use for the calculation. If not \code{1L}, swiches on the parallel processing capability (see \link[parallel]{mclapply}). Only for advanced users. Do not play with this argument unless you know what you are doing. Does not work under Windows (see the documention).}
-
-\item{file}{character string specifying the file path to the xml file. Accepts only one file at the time.}
 }
 \value{
 Returns a list of Biotic data with \code{$mission}, \code{$fishstation}, \code{$catchsample}, \code{$individual} and \code{$agedetermination} data frames. The \code{$stnall} and \code{$indall} data frames are merged from \code{$fishstation} and \code{$catchsample} (former) and  \code{$fishstation}, \code{$catchsample}, \code{$individual} and \code{$agedetermination} (latter).

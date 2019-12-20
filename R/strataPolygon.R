@@ -7,30 +7,32 @@
 #' @param drop.crumbs Single numeric value specifying a threshold (area in km2) for disconnected polygons which should be removed from the strata. Set to \code{NULL} to bypass the removal. Uses the \link[smoothr]{drop_crumbs} function. 
 #' @param remove.holes Single numeric value specifying a threshold (area in km2) for holes which should be removed from the strata. Set to \code{NULL} to bypass the removal. Uses the \link[smoothr]{fill_holes} function. 
 #' A single logical argument or a logical vector as long as the number of rows in \code{geostrata} specifying whether holes in the strata polygons should be removed. 
-#' @param use.python Logical indicating whether the function should use gdal python script (\code{TRUE}; \code{gdal_polygonize.py}) or \code{\link[stars]{st_as_stars}} (\code{FALSE}) for polygonization of strata. The python script has a superior computing time, but requires QGIS 2.18 installed on the computer (earlier or later versions won't do). 
 #' @details Uses \href{https://www.gebco.net/data_and_products/gridded_bathymetry_data/}{GEBCO} or \href{https://www.ngdc.noaa.gov/mgg/global/}{ETOPO1} bathymetry grids to define the depth strata. Download the desired grid from the links. The bathymetry grids must be in NetCDF format and defined using decimal degrees.
 #' @return \link[sp]{SpatialPolygonsDataFrame} containing the estimated strata and information for them including areas. The strata are returned as decimal degrees (WGS84).
 #' @references GEBCO Compilation Group (2019) GEBCO 2019 15-arcsecond grid (doi:10.5285/836f016a-33be-6ddc-e053-6c86abc0788e). URL: \url{https://www.gebco.net/data_and_products/gridded_bathymetry_data/gebco_2019/gebco_2019_info.html}.
 #' 
 #' ETOPO1 1 Arc-Minute Global Relief Model. \url{https://doi.org/10.7289/V5C8276M}.
 #' @import sp rgeos
+#' @importFrom rgdal readOGR
 #' @rawNamespace import(raster, except = shift)
-#' @importFrom spatialEco remove.holes
 #' @importFrom smoothr drop_crumbs
 #' @importFrom dplyr left_join
 #' @importFrom units set_units
 #' @importFrom sf as_Spatial st_as_sf
 #' @importFrom stars st_as_stars
 #' @author Mikko Vihtakari
-#' @seealso \code{\link{gdalPolygonizeR}} for the polygonization algorithm. 
-#' \code{\link{strataArea}} for calculating strata areas without polygonization. 
+#' @seealso \code{\link{strataArea}} for calculating strata areas without polygonization. 
 #' @export
 
 ## Developmental code
 # bathy = link; depths = depths.vec; boundary = boundary.vec; geostrata = geostrata.df; drop.crumbs = 30; remove.holes = 10; validate.polygons = TRUE; use.python = FALSE
-strataPolygon <- function(bathy, depths, boundary, geostrata = NULL, drop.crumbs = NULL, remove.holes = NULL, use.python = FALSE) {
+strataPolygon <- function(bathy, depths, boundary, geostrata = NULL, drop.crumbs = NULL, remove.holes = NULL) {
   
   ## General checks ####
+  
+  ### Bathy argument 
+  
+  if(!file.exists(bathy)) stop("Bathy raster files. Check the path in the bathy argument.")
   
   ### The depths argument
   
@@ -110,18 +112,7 @@ strataPolygon <- function(bathy, depths, boundary, geostrata = NULL, drop.crumbs
   
   ## Polygonization ####
   
-  if(use.python) {
-    
-    pol <- gdalPolygonizeR(r) 
-    
-  } else {
-    
-    # require(stars)
-    
     pol <- sf::as_Spatial(sf::st_as_sf(stars::st_as_stars(r), as_points = FALSE, merge = TRUE))
-    
-    # pol <- raster::rasterToPolygons(r) # This takes forever
-  }
   
   ### Validate the polygon
   
@@ -145,11 +136,11 @@ strataPolygon <- function(bathy, depths, boundary, geostrata = NULL, drop.crumbs
       out <- suppressMessages(suppressWarnings(clipShapefile(pol, limits = tmp)))
       
       if(!is.null(drop.crumbs)) {
-        out <- suppressWarnings(suppressMessages(smoothr::drop_crumbs(out, units::set_units(drop.crumbs, km^2))))
+        out <- suppressWarnings(suppressMessages(smoothr::drop_crumbs(out, units::set_units(drop.crumbs, "km^2", mode = "standard"))))
       }
       
       if(!is.null(remove.holes)) {
-        out <- smoothr::fill_holes(out, units::set_units(remove.holes, km^2)) # Alternative: spatialEco::remove.holes(out)
+        out <- smoothr::fill_holes(out, units::set_units(remove.holes, "km^2", mode = "standard")) # Alternative: spatialEco::remove.holes(out)
       }
       
       if(!suppressMessages(suppressWarnings(rgeos::gIsValid(out)))) {
@@ -183,11 +174,11 @@ strataPolygon <- function(bathy, depths, boundary, geostrata = NULL, drop.crumbs
   } else {
     
     if(!is.null(drop.crumbs)) {
-      pol <- suppressWarnings(suppressMessages(smoothr::drop_crumbs(pol, units::set_units(drop.crumbs, km^2))))
+      pol <- suppressWarnings(suppressMessages(smoothr::drop_crumbs(pol, units::set_units(drop.crumbs, "km^2", mode = "standard"))))
     }
     
     if(!is.null(remove.holes)) {
-      pol <- smoothr::fill_holes(pol, units::set_units(remove.holes, km^2)) # Alternative: spatialEco::remove.holes(out)
+      pol <- smoothr::fill_holes(pol, units::set_units(remove.holes, "km^2", mode = "standard")) # Alternative: spatialEco::remove.holes(out)
     }
     
     if(!suppressMessages(suppressWarnings(rgeos::gIsValid(pol)))) {

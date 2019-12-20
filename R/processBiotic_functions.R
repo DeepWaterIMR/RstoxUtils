@@ -15,9 +15,6 @@
 #' @export
 
 # Debugging parameters
-# file = "/Users/mvi023/Dropbox/Workstuff/Meetings/2019 Data Limited SA course/Vassild SA/Data/biotic_year_1994_species_162064.xml"
-# lengthUnit = "cm"; weightUnit = "g"; removeEmpty = FALSE; coreDataOnly = TRUE; returnOriginal = TRUE; convertColumns = FALSE; missionidPrefix = NULL
-# file = "C:\\Users\\a22357\\Dropbox\\Workstuff\\Meetings\\2019 Data Limited SA course\\Vassild SA\\Data\\biotic_year_1989_species_162064.xml"
 # lengthUnit = "m"; weightUnit = "g"; removeEmpty = FALSE; coreDataOnly = TRUE; returnOriginal = TRUE; dataTable = TRUE; convertColumns = FALSE; missionidPrefix = NULL
 processBioticFile <- function(file, lengthUnit = "cm", weightUnit = "g", removeEmpty = TRUE, coreDataOnly = FALSE, returnOriginal = TRUE, dataTable = TRUE, convertColumns = TRUE, missionidPrefix = NULL) {
   
@@ -197,7 +194,7 @@ processBioticFile <- function(file, lengthUnit = "cm", weightUnit = "g", removeE
 
 #' @title Read and process NMD Biotic xml files for further use in the BioticExplorer
 #' @description A wrapper for \code{\link{processBioticFile}} allowing processing multiple files simultaneously
-#' @param file character string specifying the file path to the xml file. Accepts only one file at the time.
+#' @param files character string specifying the file path to the xml file. Accepts only one file at the time.
 #' @param lengthUnit character string specifying the unit for length output. Alternatives: "mm", "cm" or "m".
 #' @param weightUnit character string specifying the unit for weigth output. Alternatives: "g" or "kg". 
 #' @param removeEmpty logical indicating whether empty columns should be removed from output. This option also influences "coreData" columns.
@@ -205,7 +202,6 @@ processBioticFile <- function(file, lengthUnit = "cm", weightUnit = "g", removeE
 #' @param returnOriginal logical indicating whether the original data (\code{$mission} through \code{$agedetermination}) should be returned together with combined data.
 #' @param dataTable logical indicating whether the output should be returned as \link[data.table]{data.table}s instead of \link{data.frame}s. Setting this to \code{TRUE} speeds up further calculations using the data (but requires the \link[data.table]{data.table} syntax).
 #' @param convertColumns logical indicating whether the column types should be converted. See \code{link{convertColumnTypes}}. Setting this to \code{FALSE} considerably speeds up the function.
-#' @param mcCores integer indicating the number of processors to use for the calculation. If not \code{1L}, swiches on the parallel processing capability (see \link[parallel]{mclapply}). Only for advanced users. Do not play with this argument unless you know what you are doing. Does not work under Windows (see the documention).
 #' @return Returns a list of Biotic data with \code{$mission}, \code{$fishstation}, \code{$catchsample}, \code{$individual} and \code{$agedetermination} data frames. The \code{$stnall} and \code{$indall} data frames are merged from \code{$fishstation} and \code{$catchsample} (former) and  \code{$fishstation}, \code{$catchsample}, \code{$individual} and \code{$agedetermination} (latter). 
 #' @author Mikko Vihtakari (Institute of Marine Research) 
 #' @import RstoxData data.table parallel
@@ -214,42 +210,13 @@ processBioticFile <- function(file, lengthUnit = "cm", weightUnit = "g", removeE
 # Debugging parameters
 # files = c("/Users/mvi023/Desktop/biotic_year_1982_species_172930.xml", "/Users/mvi023/Desktop/biotic_year_2016_species_172930.xml")
 # lengthUnit = "cm"; weightUnit = "g"; removeEmpty = FALSE; coreDataOnly = TRUE; returnOriginal = TRUE; convertColumns = FALSE; mcCores = 1L
-processBioticFiles <- function(files, lengthUnit = "cm", weightUnit = "g", removeEmpty = TRUE, coreDataOnly = FALSE, returnOriginal = TRUE, dataTable = TRUE, convertColumns = TRUE, mcCores = 1L) {
+processBioticFiles <- function(files, lengthUnit = "cm", weightUnit = "g", removeEmpty = TRUE, coreDataOnly = FALSE, returnOriginal = TRUE, dataTable = TRUE, convertColumns = TRUE) {
   
   ## Conditions if attempting to use parallel processing
   
-  if(mcCores != 1L) {
-    if(!is.integer(mcCores)) stop("mcCores has to be an integer")
-    if(mcCores < 1L) stop("mcCores has to be 1 or higher")
-    
-    if(Sys.info()["sysname"] == "Windows") {
-      message("You are working under Windows. Parallel processing in R does not function under the OS. Never mind, mcCores has been set to 1L. Keep on going.")
-      parPros <- FALSE
-    } else {
-      parPros <- TRUE
-    }
-  } else {
-    parPros <- FALSE
-  }
-  
-  if(parPros & !"pbmcapply" %in% installed.packages()[,"Package"]) {
-    message("Installing pbmcapply package. This package is used to show procress bar under parallel processing.")
-    install.packages("pbmcapply")
-  }
-  
-  if(parPros) {
-    require(pbmcapply)
-  }
-  
   # Read xml files
   
-  if(parPros) {
-    
-    out <- pbmcapply::pbmclapply(seq_along(files), function(i, lengthUnit. = lengthUnit, weightUnit. = weightUnit, coreDataOnly. = coreDataOnly, returnOriginal. = returnOriginal) {
-      processBioticFile(files[i], lengthUnit = lengthUnit., weightUnit = weightUnit., removeEmpty = FALSE, coreDataOnly = coreDataOnly., returnOriginal = returnOriginal., dataTable = TRUE, convertColumns = FALSE, missionidPrefix = i)
-    }, mc.cores = mcCores)
-    
-  } else {
+  
     
     # Debug parameters: lengthUnit. = lengthUnit; weightUnit. = weightUnit; coreDataOnly. = coreDataOnly; returnOriginal. = returnOriginal
     out <- lapply(seq_along(files), function(i, lengthUnit. = lengthUnit, weightUnit. = weightUnit, coreDataOnly. = coreDataOnly, returnOriginal. = returnOriginal) {
@@ -258,7 +225,7 @@ processBioticFiles <- function(files, lengthUnit = "cm", weightUnit = "g", remov
       processBioticFile(files[i], lengthUnit = lengthUnit., weightUnit = weightUnit., removeEmpty = FALSE, coreDataOnly = coreDataOnly., returnOriginal = returnOriginal., dataTable = TRUE, convertColumns = FALSE, missionidPrefix = i)
     })
     
-  }
+  
   
   # Combine
   
@@ -268,15 +235,9 @@ processBioticFiles <- function(files, lengthUnit = "cm", weightUnit = "g", remov
   
   if (convertColumns) {
     
-    if(parPros) {
-      out <- pbmcapply::pbmclapply(out, function(k) {
-        convertColumnTypes(k)
-      })
-    } else {
       out <- lapply(out, function(k) {
         convertColumnTypes(k)
       })
-    }
     
   }
   
@@ -298,7 +259,6 @@ processBioticFiles <- function(files, lengthUnit = "cm", weightUnit = "g", remov
     }
   } else if (removeEmpty) {
     
-    if(parPros) {
       
       out <- lapply(out, function(k) {
         if (is.null(k)) {
@@ -308,17 +268,7 @@ processBioticFiles <- function(files, lengthUnit = "cm", weightUnit = "g", remov
         }
       })
       
-    } else {
-      
-      out <- lapply(out, function(k) {
-        if (is.null(k)) {
-          NULL
-        } else {
-          k[, which(unlist(lapply(k, function(x) !all(is.na(x))))), with = FALSE]
-        }
-      })
-      
-    }
+    
   }
   
   # Define class
@@ -334,7 +284,7 @@ processBioticFiles <- function(files, lengthUnit = "cm", weightUnit = "g", remov
 ## Core data columns list ----
 
 #' @title List of core data columns by data type in NMD Biotic data
-#' @description List of core data types used in \code{\link{processBioticFile}} and \code{\link{processBioticData}} functions
+#' @description List of core data types used in the \code{\link{processBioticFile}} function
 #' @param type character string specifying the data type. Alternatives: "mission", "fishstation", "individual", "catchsample", or "agedetermination".
 #' @return Returns a character vector of core data types for a given data type.
 #' @author Mikko Vihtakari (Institute of Marine Research)
@@ -355,7 +305,7 @@ coreDataList <- function(type) {
 
 #' @title Converts column types in a data frame to (hopefully) correct types
 #' @description Converts column types in a data frame to (hopefully) correct types
-#' @param k a data.table
+#' @param df a data.table
 #' @return Returns a data.table with corrected column types. Also corrects misinterpreted Norwegian letters and dates.
 #' @import data.table
 #' @author Mikko Vihtakari (Institute of Marine Research)
@@ -374,8 +324,8 @@ convertColumnTypes <- function(df) {
     } else if (all(!unlist(tryCatchWE(as.Date(k))))) { # k is a date
       as.Date(k)
     } else if (tryCatchWE(as.numeric(k))$warning) { # k is a character
-      trimws(correctNorwegianLetters(k))
-    } else if (all(na.omit(as.numeric(k) == as.integer(k)))) { # k is an integer
+      trimws(k)
+    } else if (all(stats::na.omit(as.numeric(k) == as.integer(k)))) { # k is an integer
       as.integer(k)
     } else if (all(!unlist(tryCatchWE(as.numeric(k))))) { # k is numeric
       as.numeric(k)
@@ -414,37 +364,6 @@ tryCatchWE <- function(expr) {
   
 }
 
-## Correct Norwegian letters ----
-
-#' @title Replace misinterpreted Norwegian letters by correct ones
-#' @description Replaces various misinterpretations of å, æ, and ø by the correct letters
-#' @param x character vector
-#' @return Returns a character vector with corrected letters
-#' @author Mikko Vihtakari (Institute of Marine Research) 
-#' @export
-
-correctNorwegianLetters <- function(x) {
-  
-  if(!any(class(x) %in% c("factor", "character"))) stop("x has to be factor or character")
-  
-  if(class(x) == "factor") {
-    FAC <- TRUE
-    levs <- levels(x)
-    x <- as.character(x)
-  } else {
-    FAC  <- FALSE
-  }
-  
-  x <- gsub("Ã¦", "æ", gsub("Ã¥|\xe5", "å", gsub("Ã¸|xe6|\xf8", "ø", gsub("\xed", "i", gsub("\xc5", "Å", gsub("\xd8", "Ø", x))))))
-  x[x == ""] <- NA
-  
-  if(FAC) {
-    levs <- gsub("Ã¦", "æ", gsub("Ã¥|\xe5", "å", gsub("Ã¸|xe6|\xf8", "ø", gsub("\xed", "i", gsub("\xc5", "Å", gsub("\xd8", "Ø", levs))))))
-    factor(x, levels = levs)
-  } else {
-    x
-  }
-}
 
 # Print method for bioticProcData ----
 
@@ -454,7 +373,7 @@ correctNorwegianLetters <- function(x) {
 #' @param ... further arguments passed to \code{\link{print}}.
 #' @method print bioticProcData
 #' @author Mikko Vihtakari
-#' @seealso \code{\link{processBioticFile}} \code{\link{processBioticData}}
+#' @seealso \code{\link{processBioticFile}} \code{\link{processBioticFiles}}
 #' @export
 
 print.bioticProcData <- function(x, ...) {
