@@ -20,6 +20,10 @@ strataArea <- function(bathy, depths, boundary, geostrata = NULL) {
 
   ## General checks ####
   
+  ### Bathy argument 
+  
+  if(!file.exists(bathy)) stop("Bathy raster file not found. Check the path in the bathy argument.")
+  
   ### The depths argument
   
   if(!(is.vector(depths) & class(depths) %in% c("numeric", "integer"))) {

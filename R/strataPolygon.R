@@ -32,7 +32,7 @@ strataPolygon <- function(bathy, depths, boundary, geostrata = NULL, drop.crumbs
   
   ### Bathy argument 
   
-  if(!file.exists(bathy)) stop("Bathy raster files. Check the path in the bathy argument.")
+  if(!file.exists(bathy)) stop("Bathy raster file not found. Check the path in the bathy argument.")
   
   ### The depths argument
   
