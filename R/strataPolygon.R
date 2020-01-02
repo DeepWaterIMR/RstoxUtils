@@ -100,11 +100,17 @@ strataPolygon <- function(bathy, depths, boundary, geostrata = NULL, drop.crumbs
   depths <- c(-Inf, depths, Inf)
   
   cut_int <- paste(abs(depths[-1]), abs(depths[-length(depths)]), sep = "-")
+  
   cut_df <- data.frame(from = depths[-length(depths)], 
                        to = depths[-1], 
-                       average = sapply(strsplit(cut_int, "-"), function(k) mean(as.numeric(k))),
-                       interval = cut_int, 
                        stringsAsFactors = FALSE)
+  
+  cut_df$average <- sapply(1:nrow(cut_df), function(i) {
+    tmp <- cut_df[i,]
+    ifelse(tmp$from == -Inf, abs(tmp$to), ifelse(tmp$to == Inf, 0, mean(c(abs(tmp$to), abs(tmp$from)))))
+  })
+  
+  cut_df$interval <- cut_int
   
   cut_matrix <- as.matrix(cut_df[-ncol(cut_df)])
   
@@ -151,7 +157,7 @@ strataPolygon <- function(bathy, depths, boundary, geostrata = NULL, drop.crumbs
       
       ## Combine polygons with same depth
       
-      out <- aggregate(out, by = names(out@data[1]), dissolve = TRUE)
+      out <- raster::aggregate(out, by = names(out@data[1]), dissolve = TRUE)
       out <- out[order(out@data[1], decreasing = TRUE),]
       
       ## Add names to @data ###
