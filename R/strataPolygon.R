@@ -25,7 +25,7 @@
 #' @export
 
 ## Developmental code
-# bathy = link; depths = depths.vec; boundary = boundary.vec; geostrata = geostrata.df; drop.crumbs = 30; remove.holes = 10; validate.polygons = TRUE; use.python = FALSE
+# bathy = link; depths = depths.vec; boundary = boundary.vec; geostrata = geostrata.df; drop.crumbs = 30; remove.holes = 10
 strataPolygon <- function(bathy, depths, boundary, geostrata = NULL, drop.crumbs = NULL, remove.holes = NULL) {
   
   ## General checks ####
@@ -59,7 +59,7 @@ strataPolygon <- function(bathy, depths, boundary, geostrata = NULL, drop.crumbs
     } else if(!grepl("+proj=longlat", sp::proj4string(boundary))) {
       stop("boundary has to be defined as decimal degrees")
     }
-  
+    
   } else if(!(is.vector(boundary) & class(boundary) %in% c("numeric", "integer") & length(boundary) == 4)) {
     stop("The boundary parameter has to be a numeric/integer vector of length 4 giving the decimal degree longitude and latitude limits for the strata region OR a character argument giving the location of the shapefile polygon.")
   }
@@ -103,14 +103,9 @@ strataPolygon <- function(bathy, depths, boundary, geostrata = NULL, drop.crumbs
   
   cut_df <- data.frame(from = depths[-length(depths)], 
                        to = depths[-1], 
+                       average = sapply(strsplit(cut_int, "-"), function(k) mean(as.numeric(k))),
+                       interval = cut_int,
                        stringsAsFactors = FALSE)
-  
-  cut_df$average <- sapply(1:nrow(cut_df), function(i) {
-    tmp <- cut_df[i,]
-    ifelse(tmp$from == -Inf, abs(tmp$to), ifelse(tmp$to == Inf, 0, mean(c(abs(tmp$to), abs(tmp$from)))))
-  })
-  
-  cut_df$interval <- cut_int
   
   cut_matrix <- as.matrix(cut_df[-ncol(cut_df)])
   
@@ -118,7 +113,7 @@ strataPolygon <- function(bathy, depths, boundary, geostrata = NULL, drop.crumbs
   
   ## Polygonization ####
   
-    pol <- sf::as_Spatial(sf::st_as_sf(stars::st_as_stars(r), as_points = FALSE, merge = TRUE))
+  pol <- sf::as_Spatial(sf::st_as_sf(stars::st_as_stars(r), as_points = FALSE, merge = TRUE))
   
   ### Validate the polygon
   
@@ -127,6 +122,11 @@ strataPolygon <- function(bathy, depths, boundary, geostrata = NULL, drop.crumbs
     
     if(!rgeos::gIsValid(pol)) stop("The initial geometry validation did not work. You are skrewed.")
   }
+  
+  ### Remove Inf
+  
+  pol <- pol[pol@data[[1]] != Inf,]
+  cut_df <- cut_df[cut_df$average != Inf,]
   
   ## Geostrata ####
   
@@ -175,7 +175,13 @@ strataPolygon <- function(bathy, depths, boundary, geostrata = NULL, drop.crumbs
       out
     })
     
-    pol <- do.call(raster::bind, out.pols)
+    
+    if(length(out.pols) == 1) {
+      pol <- out.pols[[1]]
+    } else {
+      pol <- do.call(raster::bind, out.pols)
+    }
+    
     
   } else {
     
