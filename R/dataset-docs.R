@@ -15,3 +15,12 @@
 #' @format A dataframe 
 #' @source Institute of Marine Research (\url{https://imr.no})
 "nea_ghl_original_strata"
+
+#' @title Gear list for Norwegian Fisheries Logbook data
+#' @docType data
+#' @keywords datasets
+#' @name gearList
+#' @usage data(gearList)
+#' @format A data table 
+#' @source Institute of Marine Research (\url{https://imr.no})
+"gearList"

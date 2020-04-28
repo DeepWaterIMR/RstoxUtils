@@ -4,7 +4,9 @@
 \name{nea_ghl_original_strata}
 \alias{nea_ghl_original_strata}
 \title{North East Atlantic Greenland original strata areas}
-\format{A dataframe}
+\format{
+A dataframe
+}
 \source{
 Institute of Marine Research (\url{https://imr.no})
 }
