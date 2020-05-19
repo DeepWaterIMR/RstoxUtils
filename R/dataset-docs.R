@@ -16,11 +16,11 @@
 #' @source Institute of Marine Research (\url{https://imr.no})
 "nea_ghl_original_strata"
 
-#' @title Gear list for Norwegian Fisheries Logbook data
+#' @title List of Norwegian Directorate of Fisheries lobbook codes
 #' @docType data
 #' @keywords datasets
-#' @name gearList
-#' @usage data(gearList)
-#' @format A data table 
-#' @source Institute of Marine Research (\url{https://imr.no})
-"gearList"
+#' @name FDIRcodes
+#' @usage data(FDIRcodes)
+#' @format A list of data tables
+#' @source Norwegian Directorate of Fisheries (\url{https://www.fiskeridir.no/English})
+"FDIRcodes"

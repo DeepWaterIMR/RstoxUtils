@@ -4,7 +4,14 @@
 \alias{extractLogbook}
 \title{Extract information from detailed Norwegian fisheries logbooks}
 \usage{
-extractLogbook(path, species, method = "start", remove.sensitive = TRUE)
+extractLogbook(
+  path,
+  species,
+  method = "start",
+  language = "norwegian",
+  subspecies = FALSE,
+  remove.sensitive = TRUE
+)
 }
 \arguments{
 \item{path}{Character argument defining the path to the folder where data are located}
@@ -13,10 +20,31 @@ extractLogbook(path, species, method = "start", remove.sensitive = TRUE)
 
 \item{method}{Character argument specifying the method for position, time and depth extraction. Alternatives: \code{"start"} takes the reported start values, \code{"end"} extracts the reported end values and \code{"average"} takes an average of start and end values.}
 
+\item{language}{Character argument in lower case specifying the language of species names in the returned data table. Alternatives: \code{"norwegian"}, \code{"english"}, or \code{"latin"}, The species names are acquired from \code{\link{FDIRcodes}$speciesCodes}.}
+
+\item{subspecies}{Logical. Should NS codes (i.e. species sub-categories) be used to translate species names?}
+
 \item{remove.sensitive}{Logical indicating whether the function should remove sensitive data fields.}
 }
 \value{
-A data.table containing the desired information.
+A data.table containing following columns:
+\itemize{
+\item \code{"year"} year of the fishing event.
+\item \code{"month"} month of the fishing event.
+\item \code{"lon"} longitude coordinate for the fishing event in decimal degrees acquired based on the \code{method} argument.
+\item \code{"lat"} latitude coordinate for the fishing event in decimal degrees acquired based on the \code{method} argument.
+\item \code{"gearId"} reported gear ID (REDSKAP_NS) in the .psv files
+\item \code{"gear"} gear name translated from \code{gearId} based on \code{\link{FDIRcodes}$gearCodes}.
+\item \code{"gearCat"} gear category translated from \code{gearId} based on \code{\link{FDIRcodes}$gearCodes}.
+\item \code{"fishTime"} reported fishing time.
+\item \code{"effort"} reported fishing effort (number of hooks etc.)
+\item \code{"dist"} reported fishing distance in meters. 
+\item \code{"depth"} reported fishing depth in meters acquired based on the \code{method} argument.
+\item \code{"targetSpFAO"} target species based on the FAO definition: the species with highest mass in catch.
+\item \code{"targetSpRep"} target species reported by the fishermen. 
+\item \code{"species"} reported catch species based on the \code{species}, \code{language} and \code{subspecies} arguments. Translated from the species ID (FANGSTART_NS or FANGSTART_FAO) based on \code{\link{FDIRcodes}$speciesCodes}.
+\item \code{"mass"} reported catch of the \code{species} in kilograms. 
+}
 }
 \description{
 Extracts information from detailed Norwegian fisheries logbook files
@@ -26,7 +54,7 @@ This function extracts information from the Norwegian fisheries logbooks provide
 
 Note that the structure of logbook files is not confidential and therefore this function can be distributed freely. The data required by the function cannot (do not send those data on email).
 
-The mess with species names may be solved in the future. For now, you just have to know what a species you are interested in is called in these data.
+There are many duplicate records in the logbook files on the server. This function removes these duplicates automatically, but the process takes time and is not very controlled. If you want to be sure about the data you include, copy the desired files to another folder (in a safe place) and run the function for that folder.
 }
 \author{
 Mikko Vihtakari (Institute of Marine Research)

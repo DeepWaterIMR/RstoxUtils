@@ -84,48 +84,7 @@ quiet <- function(x) {
   invisible(force(x))
 }
 
-#' @title Convert ASCII letters to Norwegian letters in psv files
-#' @description Convert ASCII letters to Norwegian letters in psv files
-#' @param x vector
-#' @keywords internal
-#' @author Mikko Vihtakari (Institute of Marine Research)
-#' @export
-
-ascii_to_nor <- function(x) {
-  
-  if(!any(class(x) %in% c("factor", "character"))) stop("x has to be factor or character")
-  
-  if(class(x) == "factor") {
-    FAC <- TRUE
-    levs <- levels(x)
-    x <- as.character(x)
-  } else {
-    FAC  <- FALSE
-  }
-  
-  x <- gsub("\xed", "i", gsub("\xc5", "Å", gsub("\xd8", "Ø", gsub("\xe6", "ø", gsub("\xe5", "å", gsub("\xf8", "ø", x))))))
-  x[x == ""] <- NA
-  
-  if(FAC) {
-    levs <- gsub("\xc5", "Å", gsub("\xd8", "Ø", gsub("\xe6", "ø", gsub("\xe5", "å", gsub("\xf8", "ø", levs)))))
-    factor(x, levels = levs)
-  } else {
-    x
-  }
-}
-
-#' @title Convert Norwegian letters to ASCII equivalents
-#' @description Convert Norwegian letters to ASCII letters
-#' @param x vector
-#' @keywords internal
-#' @author Mikko Vihtakari (Institute of Marine Research)
-#' @export
-
-nor_to_ascii <- function(x) {
-  gsub("Å", "\xc5", fixed = TRUE, gsub("Ø", "\xd8", fixed = TRUE, gsub("ø", "\xf8", fixed = TRUE, gsub("å", "\xe5", x, fixed = TRUE))))
-}
-
 ## Define global variables
 
-utils::globalVariables(c(".", "FANGSTART", "date_end", "date_start", "depth", "depth_end", "depth_start", "gear", "gear_category", "gear_id", "gear_name", "individualweight", "lat", "lat_end", "lat_start", "lon", "lon_end", "lon_start", "mass", "stationstartdate", "stationstarttime", "stationstopdate", "stationstoptime"))
+utils::globalVariables(c(".", "FANGSTART_NS", "FANGSTART_FAO", "dateEnd", "dateStart", "depth", "depthEnd", "depthStart", "gear", "gearCat", "gearId", "gearName", "idFAO", "individualweight", "lat", "latEnd", "latStart", "lon", "lonEnd", "lonStart", "mass", "stationstartdate", "stationstarttime", "stationstopdate", "stationstoptime", "gearCategory", "FDIRcodes"))
 

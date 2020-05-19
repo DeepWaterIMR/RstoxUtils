@@ -5,8 +5,18 @@ output:
 editor_options: 
   chunk_output_type: console
 ---
-# RstoxUtils
 
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  message = FALSE, 
+  warning = FALSE,
+  comment = "#>"
+  #, fig.path = "man/figures/README-"
+)
+```
+
+# RstoxUtils
 **Utility functions for the Stox Project. R package, updated `r packageDate("RstoxUtils")`.**
 
 This package contains utility functions for the Institute of Marine Research's (IMR) Stox Project. The package has two purposes: 1) To function as a showcase and developmental platform for functions that may be included in the future releases of the Stox Project. 2) To provide a collection of functions needed in the internal workflow of the Deep-sea species group at IMR.
@@ -22,7 +32,6 @@ devtools::install_github("MikkoVihtakari/RstoxUtils", upgrade = "never")
 The **RstoxUtils** uses multiple GIS packages developed for R. You may have to update these (Packages -> Update -> Select all -> Install updates in R Studio). 
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-knitr::opts_chunk$set(fig.width=15, fig.height=8)
 library(kableExtra)
 library(knitr)
 ```
@@ -339,9 +348,49 @@ writeSpAsWKT <- function(shape, output){
 writeSpDataFrameAsWKT(strata.poly, "Ghl strata.txt", "id")
 ```
 
+## 3. Read electronic logbook data
+
+The detailed electronic logbook data can be read using the `extractLogbook()` function. These data are confidential and require a special access to the folder on the server where they are located. If you need such access (and work at IMR), take contact with the data people at your group. Those who have the access, know where the data are located. The `path` argument should point to the folder *elFangstdagbok_detaljert* on the server. The path can be defined on Mac (and Linux) as follows:
+
+```{r eval = FALSE}
+path = "/Volumes/.../elFangstdagbok_detaljert"
+```
+
+For Windows, figure out and please let me know. 
+
+The function filters species out of these data based on codes listed in the table under. For example, all Atlantic halibut can be extracted as follows:
+
+```{r eval = FALSE}
+extractLogbook(path, species = "HAL")
+```
+
+Or as:
+
+```{r eval = FALSE}
+extractLogbook(path, species = 2311) # Excluding farmed fish
+```
+
+The species name will be returned in Norwegian, English or Latin depending on the `language` argument.
+
+```{r, echo = FALSE}
+kable(FDIRcodes$speciesCodes, caption = "List of Directorate of Fisheries species codes. Use idNS or idFAO codes as species argument in the extractLogbook function.") %>%
+  kable_styling(bootstrap_options = c("striped", "condensed"))
+```
+
+Gear names are translated based on the table under:
+
+```{r, echo = FALSE}
+kable(FDIRcodes$gearCodes, caption = "List of Directorate of Fisheries gear codes. The codes are automatically returned by the extractLogbook function replacing any manually reported gear information (REDSKAP column)") %>%
+  kable_styling(bootstrap_options = c("striped", "condensed"))
+```
+
+The codes have been extracted from the [Norwegian Directorate of Fisheries website](https://www.fiskeridir.no/Yrkesfiske/Rapportering-ved-landing/Kodeliste).
+
 ## Contributions and contact information
 
 Any contributions to the package are more than welcome. Please contact the package creator Mikko Vihtakari (<mikko.vihtakari@hi.no>) to discuss your ideas on improving the package or place a request in the issues section. 
 
 ## News
+
+2020-05-19 Added logbook data extraction.
 2019-12-16 The first version of the package online. Bugged as life, but available. Please excuse me for not having double-checked all references to other people's work. The references will come in future releases. 
