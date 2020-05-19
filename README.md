@@ -1,13 +1,3 @@
----
-output: 
-  html_document: 
-    keep_md: yes
-editor_options: 
-  chunk_output_type: console
----
-
-
-
 # RstoxUtils
 **Utility functions for the Stox Project. R package, updated 2020-05-19.**
 
