@@ -350,15 +350,9 @@ writeSpDataFrameAsWKT(strata.poly, "Ghl strata.txt", "id")
 
 ## 3. Read electronic logbook data
 
-The detailed electronic logbook data can be read using the `extractLogbook()` function. These data are confidential and require a special access to the folder on the server where they are located. If you need such access (and work at IMR), take contact with the data people at your group. Those who have the access, know where the data are located. The `path` argument should point to the folder *elFangstdagbok_detaljert* on the server. The path can be defined on Mac (and Linux) as follows:
+The detailed electronic logbook data can be read using the `extractLogbook()` function. These data are confidential and require a special access to the folder on the server where they are located. If you need such access (and work at IMR), take contact with the data people at your group. Those who have the access, know where the data are located. The `path` argument should point to the folder of interest on the server (*elFangstdagbok_detaljert* for all data). The path can be defined on Mac (and Linux) as `path = "/Volumes/.../elFangstdagbok_detaljert"` and as `path = Q:/.../elFangstdagbok_detaljert` on Windows, where `...` represents the entire folder path that cannot be shown here. You can copy the folder location as path to your clip-board and past it the `extractLogbook()` function. Remember to use quotes (i.e. `" "`).
 
-```{r eval = FALSE}
-path = "/Volumes/.../elFangstdagbok_detaljert"
-```
-
-For Windows, figure out and please let me know. 
-
-The function filters species out of these data based on codes listed in the table under. For example, all Atlantic halibut can be extracted as follows:
+The function is slow especially in Tromsø (prepare for 30 min to 1 h). It filters species out of the logbook data based on codes listed in the table under. For example, all Atlantic halibut can be extracted as follows:
 
 ```{r eval = FALSE}
 extractLogbook(path, species = "HAL")
@@ -393,4 +387,5 @@ Any contributions to the package are more than welcome. Please contact the packa
 ## News
 
 2020-05-19 Added logbook data extraction.
+
 2019-12-16 The first version of the package online. Bugged as life, but available. Please excuse me for not having double-checked all references to other people's work. The references will come in future releases. 
