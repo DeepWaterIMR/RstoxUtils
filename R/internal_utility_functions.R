@@ -61,16 +61,6 @@ pretty_log <- function(x, f = round) {
 }
 
 
-#' @title Convert direct UTM distances to kilometers
-#' @description Divides \code{x} by 1000 (i.e from meters to kilometers, since polar stereographic are meters from the North Pole). Used for ggplot2 labels.
-#' @param x numeric to be converted
-#' @keywords internal
-#' @export
-#'
-formatterUTMkm <- function(x){
-    x/1000
-}
-
 #' @title Return function output quietly
 #' @description Returns function output without printed \code{\link{cat}} messages
 #' @param x function

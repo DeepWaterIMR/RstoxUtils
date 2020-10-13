@@ -25,7 +25,7 @@
 #' @export
 
 ## Developmental code
-# bathy = link; depths = depths.vec; boundary = boundary.vec; geostrata = geostrata.df; drop.crumbs = 30; remove.holes = 10
+# bathy = link; depths = depths.vec; boundary = boundary; geostrata = geostrata.df; drop.crumbs = NULL; remove.holes = NULL
 strataPolygon <- function(bathy, depths, boundary, geostrata = NULL, drop.crumbs = NULL, remove.holes = NULL) {
   
   ## General checks ####

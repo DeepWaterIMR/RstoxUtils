@@ -22,7 +22,7 @@ extractLogbook(
 
 \item{language}{Character argument in lower case specifying the language of species names in the returned data table. Alternatives: \code{"norwegian"}, \code{"english"}, or \code{"latin"}, The species names are acquired from \code{\link{FDIRcodes}$speciesCodes}.}
 
-\item{subspecies}{Logical. Should NS codes (i.e. species sub-categories) be used to translate species names?}
+\item{subspecies}{Logical. Should NS codes (i.e. species sub-categories) be used to translate species names? If \code{FALSE}, FAO codes are used leading to actual species names.}
 
 \item{remove.sensitive}{Logical indicating whether the function should remove sensitive data fields.}
 }
