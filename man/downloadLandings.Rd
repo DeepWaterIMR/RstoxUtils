@@ -4,15 +4,21 @@
 \alias{downloadLandings}
 \title{Download landings data for a species from the IMR database}
 \usage{
-downloadLandings(species, years = c(1900:2020))
+downloadLandings(species, years = NULL)
 }
 \arguments{
 \item{species}{any species identification name in \code{FDIRcodes$speciesCodes} as character. Only one species at the time allowed.}
 
-\item{years}{an integer vector of years to download. Defaults to all years. Please note that this option can take very long time and lead to huge datasets.}
+\item{years}{an integer vector of years to download. If \code{NULL} (default), all years are downloaded. Please note that this option can take very long time and lead to huge datasets.}
 }
 \description{
-THe function downloads landings ("sluttseddel") data from IMR database. Requires access to the intranet.
+The function downloads landings ("sluttseddel") data from IMR database. Requires access to the intranet.
+}
+\examples{
+\dontrun{
+downloadLandings("brugde") # Basking shark, all years
+downloadLandings("kveite", years = 2000:2001) # halibut, 2000-01
+}
 }
 \author{
 Mikko Vihtakari

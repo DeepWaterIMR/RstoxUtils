@@ -1,13 +1,17 @@
 #' @title Download landings data for a species from the IMR database
-#' @description THe function downloads landings ("sluttseddel") data from IMR database. Requires access to the intranet. 
+#' @description The function downloads landings ("sluttseddel") data from IMR database. Requires access to the intranet. 
 #' @param species any species identification name in \code{FDIRcodes$speciesCodes} as character. Only one species at the time allowed.
-#' @param years an integer vector of years to download. Defaults to all years. Please note that this option can take very long time and lead to huge datasets.
+#' @param years an integer vector of years to download. If \code{NULL} (default), all years are downloaded. Please note that this option can take very long time and lead to huge datasets.
 #' @author Mikko Vihtakari
 #' @importFrom RstoxData readXmlFile
+#' @examples \dontrun{
+#' downloadLandings("brugde") # Basking shark, all years
+#' downloadLandings("kveite", years = 2000:2001) # halibut, 2000-01
+#' }
 #' @export
 
-# species  <- "brugde"; years <- c(1900:2020)
-downloadLandings <- function(species, years = c(1900:2020)) {
+# species  <- "blåkveite"; years <- c(1900:2020)
+downloadLandings <- function(species, years = NULL) {
   
   ## Set up variables
   
@@ -39,7 +43,11 @@ downloadLandings <- function(species, years = c(1900:2020)) {
   
   ## Set up the download path
   
-  DownloadPath <- paste0(APIpath, "&Art_kode=", spCode, "&Fangstar=", paste(years, collapse = ","))
+  if(is.null(years)) {
+    DownloadPath <- paste0(APIpath, "&Art_kode=", spCode)
+  } else {
+    DownloadPath <- paste0(APIpath, "&Art_kode=", spCode, "&Fangstar=", paste(years, collapse = ","))
+  }
   
   ## Download the data from the database 
   

@@ -73,8 +73,3 @@ quiet <- function(x) {
   on.exit(sink())
   invisible(force(x))
 }
-
-## Define global variables
-
-utils::globalVariables(c(".", "FANGSTART_NS", "FANGSTART_FAO", "dateEnd", "dateStart", "depth", "depthEnd", "depthStart", "gear", "gearCat", "gearId", "gearName", "idFAO", "individualweight", "lat", "latEnd", "latStart", "lon", "lonEnd", "lonStart", "mass", "stationstartdate", "stationstarttime", "stationstopdate", "stationstoptime", "gearCategory", "FDIRcodes"))
-
