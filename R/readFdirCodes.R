@@ -6,7 +6,7 @@
 #' @param speciesHeaderRow Integer specifying row number of header in the species code tab.
 #' @param gearSheet Character string specifying the name of the tab containing species codes.
 #' @param gearStartRow Integer specifying the \code{skip} argument for \code{\link[readxl]{read_xlsx}} in the gear code tab.
-#' @details The function has been written for \href{https://www.fiskeridir.no/Yrkesfiske/Rapportering-ved-landing/Kodeliste}{the code list Excel sheet} published on 2019-12-17. You may have to adjust the function depending on changes in newer versions of the file.
+#' @details The function has been written for \href{https://www.fiskeridir.no/Yrkesfiske/Rapportering-ved-landing/Kodeliste}{the code list Excel sheet} published on 2020-10-30. You may have to adjust the function depending on changes in newer versions of the file.
 #' @import readxl
 #' @author Mikko Vihtakari
 #' @export
