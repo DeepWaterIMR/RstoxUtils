@@ -24,3 +24,14 @@
 #' @format A list of data tables
 #' @source Norwegian Directorate of Fisheries (\url{https://www.fiskeridir.no/English})
 "FDIRcodes"
+
+#' @title Major fishing zones of Norway
+#' @docType data
+#' @keywords datasets shapefiles
+#' @family shapefiles
+#' @name fishingAreasNor
+#' @format \code{\link[sp:SpatialPolygons]{SpatialPolygonsDataFrame}} in decimal degrees (+init=epsg:4326) containing major fishing zones defined by the Norwegian Directorate of Fisheries.
+#' @source \href{https://kart.fiskeridir.no/stat}{Norwegian Directorate of Fisheries}
+#' @import sp
+"fishingAreasNor"
+

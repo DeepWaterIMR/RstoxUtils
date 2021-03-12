@@ -30,7 +30,7 @@ readFdirCodes(
 This function retrieves codes used in the electronic logbook data from an Excel sheet published by the Directorate of Fisheries. This list is already supplied in the package and the function is only required to update the codes.
 }
 \details{
-The function has been written for \href{https://www.fiskeridir.no/Yrkesfiske/Rapportering-ved-landing/Kodeliste}{the code list Excel sheet} published on 2019-12-17. You may have to adjust the function depending on changes in newer versions of the file.
+The function has been written for \href{https://www.fiskeridir.no/Yrkesfiske/Rapportering-ved-landing/Kodeliste}{the code list Excel sheet} published on 2020-10-30. You may have to adjust the function depending on changes in newer versions of the file.
 }
 \author{
 Mikko Vihtakari
