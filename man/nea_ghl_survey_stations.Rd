@@ -8,7 +8,7 @@
 A dataframe
 }
 \source{
-Institute of Marine Research (\url{https://imr.no})
+Institute of Marine Research (\url{https://www.imr.no})
 }
 \usage{
 data(nea_ghl_survey_stations)

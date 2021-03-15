@@ -23,8 +23,9 @@ Detects Norwegian Directorate of Fisheries main fishing areas (hoverområde) and
 The function is designed to work with Norwegian data. All FAO fisheries areas are not included.
 }
 \examples{
-dt <- data.frame(lon = seq(-50, 50, 10), 
-                 lat = seq(50, 80, length.out = length(lon)))
+lon = seq(-50, 50, 10)
+lat = seq(50, 80, length.out = length(lon))
+dt <- data.frame(lon, lat)
 dt$main_area <- pointOnFishingArea(dt$lon, dt$lat)
 dt$ices_area <- pointOnFishingArea(dt$lon, dt$lat, type = "ices")
 dt[is.na(dt)] <- "NA"

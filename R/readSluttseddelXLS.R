@@ -9,9 +9,9 @@
 coln_search_words <- function(column, return_name = FALSE) {
   
   candidates <- list(
-    year = "(fangstår)",
+    year = "(fangst\u00e5r)",
     month = "landingsmnd",
-    main_area = "hovedområde",
+    main_area = "hovedomr\u00e5de",
     sub_area = "(lokalitet)",
     ices_area = "ices",
     gear_id = "(redskap)|(reiskap)",
@@ -48,7 +48,7 @@ guess_colname <- function(cols, df, candidates = coln_search_words) {
     if(any(k %in% colnames(df))) {
       candidates(k, return_name = TRUE)
     } else {
-      colnames(df)[grep(candidates(k), gsub("(?<=[\\s])\\s*|^\\s+|\\s+$", "", gsub("[[:punct:]]", " ", colnames(df)), perl = TRUE), ignore.case = TRUE, perl = TRUE)][1]
+      colnames(df)[grep(candidates(k), gsub("(?<=[\\s])\\s*|^\\s+|\\s+$", "", gsub("[[:punct:]]", " ", colnames(df)), perl = TRUE), ignore.case = TRUE, perl = FALSE)][1]
     }
     
   })
@@ -60,6 +60,8 @@ guess_colname <- function(cols, df, candidates = coln_search_words) {
 #' @param species Character string defining the species using the FDIR Norwegian species names
 #' @param dataDir Character vector defining the path to the folder where Excel files are located (typically "sluttseddel_xls_ferdige_År")
 #' @importFrom utils data
+#' @importFrom dplyr left_join recode
+#' @importFrom stats setNames
 #' @export
 
 # dataDir = "~/ownCloud/Workstuff/Data/Landings data/sluttseddel_xls_ferdige_År"; species = "Kveite"
@@ -68,7 +70,7 @@ readSluttseddelXLS <- function(species, dataDir) {
   dirs <- list.dirs(dataDir, full.names = FALSE, recursive = FALSE)
   COLS <- c("year", "month", "main_area", "sub_area", "ices_area", "gear_id", "gear", "species", "mass")
   
-  # i = 2
+  # i = 1
   x <- lapply(seq_along(dirs), function(i) {
     print(dirs[i])
     
@@ -181,11 +183,12 @@ readSluttseddelXLS <- function(species, dataDir) {
   gear_list$gear_category <- factor(gear_list$gear_category, levels = unique(gear_list$gear_category))
   if(any(duplicated(gear_list$gear_id))) stop("Duplicated gear IDs in the gear_list")
   
-  dt$gear <- factor(plyr::mapvalues(as.character(dt$gear_id), as.character(gear_list$gear_id), as.character(gear_list$gear), warn_missing = FALSE), levels = as.character(gear_list$gear))
+  dt$gear <- factor(dplyr::recode(dt$gear_id, !!!stats::setNames(gear_list$gear, gear_list$gear_id)), 
+                    levels = as.character(gear_list$gear))
   
   dt <- dt[dt$mass > 0,]
   
-  dt <- left_join(dt, gear_list[c("gear_id", "gear_category")], by = "gear_id")
+  dt <- dplyr::left_join(dt, gear_list[c("gear_id", "gear_category")], by = "gear_id")
   
   dt <- dt[c("year", "month", "main_area", "sub_area", "ices_area", "gear_id", "gear_category", "gear", "mass")]
   
