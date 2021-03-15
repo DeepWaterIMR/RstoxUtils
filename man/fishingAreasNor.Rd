@@ -16,6 +16,10 @@ fishingAreasNor
 \description{
 Major fishing zones of Norway
 }
+\seealso{
+Other shapefiles: 
+\code{\link{icesAreas}}
+}
 \concept{shapefiles}
 \keyword{datasets}
 \keyword{shapefiles}
