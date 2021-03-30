@@ -3,10 +3,10 @@
 }
 
 .onAttach <- function(libname, pkgname) {
-  options(timeout = max(3000, getOption("timeout"))) 
+  options(timeout = max(6000, getOption("timeout"))) 
 }
 
 # Define global variables
 ## Define global variables
 
-utils::globalVariables(c(".", "FANGSTART_NS", "FANGSTART_FAO", "dateEnd", "dateStart", "depth", "depthEnd", "depthStart", "gear", "gearCat", "gearId", "gearName", "idFAO", "individualweight", "lat", "latEnd", "latStart", "lon", "lonEnd", "lonStart", "mass", "stationstartdate", "stationstarttime", "stationstopdate", "stationstoptime", "gearCategory", "FDIRcodes", "fishingAreasNor", "icesAreas"))
+utils::globalVariables(c(".", "FANGSTART_NS", "FANGSTART_FAO", "dateEnd", "dateStart", "depth", "depthEnd", "depthStart", "gear", "gearCat", "gearId", "gearName", "idFAO", "individualweight", "lat", "latEnd", "latStart", "lon", "lonEnd", "lonStart", "mass", "stationstartdate", "stationstarttime", "stationstopdate", "stationstoptime", "gearCategory", "FDIRcodes", "fishingAreasNor", "icesAreas", "description", "cruiseseriescode", "gearcategory", "language"))

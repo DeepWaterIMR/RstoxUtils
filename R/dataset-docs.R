@@ -45,3 +45,30 @@
 #' @source \href{https://gis.ices.dk/sf/index.html}{International Council for the Exploration of the Sea}
 #' @importFrom sp SpatialPolygonsDataFrame
 "icesAreas"
+
+#' @title NMD/IMR taxa code list
+#' @description Use the \code{\link{prepareTaxaList}} function to update the list.
+#' @docType data
+#' @keywords datasets
+#' @name taxaList
+#' @format A data table 
+#' @source Institute of Marine Research (\url{https://imr.no})
+"taxaList"
+
+#' @title NMD/IMR gear code list
+#' @description Use the \code{\link{prepareGearList}} function to update the list.
+#' @docType data
+#' @keywords datasets
+#' @name gearList
+#' @format A data table 
+#' @source Institute of Marine Research (\url{https://imr.no})
+"gearList"
+
+#' @title NMD/IMR cruise series list
+#' @description Use the \code{\link{prepareCruiseSeriesList}} function to update the list. Need to be updated every time data from the database are downloaded.
+#' @docType data
+#' @keywords datasets
+#' @name cruiseSeriesList
+#' @format A data table 
+#' @source Institute of Marine Research (\url{https://imr.no})
+"cruiseSeriesList"
