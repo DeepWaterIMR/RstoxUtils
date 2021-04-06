@@ -73,3 +73,17 @@ quiet <- function(x) {
   on.exit(sink())
   invisible(force(x))
 }
+
+#' @title Find API URL from cruise number and shipname
+#' @description Searches the NMD database for API path 
+#' @author StoxProject. Taken from the old Rstox: https://github.com/Sea2Data/Rstox/blob/master/R/rstox_NMD.R
+#'
+# getCruiseSearchURL <- function(cruisenr, shipname, datasource="biotic", ver=getRstoxDef("ver"), server="http://tomcat7.imr.no:8080/apis/nmdapi"){
+#   paste(
+#     server, 
+#     datasource, 
+#     paste0("v", ver$API[[datasource]]), 
+#     paste0("find?cruisenr=", cruisenr, "&shipname=", shipname), 
+#     sep="/"
+#   )
+# }

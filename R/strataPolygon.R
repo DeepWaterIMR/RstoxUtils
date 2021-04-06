@@ -85,7 +85,7 @@ strataPolygon <- function(bathy, depths, boundary, geostrata = NULL, drop.crumbs
   ras <- raster::raster(bathy)
   
   if(is.null(sp::proj4string(ras))) stop("bathy does not contain coordinate reference information")
-  if(sp::proj4string(ras) != "+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0") stop("bathy has to be in decimal degree projection. Use '+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0'")
+  if(!grepl("+proj=longlat", sp::proj4string(ras))) stop("bathy has to be in decimal degree projection. Use '+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0'")
   
   ras <- raster::crop(ras, raster::extent(boundary))
   

@@ -25,6 +25,7 @@ prepareCruiseSeriesList <- function() {
   utils::setTxtProgressBar(pb, 2)
   
   # Get per-cruise details
+  # i = 25
   second <- lapply(seq_along(first), function(i) {
     
     utils::setTxtProgressBar(pb, i + 2)
@@ -36,6 +37,7 @@ prepareCruiseSeriesList <- function() {
     years <- xml2::xml_text(xml2::xml_find_all(subdoc, "//d1:sampleTime"))
     
     # Get per-year details
+    # y <- years[length(years)]
     cruises <- lapply(years, function(y) {
       subsubdoc <- xml2::read_xml(paste0("http://tomcat7.imr.no:8080/apis/nmdapi/reference/v2//model/cruiseseries/", seriesCode, "/samples/", y, "/cruises?version=2.0"))
       
@@ -70,6 +72,12 @@ prepareCruiseSeriesList <- function() {
   cruiseSeries[, `:=`(cruiseseriescode = as.numeric(cruiseseriescode), year = as.numeric(year))]
   
   utils::setTxtProgressBar(pb, 32)
+  
+  # Add nick names
+  
+  # cruiseSeriesList[grepl("continental.*autumn", cruiseSeriesList$name), nickname := c("EggaN, EggaNor, EggaNord")]
+  # cruiseSeriesList[grepl("continental.*spring", cruiseSeriesList$name), nickname := c("EggaS")]
+  # cruiseSeriesList[grepl("barents.*ecosystem", cruiseSeriesList$name), nickname := c("Ecotokt")]
   
   # Rename columns valid SQL ones
   
