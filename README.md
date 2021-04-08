@@ -1,5 +1,15 @@
+---
+output: 
+  html_document: 
+    keep_md: yes
+editor_options: 
+  chunk_output_type: console
+---
+
+
+
 # RstoxUtils
-**Utility functions for the Stox Project. R package, updated 2020-05-19.**
+**Utility functions for the Stox Project. R package, updated 2021-04-08.**
 
 This package contains utility functions for the Institute of Marine Research's (IMR) Stox Project. The package has two purposes: 1) To function as a showcase and developmental platform for functions that may be included in the future releases of the Stox Project. 2) To provide a collection of functions needed in the internal workflow of the Deep-sea species group at IMR.
 
@@ -197,14 +207,10 @@ strata.poly <- strataPolygon(bathy = link,
                              remove.holes = 100
 )
 
-library(PlotSvalbard)
+library(ggOceanMaps)
 
-x <- suppressMessages(suppressWarnings(broom::tidy(strata.poly)))
-x <- PlotSvalbard::transform_coord(x, map.type = "panarctic", bind = TRUE)
-
-PlotSvalbard::basemap("panarctic", limits = c("x", "lon.utm", "lat.utm"), 
-                      bathymetry = TRUE, bathy.style = "poly_greys", legends = FALSE) + 
-  geom_polygon(data = x, aes(x = lon.utm, y = lat.utm, color = as.factor(id), group = group), fill = NA) +
+ggOceanMaps::basemap(data = strata.poly) +
+  ggspatial::layer_spatial(strata.poly, aes(color = as.factor(id)), fill = NA) +
   theme(legend.position = "none")
 ```
 
@@ -216,11 +222,11 @@ While it was possible to remove most small detached polygons, setting the `drop.
 ```r
 boundary.path <- system.file("extdata", "boundary_shape.shp", package = "RstoxUtils")
 
-bound.poly <- rgdal::readOGR(boundary.path, verbose = FALSE)
+bound.poly <- sf::st_read(boundary.path, quiet = TRUE)
 
 ggplot() + 
   geom_sf(data = sf::st_as_sf(strata.poly), aes(fill = as.factor(id))) +
-  geom_sf(data = sf::st_as_sf(bound.poly), fill = NA) +
+  geom_sf(data = bound.poly, fill = NA) +
   theme_bw() + 
   theme(legend.position = "none")
 ```
@@ -239,29 +245,9 @@ strata.poly <- strataPolygon(bathy = link,
                              remove.holes = 100
 )
 
-## Modify the strata polygons
-tmp <- sf::st_as_sf(strata.poly)
-tmp$interval <- factor(tmp$interval, levels = unique(tmp$interval))
-
-## Add land
-data("shapefiles_panarctic", package = "PlotSvalbard")
-land <- PlotSvalbard::clip_shapefile(arctic, c(0, 40, 66, 81)) %>% 
-  st_as_sf() %>% 
-  st_transform(crs = "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
-
-## Make ID labels for the plot
-id.labels <- data.frame(geostrata.name = rep(LETTERS[1:5], each = 4), interval = levels(tmp$interval), id = c(1:16, NA, NA, 17, 18))
-
-ggplot(tmp) + 
-  geom_sf(fill = "red", color = "red") +
-  geom_sf(data = land, color = NA) + 
-  geom_text(data = id.labels, aes(x = 25, y = 80, label = id), fontface = 2) + 
-  facet_grid(interval ~ geostrata.name) + 
-  theme_bw() + 
-  theme(legend.position = "none") +
-  coord_sf(xlim = sf::st_bbox(tmp)[grepl("xm", names(sf::st_bbox(tmp)))],
-           ylim = sf::st_bbox(tmp)[grepl("ym", names(sf::st_bbox(tmp)))]) +
-  theme(axis.title = element_blank())
+basemap(data = strata.poly) +
+  layer_spatial(strata.poly, color = "red", fill = "red") +
+  facet_grid(interval ~ geostrata.name)
 ```
 
 ![New depth and latitude based strata system for NEA Greenland halibut made using the strataPolygons function. Subplots indicate latitude and depth based categorization along columns and rows, respectively.  Red polygons represent the strata. Numbers refer to IDs used in preceeding figures.](README_files/figure-html/unnamed-chunk-12-1.png)
@@ -1242,6 +1228,13 @@ The species name will be returned in Norwegian, English or Latin depending on th
    <td style="text-align:left;"> Engraulis encrasicolus </td>
   </tr>
   <tr>
+   <td style="text-align:right;"> 62101 </td>
+   <td style="text-align:left;"> ANE </td>
+   <td style="text-align:left;"> Ansjos (oppdrett) </td>
+   <td style="text-align:left;"> European anchovy </td>
+   <td style="text-align:left;"> Engraulis encrasicolus </td>
+  </tr>
+  <tr>
    <td style="text-align:right;"> 63 </td>
    <td style="text-align:left;"> NA </td>
    <td style="text-align:left;"> NA </td>
@@ -1382,13 +1375,6 @@ The species name will be returned in Norwegian, English or Latin depending on th
    <td style="text-align:left;"> Thymallus thymallus </td>
   </tr>
   <tr>
-   <td style="text-align:right;"> 731 </td>
-   <td style="text-align:left;"> SVF </td>
-   <td style="text-align:left;"> Kanadisk bekkerøye </td>
-   <td style="text-align:left;"> Brook trout </td>
-   <td style="text-align:left;"> Salvelinus fontinalis </td>
-  </tr>
-  <tr>
    <td style="text-align:right;"> 72 </td>
    <td style="text-align:left;"> NA </td>
    <td style="text-align:left;"> NA </td>
@@ -1422,6 +1408,34 @@ The species name will be returned in Norwegian, English or Latin depending on th
    <td style="text-align:left;"> Annen sik </td>
    <td style="text-align:left;"> Whitefish </td>
    <td style="text-align:left;"> Coregonus spp </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 73 </td>
+   <td style="text-align:left;"> NA </td>
+   <td style="text-align:left;"> NA </td>
+   <td style="text-align:left;"> NA </td>
+   <td style="text-align:left;"> NA </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 731 </td>
+   <td style="text-align:left;"> SVF </td>
+   <td style="text-align:left;"> Kanadisk bekkerøye </td>
+   <td style="text-align:left;"> Brook trout </td>
+   <td style="text-align:left;"> Salvelinus fontinalis </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 732 </td>
+   <td style="text-align:left;"> PIN </td>
+   <td style="text-align:left;"> Pukkellaks </td>
+   <td style="text-align:left;"> Pink(=Humpback) salmon </td>
+   <td style="text-align:left;"> Oncorhynchus gorbuscha </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 73201 </td>
+   <td style="text-align:left;"> PIN </td>
+   <td style="text-align:left;"> Pukkellaks (oppdrett) </td>
+   <td style="text-align:left;"> Pink(=Humpback) salmon </td>
+   <td style="text-align:left;"> Oncorhynchus gorbuscha </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 74 </td>
@@ -2099,6 +2113,13 @@ The species name will be returned in Norwegian, English or Latin depending on th
    <td style="text-align:right;"> 1611 </td>
    <td style="text-align:left;"> HOM </td>
    <td style="text-align:left;"> Hestmakrell </td>
+   <td style="text-align:left;"> Atlantic horse mackerel </td>
+   <td style="text-align:left;"> Trachurus trachurus </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 161101 </td>
+   <td style="text-align:left;"> HOM </td>
+   <td style="text-align:left;"> Hestmakrell (oppdrett) </td>
    <td style="text-align:left;"> Atlantic horse mackerel </td>
    <td style="text-align:left;"> Trachurus trachurus </td>
   </tr>
@@ -3013,6 +3034,13 @@ The species name will be returned in Norwegian, English or Latin depending on th
    <td style="text-align:left;"> Taurulus bubalis </td>
   </tr>
   <tr>
+   <td style="text-align:right;"> 223701 </td>
+   <td style="text-align:left;"> XTA </td>
+   <td style="text-align:left;"> Dvergulke (oppdrett) </td>
+   <td style="text-align:left;"> Longspined bullhead </td>
+   <td style="text-align:left;"> Taurulus bubalis </td>
+  </tr>
+  <tr>
    <td style="text-align:right;"> 2299 </td>
    <td style="text-align:left;"> NA </td>
    <td style="text-align:left;"> Annen ulkefisk </td>
@@ -3475,6 +3503,13 @@ The species name will be returned in Norwegian, English or Latin depending on th
    <td style="text-align:left;"> Benthosema glaciale </td>
   </tr>
   <tr>
+   <td style="text-align:right;"> 361101 </td>
+   <td style="text-align:left;"> BHG </td>
+   <td style="text-align:left;"> Nordlig lysprikkfisk (oppdrett) </td>
+   <td style="text-align:left;"> Glacier lanternfish </td>
+   <td style="text-align:left;"> Benthosema glaciale </td>
+  </tr>
+  <tr>
    <td style="text-align:right;"> 3612 </td>
    <td style="text-align:left;"> MTP </td>
    <td style="text-align:left;"> Liten lysprikkfisk </td>
@@ -3594,6 +3629,20 @@ The species name will be returned in Norwegian, English or Latin depending on th
    <td style="text-align:left;"> CRUSTACEA </td>
   </tr>
   <tr>
+   <td style="text-align:right;"> 2510 </td>
+   <td style="text-align:left;"> NA </td>
+   <td style="text-align:left;"> Krill </td>
+   <td style="text-align:left;"> Euphausiacea </td>
+   <td style="text-align:left;"> Euphausiacea </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 251001 </td>
+   <td style="text-align:left;"> NA </td>
+   <td style="text-align:left;"> Krill (oppdrett) </td>
+   <td style="text-align:left;"> Euphausiacea </td>
+   <td style="text-align:left;"> Euphausiacea </td>
+  </tr>
+  <tr>
    <td style="text-align:right;"> 2511 </td>
    <td style="text-align:left;"> NKR </td>
    <td style="text-align:left;"> Norsk storkrill </td>
@@ -3708,7 +3757,7 @@ The species name will be returned in Norwegian, English or Latin depending on th
   <tr>
    <td style="text-align:right;"> 2526 </td>
    <td style="text-align:left;"> CPR </td>
-   <td style="text-align:left;"> Strandreke </td>
+   <td style="text-align:left;"> Common prawn </td>
    <td style="text-align:left;"> Common prawn </td>
    <td style="text-align:left;"> Palaemon serratus </td>
   </tr>
@@ -3736,7 +3785,14 @@ The species name will be returned in Norwegian, English or Latin depending on th
   <tr>
    <td style="text-align:right;"> 2530 </td>
    <td style="text-align:left;"> PAA </td>
-   <td style="text-align:left;"> Vanlig strandreke </td>
+   <td style="text-align:left;"> Strandreke </td>
+   <td style="text-align:left;"> Baltic prawn </td>
+   <td style="text-align:left;"> Palaemon adspersus </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 253001 </td>
+   <td style="text-align:left;"> PAA </td>
+   <td style="text-align:left;"> Strandreke (oppdrett) </td>
    <td style="text-align:left;"> Baltic prawn </td>
    <td style="text-align:left;"> Palaemon adspersus </td>
   </tr>
@@ -3895,6 +3951,13 @@ The species name will be returned in Norwegian, English or Latin depending on th
    <td style="text-align:left;"> Pagurus bernhardus </td>
   </tr>
   <tr>
+   <td style="text-align:right;"> 255001 </td>
+   <td style="text-align:left;"> PZW </td>
+   <td style="text-align:left;"> Bernakereremittkreps (oppdrett) </td>
+   <td style="text-align:left;"> Common hermit crab </td>
+   <td style="text-align:left;"> Pagurus bernhardus </td>
+  </tr>
+  <tr>
    <td style="text-align:right;"> 2551 </td>
    <td style="text-align:left;"> GXB </td>
    <td style="text-align:left;"> Dverghummer </td>
@@ -3970,6 +4033,139 @@ The species name will be returned in Norwegian, English or Latin depending on th
    <td style="text-align:left;"> Skipsrur (oppdrett) </td>
    <td style="text-align:left;"> Balanus crenatus </td>
    <td style="text-align:left;"> Balanus crenatus </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 256301 </td>
+   <td style="text-align:left;"> NA </td>
+   <td style="text-align:left;"> Acartia clausi (oppdrett) </td>
+   <td style="text-align:left;"> Acartia clausi </td>
+   <td style="text-align:left;"> Acartia clausi </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 256401 </td>
+   <td style="text-align:left;"> NA </td>
+   <td style="text-align:left;"> Eurytemora spp (oppdrett) </td>
+   <td style="text-align:left;"> Eurytemora spp </td>
+   <td style="text-align:left;"> Eurytemora spp </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 256501 </td>
+   <td style="text-align:left;"> NA </td>
+   <td style="text-align:left;"> Metridia longa (oppdrett) </td>
+   <td style="text-align:left;"> Metridia longa </td>
+   <td style="text-align:left;"> Metridia longa </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 256601 </td>
+   <td style="text-align:left;"> NA </td>
+   <td style="text-align:left;"> Paraeuchaeta barbata (oppdrett) </td>
+   <td style="text-align:left;"> Paraeuchaeta barbata </td>
+   <td style="text-align:left;"> Paraeuchaeta barbata </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 256701 </td>
+   <td style="text-align:left;"> NA </td>
+   <td style="text-align:left;"> Pseudocalanus minutus (oppdrett) </td>
+   <td style="text-align:left;"> Pseudocalanus minutus </td>
+   <td style="text-align:left;"> Pseudocalanus minutus </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 256801 </td>
+   <td style="text-align:left;"> NA </td>
+   <td style="text-align:left;"> Pseudocalanus acuspes (oppdrett) </td>
+   <td style="text-align:left;"> Pseudocalanus acuspes </td>
+   <td style="text-align:left;"> Pseudocalanus acuspes </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 256901 </td>
+   <td style="text-align:left;"> NA </td>
+   <td style="text-align:left;"> Pseudocalanus moultoni (oppdrett) </td>
+   <td style="text-align:left;"> Pseudocalanus moultoni </td>
+   <td style="text-align:left;"> Pseudocalanus moultoni </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 257001 </td>
+   <td style="text-align:left;"> NA </td>
+   <td style="text-align:left;"> Temora longicornis (oppdrett) </td>
+   <td style="text-align:left;"> Temora longicornis </td>
+   <td style="text-align:left;"> Temora longicornis </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 257101 </td>
+   <td style="text-align:left;"> NA </td>
+   <td style="text-align:left;"> Oithona similis (oppdrett) </td>
+   <td style="text-align:left;"> Oithona similis </td>
+   <td style="text-align:left;"> Oithona similis </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 257201 </td>
+   <td style="text-align:left;"> NA </td>
+   <td style="text-align:left;"> Apherusa glacialis (oppdrett) </td>
+   <td style="text-align:left;"> Apherusa glacialis </td>
+   <td style="text-align:left;"> Apherusa glacialis </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 257301 </td>
+   <td style="text-align:left;"> NA </td>
+   <td style="text-align:left;"> Eusirus holmii (oppdrett) </td>
+   <td style="text-align:left;"> Eusirus holmii </td>
+   <td style="text-align:left;"> Eusirus holmii </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 257401 </td>
+   <td style="text-align:left;"> NA </td>
+   <td style="text-align:left;"> Trollistidskreps (oppdrett) </td>
+   <td style="text-align:left;"> Gammaracanthus lacustris </td>
+   <td style="text-align:left;"> Gammaracanthus lacustris </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 257501 </td>
+   <td style="text-align:left;"> NA </td>
+   <td style="text-align:left;"> Onisimus glacialis (oppdrett) </td>
+   <td style="text-align:left;"> Onisimus glacialis </td>
+   <td style="text-align:left;"> Onisimus glacialis </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 257601 </td>
+   <td style="text-align:left;"> NA </td>
+   <td style="text-align:left;"> Themisto libellula (oppdrett) </td>
+   <td style="text-align:left;"> Themisto libellula </td>
+   <td style="text-align:left;"> Themisto libellula </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 257701 </td>
+   <td style="text-align:left;"> NA </td>
+   <td style="text-align:left;"> Vanlig tangloppe (oppdrett) </td>
+   <td style="text-align:left;"> Gammarus locusta </td>
+   <td style="text-align:left;"> Gammarus locusta </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 2578 </td>
+   <td style="text-align:left;"> FAC </td>
+   <td style="text-align:left;"> Rødglassreke </td>
+   <td style="text-align:left;"> Crimson pasiphaeid </td>
+   <td style="text-align:left;"> Pasiphaea tarda </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 257801 </td>
+   <td style="text-align:left;"> FAC </td>
+   <td style="text-align:left;"> Rødglassreke (oppdrett) </td>
+   <td style="text-align:left;"> Crimson pasiphaeid </td>
+   <td style="text-align:left;"> Pasiphaea tarda </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 257901 </td>
+   <td style="text-align:left;"> IOD </td>
+   <td style="text-align:left;"> Vanlig svømmekrabbe (oppdrett) </td>
+   <td style="text-align:left;"> Blue-leg swim crab </td>
+   <td style="text-align:left;"> Liocarcinus depurator </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 258001 </td>
+   <td style="text-align:left;"> NA </td>
+   <td style="text-align:left;"> Anemoneeremittkreps (oppdrett) </td>
+   <td style="text-align:left;"> Pagurus prideaux </td>
+   <td style="text-align:left;"> Pagurus prideaux </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 2582 </td>
@@ -4322,6 +4518,13 @@ The species name will be returned in Norwegian, English or Latin depending on th
    <td style="text-align:left;"> Parastichopus tremulus </td>
   </tr>
   <tr>
+   <td style="text-align:right;"> 264301 </td>
+   <td style="text-align:left;"> TVK </td>
+   <td style="text-align:left;"> Rødpølse (oppdrett) </td>
+   <td style="text-align:left;"> Red sea cucumber </td>
+   <td style="text-align:left;"> Parastichopus tremulus </td>
+  </tr>
+  <tr>
    <td style="text-align:right;"> 2644 </td>
    <td style="text-align:left;"> STH </td>
    <td style="text-align:left;"> Vanlig korstroll </td>
@@ -4339,15 +4542,22 @@ The species name will be returned in Norwegian, English or Latin depending on th
    <td style="text-align:right;"> 2646 </td>
    <td style="text-align:left;"> VUC </td>
    <td style="text-align:left;"> Teppeskjell </td>
-   <td style="text-align:left;"> Corrugated venus </td>
+   <td style="text-align:left;"> Corrugated venus/Pullet carpet shell </td>
    <td style="text-align:left;"> Venerupis corrugata </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 264601 </td>
    <td style="text-align:left;"> VUC </td>
    <td style="text-align:left;"> Teppeskjell (oppdrett) </td>
-   <td style="text-align:left;"> Corrugated venus </td>
+   <td style="text-align:left;"> Corrugated venus/Pullet carpet shell </td>
    <td style="text-align:left;"> Venerupis corrugata </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 264701 </td>
+   <td style="text-align:left;"> VNR </td>
+   <td style="text-align:left;"> Banded carpet shell (oppdrett) </td>
+   <td style="text-align:left;"> Banded carpet shell </td>
+   <td style="text-align:left;"> Polititapes virgineus (Venerupis rhomboides) </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 2650 </td>
@@ -4387,16 +4597,16 @@ The species name will be returned in Norwegian, English or Latin depending on th
   <tr>
    <td style="text-align:right;"> 2660 </td>
    <td style="text-align:left;"> UYD </td>
-   <td style="text-align:left;"> Drøbakkråkebolle </td>
-   <td style="text-align:left;"> Green sea urchin </td>
+   <td style="text-align:left;"> Drøbaksjøpiggsvin </td>
+   <td style="text-align:left;"> Strongylocentrotus droebachiensis </td>
    <td style="text-align:left;"> Strongylocentrotus droebachiensis </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 2661 </td>
    <td style="text-align:left;"> USD </td>
-   <td style="text-align:left;"> Langpigget kråkebolle </td>
-   <td style="text-align:left;"> NA </td>
-   <td style="text-align:left;"> Echinus acutus </td>
+   <td style="text-align:left;"> Langpiggsjøpiggsvin </td>
+   <td style="text-align:left;"> Echinus acutus(Gracilechinus acutus) </td>
+   <td style="text-align:left;"> Echinus acutus(Gracilechinus acutus) </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 2662 </td>
@@ -4409,7 +4619,7 @@ The species name will be returned in Norwegian, English or Latin depending on th
    <td style="text-align:right;"> 2663 </td>
    <td style="text-align:left;"> KIT </td>
    <td style="text-align:left;"> Grønnsjøpiggsvin </td>
-   <td style="text-align:left;"> Green sea urchin </td>
+   <td style="text-align:left;"> Psammechinus miliaris </td>
    <td style="text-align:left;"> Psammechinus miliaris </td>
   </tr>
   <tr>
@@ -4422,7 +4632,7 @@ The species name will be returned in Norwegian, English or Latin depending on th
   <tr>
    <td style="text-align:right;"> 266501 </td>
    <td style="text-align:left;"> NA </td>
-   <td style="text-align:left;"> Syvarmet sjøstjerne (oppdrett) </td>
+   <td style="text-align:left;"> Sjuarmsjøstjerne (oppdrett) </td>
    <td style="text-align:left;"> Luidia ciliaris </td>
    <td style="text-align:left;"> Luidia ciliaris </td>
   </tr>
@@ -4432,6 +4642,20 @@ The species name will be returned in Norwegian, English or Latin depending on th
    <td style="text-align:left;"> Fem-armet sjøstjerne (oppdrett) </td>
    <td style="text-align:left;"> Luidia sarsii </td>
    <td style="text-align:left;"> Luidia sarsii </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 266701 </td>
+   <td style="text-align:left;"> NA </td>
+   <td style="text-align:left;"> Piggsolstjerne (oppdrett) </td>
+   <td style="text-align:left;"> Crossaster papposus </td>
+   <td style="text-align:left;"> Crossaster papposus </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 266801 </td>
+   <td style="text-align:left;"> NA </td>
+   <td style="text-align:left;"> Piggkorstroll (oppdrett) </td>
+   <td style="text-align:left;"> Marthasterias glacialis </td>
+   <td style="text-align:left;"> Marthasterias glacialis </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 267001 </td>
@@ -4446,6 +4670,13 @@ The species name will be returned in Norwegian, English or Latin depending on th
    <td style="text-align:left;"> Butt sandskjell </td>
    <td style="text-align:left;"> Blunt gaper </td>
    <td style="text-align:left;"> Mya truncata </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 267201 </td>
+   <td style="text-align:left;"> NA </td>
+   <td style="text-align:left;"> Østersjøskjell (oppdrett) </td>
+   <td style="text-align:left;"> Macoma balthica </td>
+   <td style="text-align:left;"> Macoma balthica </td>
   </tr>
   <tr>
    <td style="text-align:right;"> 2673 </td>

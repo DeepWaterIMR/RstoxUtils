@@ -25,7 +25,7 @@
 #' @export
 
 ## Developmental code
-# bathy = link; depths = depths.vec; boundary = boundary; geostrata = geostrata.df; drop.crumbs = NULL; remove.holes = NULL
+# bathy = link; depths = depths.vec; boundary = boundary.vec; geostrata = geostrata.df; drop.crumbs = NULL; remove.holes = NULL
 strataPolygon <- function(bathy, depths, boundary, geostrata = NULL, drop.crumbs = NULL, remove.holes = NULL) {
   
   ## General checks ####
@@ -43,9 +43,9 @@ strataPolygon <- function(bathy, depths, boundary, geostrata = NULL, drop.crumbs
   
   if(grepl("spatialpolygons", class(boundary), ignore.case = TRUE)) {
     
-    if(is.null(sp::proj4string(boundary))) {
+    if(is.null(suppressWarnings(sp::proj4string(boundary)))) {
       stop("boundary misses proj4string argument.")
-    } else if(!grepl("+proj=longlat", sp::proj4string(boundary))) {
+    } else if(!grepl("+proj=longlat", suppressWarnings(sp::proj4string(boundary)))) {
       stop("boundary has to be defined as decimal degrees")
     }
     
@@ -54,9 +54,9 @@ strataPolygon <- function(bathy, depths, boundary, geostrata = NULL, drop.crumbs
     
     boundary <- rgdal::readOGR(boundary, verbose = FALSE)
     
-    if(is.null(sp::proj4string(boundary))) {
+    if(is.null(suppressWarnings(sp::proj4string(boundary)))) {
       stop("boundary misses proj4string argument.")
-    } else if(!grepl("+proj=longlat", sp::proj4string(boundary))) {
+    } else if(!grepl("+proj=longlat", suppressWarnings(sp::proj4string(boundary)))) {
       stop("boundary has to be defined as decimal degrees")
     }
     
@@ -84,8 +84,8 @@ strataPolygon <- function(bathy, depths, boundary, geostrata = NULL, drop.crumbs
   
   ras <- raster::raster(bathy)
   
-  if(is.null(sp::proj4string(ras))) stop("bathy does not contain coordinate reference information")
-  if(!grepl("+proj=longlat", sp::proj4string(ras))) stop("bathy has to be in decimal degree projection. Use '+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0'")
+  if(is.null(suppressWarnings(sp::proj4string(ras)))) stop("bathy does not contain coordinate reference information")
+  if(!grepl("+proj=longlat", suppressWarnings(sp::proj4string(ras)))) stop("bathy has to be in decimal degree projection. Use 'EPSG:4326'")
   
   ras <- raster::crop(ras, raster::extent(boundary))
   
@@ -104,7 +104,7 @@ strataPolygon <- function(bathy, depths, boundary, geostrata = NULL, drop.crumbs
   cut_df <- data.frame(from = depths[-length(depths)], 
                        to = depths[-1], 
                        average = sapply(strsplit(cut_int, "-"), function(k) mean(as.numeric(k))),
-                       interval = cut_int,
+                       interval = factor(cut_int, levels = cut_int),
                        stringsAsFactors = FALSE)
   
   cut_matrix <- as.matrix(cut_df[-ncol(cut_df)])
