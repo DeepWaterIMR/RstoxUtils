@@ -1,7 +1,7 @@
 #' @title Extract information from detailed Norwegian fisheries logbooks
 #' @description Extracts information from detailed Norwegian fisheries logbook files
 #' @param path Character argument defining the path to the folder where data are located
-#' @param species Character argument defining the species. Species names are given in Norwegian (see Håndbok for prøvetaking). Some of the available names are peculiar, but most commercially valuable species should work.
+#' @param species Character argument defining the species. Species names can be given in Norwegian, English or Latin. Species names are sampled from \code{\link{FDIRcodes}$speciesCodes}. 
 #' @param method Character argument specifying the method for position, time and depth extraction. Alternatives: \code{"start"} takes the reported start values, \code{"end"} extracts the reported end values and \code{"average"} takes an average of start and end values. 
 #' @param language Character argument in lower case specifying the language of species names in the returned data table. Alternatives: \code{"norwegian"}, \code{"english"}, or \code{"latin"}, The species names are acquired from \code{\link{FDIRcodes}$speciesCodes}.
 #' @param subspecies Logical. Should NS codes (i.e. species sub-categories) be used to translate species names? If \code{FALSE}, FAO codes are used leading to actual species names. 
@@ -39,14 +39,33 @@
 
 extractLogbook <- function(path, species, method = "start", language = "norwegian", subspecies = FALSE, remove.sensitive = TRUE) {
  
-  ## Load species list
+  ## Load species list ####
   
   splist <- data.table::as.data.table(FDIRcodes$speciesCodes)
   gearlist <- data.table::as.data.table(FDIRcodes$gearCodes)
   
   ## Checks
   
-  if(!is.character(language) | !language %in% colnames(splist)) stop("language has to be one of the following: 'norwegian', 'english' or 'latin'")
+  if(!is.character(language) | !language %in% tolower(colnames(splist))) stop("language has to be one of the following: 'norwegian', 'english' or 'latin'")
+  
+  ## Define species
+  
+  spvec <- splist[, tolower(language), with = FALSE][[1]]
+  sp <- paste0("^", species, "$")
+  
+  if(!any(grepl(sp, spvec, ignore.case = TRUE))) {
+    stop(paste0(species, " not found from ", "FDIRcodes$speciesCodes[,", language, "]"))
+  }
+  
+  if(length(unique(grep(sp, spvec, ignore.case = TRUE,value = TRUE))) > 1) {
+    stop(paste0("Multiple matches with ", species, ": ", paste(unique(grep(sp, spvec, ignore.case = TRUE,value = TRUE), collapse = ", "))))
+  }
+  
+  if(subspecies) {
+    spCode <- splist[, idNS][grep(sp, spvec, ignore.case = TRUE)]
+  } else {
+    spCode <- splist[, idFAO][grep(sp, spvec, ignore.case = TRUE)]
+  }
   
   ## Definitions
    
@@ -67,7 +86,7 @@ extractLogbook <- function(path, species, method = "start", language = "norwegia
     depthEnd = "HAV_DYBDE_STOPP",
     targetSpFAO = "HOVEDART_FAO", # target species, most in catch
     targetSpRep = "HOVEDART_NS", # target species, reported by the fishermen
-    species = language, # Created during species filtering
+    species = if(subspecies) "FANGSTART_NS" else "FANGSTART_FAO", # Created during species filtering
     speciesFAO = "FANGSTART_FAO", # FAO code for the catch species
     speciesNS = "FANGSTART_NS", # NS code for the catch species
     mass = "RUNDVEKT" # kg
@@ -80,11 +99,11 @@ extractLogbook <- function(path, species, method = "start", language = "norwegia
   pb <- utils::txtProgressBar(min = 1, max = length(files) + 5, style = 3)
   utils::setTxtProgressBar(pb, 1)
   
-  ## Reading loop
+  ## Reading loop ####
   
   out <- #pbmcapply::pbmclapply
     lapply(seq_along(files), function(i) {
-      # print(file)
+      # print(i)
       
       utils::setTxtProgressBar(pb, i + 1)
       
@@ -98,52 +117,26 @@ extractLogbook <- function(path, species, method = "start", language = "norwegia
       
       names(x) <- colns
       
-      x <- x[!is.na(x$FANGSTART_NS),] # Remove missing catch species
+      if(subspecies) { # Remove missing catch species
+        x <- x[!is.na(x$FANGSTART_NS),] 
+      } else {
+        x <- x[!is.na(x$FANGSTART_FAO),] 
+      }
       
       # Species ###
       
-      if(species == "all") {
-        
-        if(subspecies) {
-          spSel <- "NS"
-          
-          x <- merge(x, splist[,c("idNS", language), with = FALSE], by.x = "FANGSTART_NS", by.y = "idNS", all.x = TRUE, sort = FALSE)
-          
-        } else {
-          spSel <- "FAO"
-          
-          sps <- splist[idFAO %in% unique(x$FANGSTART_FAO),]
-          sps <- sps[!duplicated(sps$idFAO),]
-          x <- merge(x, sps[,c("idFAO", language), with = FALSE], by.x = "FANGSTART_FAO", by.y = "idFAO", all.x = TRUE, sort = FALSE)
-          
-        }
-        
-      } else if(is.numeric(species)) {
-        spSel <- "NS"
-        
-        if(any(!species %in% splist$idNS)) stop(paste(species[!species %in% splist$idNS], "not found from FDIRcodes$speciesCodes$idNS"))
-        x <- x[FANGSTART_NS %in% species,]
-        x <- merge(x, splist[,c("idNS", language), with = FALSE], by.x = "FANGSTART_NS", by.y = "idNS", all.x = TRUE, sort = FALSE)
-        
-      } else if(is.character(species)) {
-        spSel <- "FAO"
-        
-        if(!species %in% splist$idFAO) stop(paste(species[!species %in% splist$idFAO], "not found from FDIRcodes$speciesCodes$idFAO"))
-        x <- x[FANGSTART_FAO %in% species,]
-        
-        sps <- splist[idFAO %in% species,]
-        sps <- sps[!duplicated(sps$idFAO),]
-        
-        x <- merge(x, sps[,c("idFAO", language), with = FALSE], by.x = "FANGSTART_FAO", by.y = "idFAO", all.x = TRUE, sort = FALSE)
-        
+      if(subspecies) {
+        x <- x[FANGSTART_NS %in% spCode,]
+      } else {
+        x <- x[FANGSTART_FAO %in% spCode,]
       }
       
-      x$HOVEDART_NS <- splist[x, get(language), on = c(idNS = "HOVEDART_NS")]
+      x[,HOVEDART_NS := splist[x, get(language), on = c(idNS = "HOVEDART_NS")]]
       
       sps <- splist[idFAO %in% unique(x$HOVEDART_FAO),]
       sps <- sps[!duplicated(sps$idFAO),]
       
-      x$HOVEDART_FAO <- sps[x, get(language), on = c(idFAO = "HOVEDART_FAO")]
+      x[,HOVEDART_FAO := sps[x, get(language), on = c(idFAO = "HOVEDART_FAO")]]
       
       if(nrow(x) > 0) {
         
@@ -162,6 +155,13 @@ extractLogbook <- function(path, species, method = "start", language = "norwegia
           x <- x[, unname(existing_cols), with = FALSE]
           names(x) <- names(columns[columns %in% existing_cols])
         }
+        
+        if(subspecies) {
+          x[,species := splist[x, get(language), on = c(idNS = "speciesNS")]] 
+        } else {
+          x[,species := splist[x, get(language), on = c(idFAO = "speciesFAO")]]
+        }
+        
         
         ### Column classes and values
         
@@ -210,10 +210,7 @@ extractLogbook <- function(path, species, method = "start", language = "norwegia
           
           x[, depth := rowMeans(.SD), .SDcols = c("depthStart", "depthEnd")]
           
-          # x$depth <- unname(apply(x[c("depth_start", "depth_end")], 1, function(x) mean(x, na.rm = TRUE)))
-          
         }
-        
         
         ### To factor
         
@@ -229,9 +226,11 @@ extractLogbook <- function(path, species, method = "start", language = "norwegia
       }
       
       
-      ## ####
+      ## ###
     })#, mc.cores = parallel::detectCores() - 4)
   
+  
+  ## ####
   
   lb <- data.table::rbindlist(out)
   lb <- unique(lb) # Remove duplicate rows
