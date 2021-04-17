@@ -16,7 +16,7 @@ extractLogbook(
 \arguments{
 \item{path}{Character argument defining the path to the folder where data are located}
 
-\item{species}{Character argument defining the species. Species names are given in Norwegian (see Håndbok for prøvetaking). Some of the available names are peculiar, but most commercially valuable species should work.}
+\item{species}{Character argument defining the species. Species names can be given in Norwegian, English or Latin. Species names are sampled from \code{\link{FDIRcodes}$speciesCodes}.}
 
 \item{method}{Character argument specifying the method for position, time and depth extraction. Alternatives: \code{"start"} takes the reported start values, \code{"end"} extracts the reported end values and \code{"average"} takes an average of start and end values.}
 

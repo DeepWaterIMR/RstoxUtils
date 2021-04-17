@@ -79,6 +79,7 @@ extractLogbook <- function(path, species, method = "start", language = "norwegia
     latEnd = "STOPP_LT",
     gearId = "REDSKAP_NS",
     gear = "REDSKAP",
+    gearIssues = "REDSKAP_PROBLEMER",
     fishTime = "VARIGHET", # mins
     effort = "INNSATS", # number of hooks in the line or total length of net
     dist = "TREKK_AVSTAND_METER", # meters
