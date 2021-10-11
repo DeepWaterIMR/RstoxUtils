@@ -1,6 +1,7 @@
 #' @title Read and compile IMR vessel position files from a folder
 #' @description Compiles the standard IMR vessel position files into a data.table for further analyses
 #' @param path Character string defining the path to the code{/CRUISE_LOG/TRACK/} folder
+#' @param log.file Logical indicating whether the file from \code{path} has \code{.log} extension. If false, \code{.csv} is assumed.
 #' @return A data.table containing all position information from the code{/CRUISE_LOG/TRACK/} folder
 #' @author Mikko Vihtakari
 #' @importFrom data.table rbindlist
@@ -31,7 +32,7 @@ read.pos <- function(path, log.file = TRUE) {
       
       ## Position data
       
-      out <- read.csv(files[i], skip = 1)
+      out <- utils::read.csv(files[i], skip = 1)
       names(out)[names(out) == "Time"] <- "Date"
       out$Date <- as.POSIXct(paste(hd$Date, out$Date), tz = "UTC")
       
@@ -39,7 +40,7 @@ read.pos <- function(path, log.file = TRUE) {
       
     } else {
       
-      out <- read.csv(files[i], header = FALSE)
+      out <- utils::read.csv(files[i], header = FALSE)
       
       names(out) <- c("ship", "cruise", "date", "time", NA, "ref.no", "loc.st.no", NA, NA, NA, NA, "log", "latitude", "longitude", "depth", NA, NA, NA, NA, "water.temp", "wind", "wind.dir", NA, NA, NA, NA, NA, NA, NA, "speed", "heading", NA, NA)
       
@@ -54,7 +55,7 @@ read.pos <- function(path, log.file = TRUE) {
     ## Position data
     
     out[c("latitude", "longitude")] <- lapply(out[c("latitude", "longitude")], trimws)
-    out <- out[out$latitude != "" | out$longitude != "",]
+    out <- out[out$latitude != "" & out$longitude != "" & out$latitude != -1 & out$longitude != -1,]
     
     ### Fix latiitude
     

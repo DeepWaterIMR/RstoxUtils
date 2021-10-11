@@ -19,7 +19,7 @@ strataArea(bathy, depths, boundary, geostrata = NULL)
 Returns a data frame. The areas are expressed in square kilometers (km2) and nautical miles (nm2).
 }
 \description{
-The function calculates the area of strata without polygonizing the strata. Useful for checking the results of \code{\link{strataPolygon}} function.
+The function calculates the area of strata without polygonizing the strata. Useful for checking the results of \code{strataPolygon} function.
 }
 \details{
 The function uses the \code{\link[raster]{reclassify}} and \code{\link[raster]{area}} functions to calculate the area of depth strata specified by the \code{depths} argument over a polygon specified by the \code{boundary} and \code{geostrata} arguments.

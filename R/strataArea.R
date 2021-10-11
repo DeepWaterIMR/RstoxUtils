@@ -1,5 +1,5 @@
 #' @title Calculate area of strata using only raster data
-#' @description The function calculates the area of strata without polygonizing the strata. Useful for checking the results of \code{\link{strataPolygon}} function.
+#' @description The function calculates the area of strata without polygonizing the strata. Useful for checking the results of \code{strataPolygon} function.
 #' @param bathy String giving the path to the bathymetry NetCDF file.
 #' @param depths Numeric vector giving the cut points for depth strata (see \code{\link[base]{cut}}. Data outside the cut range will be dropped. Use limits of length two exceeding the depths of the region to avoid depth categorization (\code{c(0, 1000)} for instance).
 #' @param boundary A \link[sp]{SpatialPolygons}(DataFrame) object, text string defining the file path to a spatial polygon or a numeric vector of length 4 giving the boundaries for the overall region. Should be given as decimal degrees. If numeric vector, the first element defines the minimum longitude, the second element the maximum longitude, the third element the minimum latitude and the fourth element the maximum latitude of the bounding box.
