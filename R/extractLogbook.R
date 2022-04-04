@@ -37,6 +37,7 @@
 #' @importFrom utils txtProgressBar setTxtProgressBar
 #' @export
 
+# species = "all"; method = "start"; language = "norwegian"; subspecies = FALSE; remove.sensitive = TRUE
 extractLogbook <- function(path, species, method = "start", language = "norwegian", subspecies = FALSE, remove.sensitive = TRUE) {
  
   ## Load species list ####
@@ -104,7 +105,7 @@ extractLogbook <- function(path, species, method = "start", language = "norwegia
   
   out <- #pbmcapply::pbmclapply
     lapply(seq_along(files), function(i) {
-      # print(i)
+      # print(files[i])
       
       utils::setTxtProgressBar(pb, i + 1)
       

@@ -8,7 +8,7 @@
 #' @export
 
 # path = "Data/TRACK/"; log.file = TRUE
-read.pos <- function(path, log.file = TRUE) {
+read.pos <- function(path, log.file = FALSE) {
   
   files <- dir(path, pattern = ifelse(log.file, ".log", ".csv"), full.names = TRUE)
   
@@ -34,7 +34,12 @@ read.pos <- function(path, log.file = TRUE) {
       
       out <- utils::read.csv(files[i], skip = 1)
       names(out)[names(out) == "Time"] <- "Date"
+      
       out$Date <- as.POSIXct(paste(hd$Date, out$Date), tz = "UTC")
+      
+      if(as.POSIXct(paste(hd$Date, "00:00:00"), tz = "UTC") == out$Date[nrow(out)]) {
+        out$Date[nrow(out)] <- out$Date[nrow(out)] + 60*60*24 # Correct the last observation
+      }
       
       names(out) <- tolower(names(out))
       
