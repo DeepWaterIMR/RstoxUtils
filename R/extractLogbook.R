@@ -6,6 +6,7 @@
 #' @param language Character argument in lower case specifying the language of species names in the returned data table. Alternatives: \code{"norwegian"}, \code{"english"}, or \code{"latin"}, The species names are acquired from \code{\link{FDIRcodes}$speciesCodes}.
 #' @param subspecies Logical. Should NS codes (i.e. species sub-categories) be used to translate species names? If \code{FALSE}, FAO codes are used leading to actual species names. 
 #' @param remove.sensitive Logical indicating whether the function should remove sensitive data fields.
+#' @param print.filename Logical indicating whether the file name should be printed to console while processing. Useful for debugging. 
 #' @details This function extracts information from the Norwegian fisheries logbooks provided in the \code{.psv} format on the IMR server. Note that these data are confidential and protected by the Norwegian Privacy Act (personvernloven). Keep the data on the server or in another safe place (not on the cloud). Do not send the input data around on email. The \code{remove.sensitive} argument can be used to disconnect the output from the confidential input data. This output can be distributed to people who have not signed the confidentiality statement (students, ICES colleagues, etc.) also using email. The data are property of the Norwegian Directorate of Fisheries and you should consult them if you plan to publish any parts of the dataset. 
 #' 
 #' Note that the structure of logbook files is not confidential and therefore this function can be distributed freely. The data required by the function cannot (do not send those data on email).
@@ -38,7 +39,7 @@
 #' @export
 
 # species = "all"; method = "start"; language = "norwegian"; subspecies = FALSE; remove.sensitive = TRUE
-extractLogbook <- function(path, species, method = "start", language = "norwegian", subspecies = FALSE, remove.sensitive = TRUE) {
+extractLogbook <- function(path, species, method = "start", language = "norwegian", subspecies = FALSE, remove.sensitive = TRUE, print.filename = FALSE) {
  
   ## Load species list ####
   
@@ -105,7 +106,7 @@ extractLogbook <- function(path, species, method = "start", language = "norwegia
   
   out <- #pbmcapply::pbmclapply
     lapply(seq_along(files), function(i) {
-      # print(files[i])
+      if(print.filename) print(files[i])
       
       utils::setTxtProgressBar(pb, i + 1)
       

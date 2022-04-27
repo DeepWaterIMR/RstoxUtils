@@ -10,7 +10,8 @@ extractLogbook(
   method = "start",
   language = "norwegian",
   subspecies = FALSE,
-  remove.sensitive = TRUE
+  remove.sensitive = TRUE,
+  print.filename = FALSE
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ extractLogbook(
 \item{subspecies}{Logical. Should NS codes (i.e. species sub-categories) be used to translate species names? If \code{FALSE}, FAO codes are used leading to actual species names.}
 
 \item{remove.sensitive}{Logical indicating whether the function should remove sensitive data fields.}
+
+\item{print.filename}{Logical indicating whether the file name should be printed to console while processing. Useful for debugging.}
 }
 \value{
 A data.table containing following columns:

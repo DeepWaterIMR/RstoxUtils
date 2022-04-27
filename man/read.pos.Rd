@@ -4,7 +4,7 @@
 \alias{read.pos}
 \title{Read and compile IMR vessel position files from a folder}
 \usage{
-read.pos(path, log.file = TRUE)
+read.pos(path, log.file = FALSE)
 }
 \arguments{
 \item{path}{Character string defining the path to the code{/CRUISE_LOG/TRACK/} folder}
