@@ -53,7 +53,7 @@ downloadLandings <- function(species, years = NULL) {
   
   status <- suppressMessages(suppressWarnings(try(utils::download.file(DownloadPath, dest), silent = TRUE)))
   
-  if(class(status) == "try-error") {
+  if(inherits(status, "try-error")) {
     
     ## Stop processing if not found
     

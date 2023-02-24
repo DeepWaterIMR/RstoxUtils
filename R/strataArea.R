@@ -41,7 +41,7 @@ strataArea <- function(bathy, depths, boundary, geostrata = NULL) {
       stop("boundary has to be defined as decimal degrees")
     }
     
-  } else if(class(boundary) == "character" & length(boundary) == 1) {
+  } else if(inherits(boundary, "character") & length(boundary) == 1) {
     if(!file.exists(boundary)) stop("Boundary shapefile not found. Check your path")
     
     boundary <- rgdal::readOGR(boundary, verbose = FALSE)

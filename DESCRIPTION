@@ -1,8 +1,8 @@
 Package: RstoxUtils
 Type: Package
 Title: Utility Functions for the Stox Project Within the Institute of Marine Research, Norway
-Version: 0.3.14
-Date: 2022-04-27
+Version: 0.3.15
+Date: 2023-02-24
 Authors@R: c(person("Mikko", "Vihtakari", email = "mikko.vihtakari@hi.no",
                   role = c("aut", "cre")) 
           )
@@ -18,4 +18,4 @@ Suggests: reshape2, knitr, kableExtra, ggOceanMaps, ggplot2
 License: GPL-3 | file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.3
