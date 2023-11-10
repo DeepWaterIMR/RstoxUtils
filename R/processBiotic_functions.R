@@ -15,8 +15,8 @@
 #' @export
 
 # Debugging parameters
-# lengthUnit = "m"; weightUnit = "g"; removeEmpty = FALSE; coreDataOnly = TRUE; returnOriginal = TRUE; dataTable = TRUE; convertColumns = FALSE; missionidPrefix = NULL
-processBioticFile <- function(file, lengthUnit = "cm", weightUnit = "g", removeEmpty = TRUE, coreDataOnly = FALSE, returnOriginal = TRUE, dataTable = TRUE, convertColumns = TRUE, missionidPrefix = NULL) {
+# lengthUnit = "cm"; weightUnit = "g"; removeEmpty = TRUE; coreDataOnly = FALSE; returnOriginal = TRUE; dataTable = TRUE; convertColumns = FALSE; missionidPrefix = NULL
+processBioticFile <- function(file, lengthUnit = "cm", weightUnit = "g", removeEmpty = TRUE, coreDataOnly = FALSE, returnOriginal = TRUE, dataTable = TRUE, convertColumns = FALSE, missionidPrefix = NULL) {
   
   ## Read the Biotic file ----
   
@@ -31,8 +31,10 @@ processBioticFile <- function(file, lengthUnit = "cm", weightUnit = "g", removeE
   }
   
   if (convertColumns) {
-    msn <- convertColumnTypes(msn)
-  } # add else here to fix the Norwegian letters
+    date.cols <- grep("date", names(msn), value = TRUE)
+    msn[, eval(date.cols) := lapply(.SD, as.Date), .SDcols = eval(date.cols)]
+    # msn <- convertColumnTypes(msn)
+  } 
   
   if (is.null(missionidPrefix)) {
     msn$missionid <- rownames(msn)
@@ -61,8 +63,14 @@ processBioticFile <- function(file, lengthUnit = "cm", weightUnit = "g", removeE
   }
   
   if (convertColumns) {
-    stn <- convertColumnTypes(stn)  
+    # stn <- convertColumnTypes(stn)  
+    date.cols <- grep("date", names(msn), value = TRUE)
+    msn[, eval(date.cols) := lapply(.SD, as.Date), .SDcols = eval(date.cols)]
   }
+  
+  ### Fix FDIR area code
+  
+  stn[, area := as.integer(area)]
   
   ##________________
   ## Sample data ---
@@ -87,7 +95,9 @@ processBioticFile <- function(file, lengthUnit = "cm", weightUnit = "g", removeE
   }
   
   if (convertColumns) {
-    ind <- convertColumnTypes(ind)
+    date.cols <- grep("date", names(age), value = TRUE)
+    age[, eval(date.cols) := lapply(.SD, as.Date), .SDcols = eval(date.cols)]
+    # ind <- convertColumnTypes(ind)
   }
   
   ### Length conversion
@@ -132,19 +142,31 @@ processBioticFile <- function(file, lengthUnit = "cm", weightUnit = "g", removeE
     coredat <- merge(msn[, c("missionid", "missiontype", "missionnumber", "startyear", "platform", "platformname", "cruise")], stn[, tmp, with = FALSE], all = TRUE)
     
   } else {
-    coredat <- merge(msn, stn, by = names(msn)[names(msn) %in% names(stn)], all = TRUE)
+    coredat <- merge(msn[, setdiff(names(msn), c("purpose")), with = FALSE], stn, by = intersect(names(msn), names(stn)), all = TRUE)
   }
   
   # Stndat
   
   stndat <- merge(coredat, cth, all.y = TRUE, by = c("missiontype", "missionnumber", "startyear", "platform", "serialnumber"))
+  stndat[is.na(commonname), commonname := "Empty"]
   
   # Inddat
   
-  inddat <- merge(stndat, ind, all.y = TRUE, by = names(stndat)[names(stndat) %in% names(ind)]) 
-  inddat <- rbindlist(list(inddat,age), fill=TRUE, use.names=TRUE)
+  inddat <- merge(stndat[, setdiff(names(stndat), c("purpose", "stationcomment", "catchcomment")), with = FALSE], ind, all.y = TRUE, by = intersect(names(stndat), names(ind)))
   
-  inddat[is.na(inddat$commonname), "commonname"] <- "Merging error due to missing data"
+  # Agedat
+
+  agedat <- merge(inddat, age, by = intersect(names(inddat), names(age)), all.y = T)
+  agedat[,numberofreads:=length(age),.(startyear,platform,serialnumber,catchpartnumber,specimenid)]
+  
+  # More inddat
+  
+  inddat[is.na(preferredagereading), preferredagereading := 1]
+  
+  inddat <- merge(inddat, age, by.x = c(intersect(names(inddat), names(age)), "preferredagereading"), by.y = c(intersect(names(inddat), names(age)), "agedeterminationid"), all.x = TRUE)
+  
+  if(sum(is.na(inddat$commonname)) > 0) stop(paste(sum(is.na(inddat$commonname)), "missing commonname records. This is likely due to merging error between individual and agedetermination data tables. File a bug report."))
+  
   
   ## Return ----
   

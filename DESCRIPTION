@@ -1,8 +1,8 @@
 Package: RstoxUtils
 Type: Package
 Title: Utility Functions for the Stox Project Within the Institute of Marine Research, Norway
-Version: 0.3.16
-Date: 2023-06-29
+Version: 0.3.17
+Date: 2023-11-10
 Authors@R: c(person("Mikko", "Vihtakari", email = "mikko.vihtakari@hi.no",
                   role = c("aut", "cre")) 
           )
