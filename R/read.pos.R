@@ -14,7 +14,7 @@ read.pos <- function(path, log.file = FALSE) {
   
   # i = 11
   tmp <- lapply(seq_along(files), function(i) {
-    # print(i)
+     print(files[i])
     
     if(!log.file) {
       
@@ -88,7 +88,7 @@ read.pos <- function(path, log.file = FALSE) {
   })
   
   out <- data.table::rbindlist(tmp)
-  out <- out[order(date),]
+  out <- out[order(log),]
   
   out[, which(unlist(lapply(out, function(x) !all(is.na(x))))), with = FALSE]
 }
