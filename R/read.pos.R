@@ -7,12 +7,12 @@
 #' @importFrom data.table rbindlist
 #' @export
 
-# path = "Data/TRACK/"; log.file = TRUE
+# path = "Data/TRACK/"; log.file = FALSE
 read.pos <- function(path, log.file = FALSE) {
   
   files <- dir(path, pattern = ifelse(log.file, ".log", ".csv"), full.names = TRUE)
   
-  # i = 1
+  # i = 11
   tmp <- lapply(seq_along(files), function(i) {
     # print(i)
     
@@ -34,10 +34,16 @@ read.pos <- function(path, log.file = FALSE) {
       
       out <- utils::read.csv(files[i], skip = 1)
       names(out)[names(out) == "Time"] <- "Date"
+      out[out$Date == "","Date"] <- out$Date[nrow(out)-1]
       
-      out$Date <- as.POSIXct(paste(hd$Date, out$Date), tz = "UTC")
+      out$Date <- as.POSIXct(paste(hd$Date, out$Date), format = "%Y-%m-%d %H:%M:%S", 
+                             tz = "UTC")
       
-      if(as.POSIXct(paste(hd$Date, "00:00:00"), tz = "UTC") == out$Date[nrow(out)]) {
+      test <- as.POSIXct(paste(hd$Date, "00:00:00"), 
+                         format = "%d.%m.%Y %H:%M:%S", tz = "UTC") == out$Date[nrow(out)]
+      if(is.na(test)) test <- FALSE
+      
+      if(test) {
         out$Date[nrow(out)] <- out$Date[nrow(out)] + 60*60*24 # Correct the last observation
       }
       
