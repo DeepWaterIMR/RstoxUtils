@@ -232,7 +232,10 @@ processBioticFile <- function(file, lengthUnit = "cm", weightUnit = "g", removeE
 # Debugging parameters
 # files = c("/Users/mvi023/Desktop/biotic_year_1982_species_172930.xml", "/Users/mvi023/Desktop/biotic_year_2016_species_172930.xml")
 # lengthUnit = "cm"; weightUnit = "g"; removeEmpty = FALSE; coreDataOnly = TRUE; returnOriginal = TRUE; convertColumns = FALSE; mcCores = 1L
-processBioticFiles <- function(files, lengthUnit = "cm", weightUnit = "g", removeEmpty = TRUE, coreDataOnly = FALSE, returnOriginal = TRUE, dataTable = TRUE, convertColumns = TRUE) {
+processBioticFiles <- function(
+    files, lengthUnit = "cm", weightUnit = "g", removeEmpty = TRUE, 
+    coreDataOnly = FALSE, returnOriginal = TRUE, dataTable = TRUE, 
+    convertColumns = FALSE) {
   
   ## Conditions if attempting to use parallel processing
   

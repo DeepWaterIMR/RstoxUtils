@@ -12,7 +12,7 @@ processBioticFiles(
   coreDataOnly = FALSE,
   returnOriginal = TRUE,
   dataTable = TRUE,
-  convertColumns = TRUE
+  convertColumns = FALSE
 )
 }
 \arguments{
