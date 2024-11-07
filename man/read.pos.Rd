@@ -7,12 +7,12 @@
 read.pos(path, log.file = FALSE)
 }
 \arguments{
-\item{path}{Character string defining the path to the code{/CRUISE_LOG/TRACK/} folder}
+\item{path}{Character string defining the path to the \code{/CRUISE_LOG/TRACK/} folder}
 
 \item{log.file}{Logical indicating whether the file from \code{path} has \code{.log} extension. If false, \code{.csv} is assumed.}
 }
 \value{
-A data.table containing all position information from the code{/CRUISE_LOG/TRACK/} folder
+A data.table containing all position information from the \code{/CRUISE_LOG/TRACK/} folder
 }
 \description{
 Compiles the standard IMR vessel position files into a data.table for further analyses

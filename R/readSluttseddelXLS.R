@@ -59,13 +59,14 @@ guess_colname <- function(cols, df, candidates = coln_search_words) {
 #' @title Read landing data from annually compiled Excel files
 #' @param species Character string defining the species using the FDIR Norwegian species names
 #' @param dataDir Character vector defining the path to the folder where Excel files are located (typically "sluttseddel_xls_ferdige_År")
+#' @param dropMissingMainArea Logical indicating whether catches with missing main area should be dropped. 
 #' @importFrom utils data
 #' @importFrom dplyr left_join recode
 #' @importFrom stats setNames
 #' @export
 
 # dataDir = "~/ownCloud/Workstuff/Data/Landings data/sluttseddel_xls_ferdige_År"; species = "Kveite"
-readSluttseddelXLS <- function(species, dataDir) {
+readSluttseddelXLS <- function(species, dataDir, dropMissingMainArea = TRUE) {
   
   dirs <- list.dirs(dataDir, full.names = FALSE, recursive = FALSE)
   COLS <- c("year", "month", "main_area", "sub_area", "ices_area", "gear_id", "gear", "species", "mass")
@@ -138,7 +139,9 @@ readSluttseddelXLS <- function(species, dataDir) {
       spnams <- sort(unique(dt$species))
       
       if(!target_sp %in% spnams) {
-        stop("Did not find ", target_sp, ", but found ", paste(grep(target_sp, spnams, value = TRUE, ignore.case = TRUE), collapse = ", "))
+        alt_name <- paste(grep(target_sp, spnams, value = TRUE, ignore.case = TRUE), collapse = ", ")
+        message("Did not find ", target_sp, ifelse(alt_name == "", alt_name, paste(", but found", alt_name)), ". Returning NULL.")
+        return(NULL)
       }
       
       dt <- dt[dt$species == target_sp,]
@@ -150,7 +153,7 @@ readSluttseddelXLS <- function(species, dataDir) {
     
     tmp <- do.call(rbind, out)
     
-    tmp <- tmp[!is.na(tmp$main_area),]
+    if(dropMissingMainArea) tmp <- tmp[!is.na(tmp$main_area),]
     
     tmp
     

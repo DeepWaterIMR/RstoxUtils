@@ -22,9 +22,13 @@ downloadLandings <- function(species, years = NULL) {
   ## Find the species code
   
   species <- paste0("^", species, "$")
+  if(grepl("(|)", species)) species <- gsub("\\)", "\\\\)", gsub("\\(", "\\\\(", species))
   tmp <- sapply(colnames(splist), function(x) grep(species, splist[,x], ignore.case = TRUE))
   
-  if(all(sapply(tmp, function(k) length(k) == 0))) stop(paste(species, "not found from FDIRcodes$speciesCodes"))
+  if(all(sapply(tmp, function(k) length(k) == 0))) {
+    message(paste(species, "not found from FDIRcodes$speciesCodes. Returning NULL."))
+    return(NULL)
+  }
   
   if(sum(sapply(tmp, function(k) length(k) == 1)) > 1) {
     stop(

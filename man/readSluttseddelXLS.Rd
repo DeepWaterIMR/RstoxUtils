@@ -4,12 +4,14 @@
 \alias{readSluttseddelXLS}
 \title{Read landing data from annually compiled Excel files}
 \usage{
-readSluttseddelXLS(species, dataDir)
+readSluttseddelXLS(species, dataDir, dropMissingMainArea = TRUE)
 }
 \arguments{
 \item{species}{Character string defining the species using the FDIR Norwegian species names}
 
 \item{dataDir}{Character vector defining the path to the folder where Excel files are located (typically "sluttseddel_xls_ferdige_År")}
+
+\item{dropMissingMainArea}{Logical indicating whether catches with missing main area should be dropped.}
 }
 \description{
 Read landing data from annually compiled Excel files

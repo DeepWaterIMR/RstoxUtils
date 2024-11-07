@@ -1,8 +1,8 @@
 #' @title Read and compile IMR vessel position files from a folder
 #' @description Compiles the standard IMR vessel position files into a data.table for further analyses
-#' @param path Character string defining the path to the code{/CRUISE_LOG/TRACK/} folder
+#' @param path Character string defining the path to the \code{/CRUISE_LOG/TRACK/} folder
 #' @param log.file Logical indicating whether the file from \code{path} has \code{.log} extension. If false, \code{.csv} is assumed.
-#' @return A data.table containing all position information from the code{/CRUISE_LOG/TRACK/} folder
+#' @return A data.table containing all position information from the \code{/CRUISE_LOG/TRACK/} folder
 #' @author Mikko Vihtakari
 #' @importFrom data.table rbindlist
 #' @export
