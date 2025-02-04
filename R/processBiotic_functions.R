@@ -257,7 +257,7 @@ processBioticFiles <- function(
   
   # Combine
   
-  out <- do.call(Map, c(f = rbind, out))
+  out <- do.call(Map, c(f = rbind, out, fill = TRUE))
   
   # Convert column classes
   
