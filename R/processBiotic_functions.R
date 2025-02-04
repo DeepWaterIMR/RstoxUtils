@@ -147,7 +147,7 @@ processBioticFile <- function(file, lengthUnit = "cm", weightUnit = "g", removeE
   
   # Stndat
   
-  stndat <- merge(coredat, cth, all.y = TRUE, by = c("missiontype", "missionnumber", "startyear", "platform", "serialnumber"))
+  stndat <- merge(coredat, cth, all = TRUE, by = c("missiontype", "missionnumber", "startyear", "platform", "serialnumber"))
   stndat[is.na(commonname), commonname := "Empty"]
   
   # Inddat
