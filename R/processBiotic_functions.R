@@ -27,7 +27,7 @@ processBioticFile <- function(file, lengthUnit = "cm", weightUnit = "g", removeE
   if (coreDataOnly) {
     msn <- dt$mission[, coreDataList("mission"), with = FALSE]
   } else {
-    msn <- setDT(dt$mission)
+    msn <- data.table::setDT(dt$mission)
   }
   
   if (convertColumns) {
@@ -129,9 +129,9 @@ processBioticFile <- function(file, lengthUnit = "cm", weightUnit = "g", removeE
     age <- convertColumnTypes(age)
   }
   
-  if (nrow(age) == 0) {
-    age <- rapply(age, as.integer, how = "replace")
-  }
+  # if (nrow(age) == 0) {
+  #   age <- rapply(age, as.integer, how = "replace")
+  # }
   
   ## Compiled datasets ----
   
@@ -163,9 +163,12 @@ processBioticFile <- function(file, lengthUnit = "cm", weightUnit = "g", removeE
   
   inddat[is.na(preferredagereading), preferredagereading := 1]
   
+  if(nrow(age) > 0) {
   inddat <- merge(inddat, age, by.x = c(intersect(names(inddat), names(age)), "preferredagereading"), by.y = c(intersect(names(inddat), names(age)), "agedeterminationid"), all.x = TRUE)
+  }
   
   if(sum(is.na(inddat$commonname)) > 0) stop(paste(sum(is.na(inddat$commonname)), "missing commonname records. This is likely due to merging error between individual and agedetermination data tables. File a bug report."))
+  
   
   
   ## Return ----
