@@ -1,0 +1,47 @@
+---
+title: "Download and visualize ERS data"
+author: "Mikko Vihtakari (Institute of Marine Research)"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  bookdown::html_document2:
+    toc: true
+    toc_float: true
+    code_folding: show
+    number_sections: false
+pkgdown:
+  as_is: true
+vignette: >
+  %\VignetteIndexEntry{RstoxStrata}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r, include = FALSE}
+library(knitr)
+library(kableExtra)
+
+knitr::opts_chunk$set(collapse = TRUE, message = FALSE, warning = FALSE, comment = "#>")
+```
+
+<!-- # Summary -->
+
+<!-- Blap -->
+
+Packages required to run the examples:
+
+```{r}
+library(sf)
+library(dplyr)
+library(tidyr)
+library(tibble)
+library(RstoxUtils)
+library(ggOceanMaps)
+library(cowplot)
+```
+
+# Introduction
+
+The Directorate of Fisheries in Norway (FDir) collects and distributes data on [exact positions and times of commercial fishing events by the Norwegian fleet](https://www.fiskeridir.no/english/Fisheries/reporting-systems-and-innovation/electronic-reporting-ers-and-position-reporting-vms-in-norwegian-fisheries) for vessels >15 m. These data, called ERS for Electronic Registration System, are available on the [FDir website](https://www.fiskeridir.no/statistikk-tall-og-analyse/data-og-statistikk-om-yrkesfiske/apne-data-elektronisk-rapportering-ers). These data are currently only available in Norwegian compressed in large unsearchable zip files. The `downloadERS()` and `extractERS()` functions aid in efficient handling of these data. 
+

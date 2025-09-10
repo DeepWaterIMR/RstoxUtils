@@ -2,7 +2,7 @@
 % Please edit documentation in R/extractLogbook.R
 \name{extractLogbook}
 \alias{extractLogbook}
-\title{Extract information from detailed Norwegian fisheries logbooks}
+\title{Legacy function to extract ERS information from detailed Norwegian fisheries logbooks}
 \usage{
 extractLogbook(
   path,
@@ -41,24 +41,30 @@ A data.table containing following columns:
 \item \code{"gearCat"} gear category translated from \code{gearId} based on \code{\link{FDIRcodes}$gearCodes}.
 \item \code{"fishTime"} reported fishing time.
 \item \code{"effort"} reported fishing effort (number of hooks etc.)
-\item \code{"dist"} reported fishing distance in meters. 
+\item \code{"dist"} reported fishing distance in meters.
 \item \code{"depth"} reported fishing depth in meters acquired based on the \code{method} argument.
 \item \code{"targetSpFAO"} target species based on the FAO definition: the species with highest mass in catch.
-\item \code{"targetSpRep"} target species reported by the fishermen. 
+\item \code{"targetSpRep"} target species reported by the fishermen.
 \item \code{"species"} reported catch species based on the \code{species}, \code{language} and \code{subspecies} arguments. Translated from the species ID (FANGSTART_NS or FANGSTART_FAO) based on \code{\link{FDIRcodes}$speciesCodes}.
-\item \code{"mass"} reported catch of the \code{species} in kilograms. 
+\item \code{"mass"} reported catch of the \code{species} in kilograms.
 }
 }
 \description{
 Extracts information from detailed Norwegian fisheries logbook files
 }
 \details{
-This function extracts information from the Norwegian fisheries logbooks provided in the \code{.psv} format on the IMR server. Note that these data are confidential and protected by the Norwegian Privacy Act (personvernloven). Keep the data on the server or in another safe place (not on the cloud). Do not send the input data around on email. The \code{remove.sensitive} argument can be used to disconnect the output from the confidential input data. This output can be distributed to people who have not signed the confidentiality statement (students, ICES colleagues, etc.) also using email. The data are property of the Norwegian Directorate of Fisheries and you should consult them if you plan to publish any parts of the dataset. 
+This function extracts information from the Norwegian fisheries logbooks provided in the \code{.psv} format on the IMR server. Note that these data are confidential and protected by the Norwegian Privacy Act (personvernloven). Keep the data on the server or in another safe place (not on the cloud). Do not send the input data around on email. The \code{remove.sensitive} argument can be used to disconnect the output from the confidential input data. This output can be distributed to people who have not signed the confidentiality statement (students, ICES colleagues, etc.) also using email. The data are property of the Norwegian Directorate of Fisheries and you should consult them if you plan to publish any parts of the dataset.
 
 Note that the structure of logbook files is not confidential and therefore this function can be distributed freely. The data required by the function cannot (do not send those data on email).
 
 There are many duplicate records in the logbook files on the server. This function removes these duplicates automatically, but the process takes time and is not very controlled. If you want to be sure about the data you include, copy the desired files to another folder (in a safe place) and run the function for that folder.
 }
+\seealso{
+Other ERS functions: 
+\code{\link{downloadERS}()},
+\code{\link{extractERS}()}
+}
 \author{
 Mikko Vihtakari (Institute of Marine Research)
 }
+\concept{ERS functions}
