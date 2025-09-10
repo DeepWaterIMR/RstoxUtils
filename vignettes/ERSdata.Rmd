@@ -45,3 +45,9 @@ library(cowplot)
 
 The Directorate of Fisheries in Norway (FDir) collects and distributes data on [exact positions and times of commercial fishing events by the Norwegian fleet](https://www.fiskeridir.no/english/Fisheries/reporting-systems-and-innovation/electronic-reporting-ers-and-position-reporting-vms-in-norwegian-fisheries) for vessels >15 m. These data, called ERS for Electronic Registration System, are available on the [FDir website](https://www.fiskeridir.no/statistikk-tall-og-analyse/data-og-statistikk-om-yrkesfiske/apne-data-elektronisk-rapportering-ers). These data are currently only available in Norwegian compressed in large unsearchable zip files. The `downloadERS()` and `extractERS()` functions aid in efficient handling of these data. 
 
+## Download ERS data
+
+## Process ERS data
+
+
+
