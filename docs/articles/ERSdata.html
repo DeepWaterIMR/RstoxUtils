@@ -95,7 +95,7 @@
 <div class="section level3">
 <h3 id="download-ers-data">Download ERS data<a class="anchor" aria-label="anchor" href="#download-ers-data"></a>
 </h3>
-<p>The <code>downloadERS</code> function can be used to download all .zip files listed on the <a href="https://www.fiskeridir.no/statistikk-tall-og-analyse/data-og-statistikk-om-yrkesfiske/apne-data-elektronisk-rapportering-ers" class="external-link">webpage</a>. Specify the <code>dest</code> argument to a location with sufficient storage capacity:</p>
+<p>The <code><a href="../reference/downloadERS.html">downloadERS()</a></code> function can be used to download all .zip files listed on the <a href="https://www.fiskeridir.no/statistikk-tall-og-analyse/data-og-statistikk-om-yrkesfiske/apne-data-elektronisk-rapportering-ers" class="external-link">webpage</a>. Specify the <code>dest</code> argument to a location with sufficient storage capacity:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/downloadERS.html">downloadERS</a></span><span class="op">(</span>dest <span class="op">=</span> <span class="st">"~Documents/Fisheries data/FDIR ERS data"</span>,</span>
 <span>            years <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2011</span>, <span class="fl">2018</span>, <span class="fl">2025</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
@@ -104,7 +104,7 @@
 <div class="section level3">
 <h3 id="process-ers-data">Process ERS data<a class="anchor" aria-label="anchor" href="#process-ers-data"></a>
 </h3>
-<p>After downloading, use the <code>extractERS</code> function to read the data:</p>
+<p>After downloading, use the <code><a href="../reference/extractERS.html">extractERS()</a></code> function to read the data:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ers_example_data</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="fu"><a href="../reference/extractERS.html">extractERS</a></span><span class="op">(</span>path <span class="op">=</span> <span class="st">"~Documents/Fisheries data/FDIR ERS data"</span>,</span>

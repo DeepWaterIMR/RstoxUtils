@@ -57,7 +57,7 @@ The Directorate of Fisheries in Norway (FDir) collects and distributes data on t
 
 ## Download ERS data
 
-The `downloadERS` function can be used to download all .zip files listed on the [webpage](https://www.fiskeridir.no/statistikk-tall-og-analyse/data-og-statistikk-om-yrkesfiske/apne-data-elektronisk-rapportering-ers). Specify the `dest` argument to a location with sufficient storage capacity:
+The `downloadERS()` function can be used to download all .zip files listed on the [webpage](https://www.fiskeridir.no/statistikk-tall-og-analyse/data-og-statistikk-om-yrkesfiske/apne-data-elektronisk-rapportering-ers). Specify the `dest` argument to a location with sufficient storage capacity:
 
 ```{r, eval = FALSE}
 downloadERS(dest = "~Documents/Fisheries data/FDIR ERS data",
@@ -72,7 +72,7 @@ In this example, only the years 2011, 2018, and 2025 are used to conserve space.
 data("ers_example_data")
 ```
 
-After downloading, use the `extractERS` function to read the data:
+After downloading, use the `extractERS()` function to read the data:
 
 ```{r, eval = FALSE}
 ers_example_data <- 
