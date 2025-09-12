@@ -32,13 +32,18 @@ Packages required to run the examples:
 
 ```{r}
 # Package names
-packages <- 
-  c("RstoxUtils", "sf", "dplyr", "ggOceanMaps", "ggplot2", "ggspatial",
+packages <- c("RstoxUtils", "sf", "dplyr", "ggOceanMaps", "ggplot2", "ggspatial",
     "lubridate", "tibble", "tidyr", "hexbin")
 
 # Install packages not yet installed
 installed_packages <- packages %in% rownames(installed.packages())
 if (any(installed_packages == FALSE)) {
+  
+  if("RstoxUtils" %in% packages[!installed_packages]) {
+    remotes::install_github("DeepWaterIMR/RstoxUtils", upgrade = "never")
+  }
+  
+  installed_packages <- packages %in% rownames(installed.packages())
   install.packages(packages[!installed_packages])
 }
 
