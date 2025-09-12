@@ -39,7 +39,7 @@
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="articles/LandingsData.html">Sales notes</a></li>
     <li><hr class="dropdown-divider"></li>
-    <li><a class="dropdown-item" href="articles/ERSData.html">Electronic Reporting System</a></li>
+    <li><a class="dropdown-item" href="articles/ERSdata.html">Electronic Reporting System</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="articles/CodeDefinitions.html">Definitons</a></li>
     <li><hr class="dropdown-divider"></li>
@@ -59,12 +59,15 @@
   </div>
 </nav><div class="container template-home">
 <div class="row">
-  <main id="main" class="col-md-9"><p><strong>Utility functions for the Stox Project. R package, updated 2025-09-12.</strong></p>
+  <main id="main" class="col-md-9"><div class="section level1">
+<div class="page-header"><h1 id="rstoxutils">RstoxUtils<a class="anchor" aria-label="anchor" href="#rstoxutils"></a>
+</h1></div>
+<p><strong>Utility functions for the Stox Project. R package, updated 2025-09-12.</strong></p>
 <p>This package contains utility functions for stock assessment and data flow within the Institute of Marine Research (IMR). The package has two purposes: 1) To function as a showcase and developmental platform for functions that may be included in the future releases of the Stox Project. 2) To provide a collection of functions needed in the internal workflow of the Deep-sea species group at IMR.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>The package requires <a href="https://github.com/StoXProject/RstoxData/releases" class="external-link"><strong>RstoxData</strong></a> <a href="https://github.com/StoXProject" class="external-link">Stox project</a> packages to function. These packages can be installed by following the links for each package or using the <a href="https://cran.r-project.org/web/packages/devtools/index.html" class="external-link"><strong>devtools</strong></a> package. The <strong>RstoxUtils</strong> package can be installed using <strong>devtools</strong> once all Stox project packages are installed correctly.</p>
+<p>The package requires the <a href="https://github.com/StoXProject/RstoxData/releases" class="external-link"><strong>RstoxData</strong></a> <a href="https://github.com/StoXProject" class="external-link">Stox project</a> package to function. These packages can be installed by following the links for each package or using the <a href="https://cran.r-project.org/web/packages/devtools/index.html" class="external-link"><strong>devtools</strong></a> package. The <strong>RstoxUtils</strong> package can be installed using <strong>devtools</strong> once all Stox project packages are installed correctly.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"DeepWaterIMR/RstoxUtils"</span>, upgrade <span class="op">=</span> <span class="st">"never"</span><span class="op">)</span></span></code></pre></div>
 <p>The <strong>RstoxUtils</strong> uses multiple GIS packages developed for R. You may have to update these (Packages -&gt; Update -&gt; Select all -&gt; Install updates in R Studio).</p>
@@ -73,11 +76,11 @@
 <div class="section level2">
 <h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
 </h2>
-<p>See the website, function reference and specific articles for the use of the package:</p>
+<p>See the <a href="https://deepwaterimr.github.io/RstoxUtils">website</a>, <a href="https://deepwaterimr.github.io/RstoxUtils/reference/index.html">function reference</a> and specific articles for the use of the package:</p>
 <ol style="list-style-type: decimal">
-<li>Sales note data</li>
-<li>ERS data</li>
-<li>Biotic data</li>
+<li><a href="https://deepwaterimr.github.io/RstoxUtils/articles/LandingsData.html">Sales note data</a></li>
+<li><a href="https://deepwaterimr.github.io/RstoxUtils/articles/ERSdata.html">ERS data</a></li>
+<li><a href="https://deepwaterimr.github.io/RstoxUtils/articles/BioticData.html">Biotic data</a></li>
 </ol>
 <p>Note that the strata functions from this package have been moved to the <a href="https://deepwaterimr.github.io/RstoxStrata/index.html" class="external-link">RstoxStrata</a> package and the entire IMR Biotic database can be accessed using the <a href="https://github.com/DeepWaterIMR/BioticExplorerServer" class="external-link">BioticExplorerServer package</a></p>
 </div>
@@ -108,7 +111,7 @@
 </h2>
 <p>Any contributions to the package are more than welcome. Please contact the package creator Mikko Vihtakari (<a href="mailto:mikko.vihtakari@hi.no" class="email">mikko.vihtakari@hi.no</a>) to discuss your ideas on improving the package or place a request in the issues section.</p>
 </div>
-
+</div>
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">

@@ -37,7 +37,7 @@
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../articles/LandingsData.html">Sales notes</a></li>
     <li><hr class="dropdown-divider"></li>
-    <li><a class="dropdown-item" href="../articles/ERSData.html">Electronic Reporting System</a></li>
+    <li><a class="dropdown-item" href="../articles/ERSdata.html">Electronic Reporting System</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../articles/CodeDefinitions.html">Definitons</a></li>
     <li><hr class="dropdown-divider"></li>
@@ -100,10 +100,10 @@
 <div class="section level3">
 <h3 id="download-sales-note-data-from-2005-onward">Download sales note data from 2005 onward<a class="anchor" aria-label="anchor" href="#download-sales-note-data-from-2005-onward"></a>
 </h3>
-<p>The <code><a href="../reference/downloadLandings.html">downloadLandings()</a></code> can be used to download sales note data utilizing the IMR API containing data from 2005. Specify the species name in Norwegian (see <code>FDIRcodes$speciesCodes</code> or Table 1 in the <a href="">Codes and definitions</a> vignette) and years (if you do not want to download all data). In the example, we’ll download sales note data for beaked redfish (<em>Sebastes mentella</em>).</p>
+<p>The <code><a href="../reference/downloadLandings.html">downloadLandings()</a></code> can be used to download sales note data utilizing the IMR API containing data from 2005. Specify the species name in Norwegian (see <code>FDIRcodes$speciesCodes</code> or Table 1 in the <a href="https://deepwaterimr.github.io/RstoxUtils/articles/CodeDefinitions.html">Codes and definitions</a> vignette) and years (if you do not want to download all data). In the example, we’ll download sales note data for beaked redfish (<em>Sebastes mentella</em>).</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lnd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/downloadLandings.html">downloadLandings</a></span><span class="op">(</span><span class="st">"Snabeluer"</span><span class="op">)</span></span></code></pre></div>
-<p>The function returns a summary of the data by default that picks the relevant columns from the sales note list to calculate landings. For reference, the summary is a simple <a href=""><em>dplyr</em></a> expression:</p>
+<p>The function returns a summary of the data by default that picks the relevant columns from the sales note list to calculate landings. For reference, the summary is a simple <a href="https://cran.r-project.org/package=dplyr" class="external-link"><em>dplyr</em></a> expression:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sales_notes</span><span class="op">$</span><span class="va">Produkt</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span></span>

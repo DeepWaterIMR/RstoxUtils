@@ -1,21 +1,11 @@
----
-title: RstoxUtils
-output: 
-  html_document: 
-    keep_md: yes
-editor_options: 
-  chunk_output_type: console
----
-
-
-
+# RstoxUtils
 **Utility functions for the Stox Project. R package, updated 2025-09-12.**
 
 This package contains utility functions for stock assessment and data flow within the Institute of Marine Research (IMR). The package has two purposes: 1) To function as a showcase and developmental platform for functions that may be included in the future releases of the Stox Project. 2) To provide a collection of functions needed in the internal workflow of the Deep-sea species group at IMR.
 
 ## Installation
 
-The package requires [**RstoxData**](https://github.com/StoXProject/RstoxData/releases) [Stox project](https://github.com/StoXProject) packages to function. These packages can be installed by following the links for each package or using the [**devtools**](https://cran.r-project.org/web/packages/devtools/index.html) package. The **RstoxUtils** package can be installed using **devtools** once all Stox project packages are installed correctly. 
+The package requires the [**RstoxData**](https://github.com/StoXProject/RstoxData/releases) [Stox project](https://github.com/StoXProject) package to function. These packages can be installed by following the links for each package or using the [**devtools**](https://cran.r-project.org/web/packages/devtools/index.html) package. The **RstoxUtils** package can be installed using **devtools** once all Stox project packages are installed correctly. 
 
 
 ``` r
@@ -30,11 +20,11 @@ If the installation of a dependency fails, try installing those packages manuall
 
 ## Usage
 
-See the website, function reference and specific articles for the use of the package:
+See the [website](https://deepwaterimr.github.io/RstoxUtils), [function reference](https://deepwaterimr.github.io/RstoxUtils/reference/index.html) and specific articles for the use of the package:
 
- 1. Sales note data
- 2. ERS data
- 3. Biotic data
+ 1. [Sales note data](https://deepwaterimr.github.io/RstoxUtils/articles/LandingsData.html)
+ 2. [ERS data](https://deepwaterimr.github.io/RstoxUtils/articles/ERSdata.html)
+ 3. [Biotic data](https://deepwaterimr.github.io/RstoxUtils/articles/BioticData.html)
 
 Note that the strata functions from this package have been moved to the [RstoxStrata](https://deepwaterimr.github.io/RstoxStrata/index.html) package and the entire IMR Biotic database can be accessed using the [BioticExplorerServer package](https://github.com/DeepWaterIMR/BioticExplorerServer)
 

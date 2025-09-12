@@ -62,13 +62,13 @@ Landings from Norwegian commercial fisheries are delivered to registered landing
 
 ## Download sales note data from 2005 onward
 
-The `downloadLandings()` can be used to download sales note data utilizing the IMR API containing data from 2005. Specify the species name in Norwegian (see `FDIRcodes$speciesCodes` or Table 1 in the [Codes and definitions]() vignette) and years (if you do not want to download all data). In the example, we'll download sales note data for beaked redfish (*Sebastes mentella*).
+The `downloadLandings()` can be used to download sales note data utilizing the IMR API containing data from 2005. Specify the species name in Norwegian (see `FDIRcodes$speciesCodes` or Table 1 in the [Codes and definitions](https://deepwaterimr.github.io/RstoxUtils/articles/CodeDefinitions.html) vignette) and years (if you do not want to download all data). In the example, we'll download sales note data for beaked redfish (*Sebastes mentella*).
 
 ```{r, eval = FALSE}
 lnd <- downloadLandings("Snabeluer")
 ```
 
-The function returns a summary of the data by default that picks the relevant columns from the sales note list to calculate landings. For reference, the summary is a simple [*dplyr*]() expression:
+The function returns a summary of the data by default that picks the relevant columns from the sales note list to calculate landings. For reference, the summary is a simple [*dplyr*](https://cran.r-project.org/package=dplyr) expression:
 
 ```{r, eval = FALSE}
 sales_notes$Produkt %>%
