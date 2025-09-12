@@ -18,38 +18,66 @@ readFdirCodes <- function(path,
                           gearSheet = "A7-Redskap",
                           gearStartRow = 8
 ) {
-  
+
   ## Species codes
-  
+
   dt <- suppressMessages(readxl::read_xlsx(path = path, sheet = speciesSheet, skip = speciesStartRow, col_names = FALSE))
   header <- suppressMessages(readxl::read_xlsx(path = path, sheet = speciesSheet, col_names = FALSE, range = paste0("A", speciesHeaderRow, ":", LETTERS[ncol(dt)], speciesHeaderRow)))
-  
+
   colnames(dt) <- as.character(header[1,])
-  
+
   dt <- dt[c("Tall", "FAO", "Norsk navn", "Engelsk navn", "Latinsk navn")]
   dt <- dt[rowSums(is.na(dt)) != ncol(dt), ]
   colnames(dt) <- c("idNS", "idFAO", "norwegian", "english", "latin")
-  
+
   dt$idNS <- suppressWarnings(as.numeric(dt$idNS))
   dt <- dt[!is.na(dt$idNS),]
   dt <- dt[!duplicated(dt$idNS),]
   dt$norwegian <- trimws(gsub("\\*", "", dt$norwegian))
   dt$english <- trimws(gsub("\\*", "", dt$english))
-  
+
   speciesCodes <- dt
-  
+
   ## Gear codes
-  
+
   dt <- suppressMessages(readxl::read_xlsx(path = path, sheet = gearSheet, skip = gearStartRow, col_names = FALSE))
   dt <- dt[,1:2]
   colnames(dt) <- c("idGear", "gearName")
   dt <- dt[!is.na(dt$idGear),]
-  dt$gearCategory <- cut(dt$idGear, seq(10, 100, 10), right = FALSE, labels = c("Noter", "Garn", "Kroker", "Ruser", "Traal", "Noter", "Skytevaapen", "Annet", "Annet"))
-  
+  dt <- dt %>%
+    dplyr::mutate(
+      gearCategory = dplyr::case_when(
+        idGear %in% 10:19 ~ "Seines",
+        idGear %in% c(20:29, 45) ~ "Gillnets",
+        idGear %in% 30:39 ~ "Hook gears",
+        idGear %in% 40:49 ~ "Traps and fykes",
+        idGear %in% c(50:52,55:59,61) ~ "Bottom trawls",
+        idGear %in% c(53:54) ~ "Pelagic trawls",
+        .default = "Other"
+      ),
+      Hovedgruppe = dplyr::case_when(
+        idGear %in% 10:19 ~ "Not",
+        idGear %in% c(20:49, 61) ~ "Konvensjonelle",
+        idGear %in% c(50:59) ~ "Traal",
+        .default = "Annet"
+      ),
+      Subgruppe = dplyr::case_when(
+        idGear %in% 10:19 ~ "Not",
+        idGear %in% c(20:29, 45) ~ "Garn",
+        idGear %in% 30:39 ~ "Krokredskap",
+        idGear %in% 40:49 ~ "Bur og ruser",
+        idGear %in% c(50:59) ~ "Traal",
+        idGear %in% c(61) ~ "Snurrevad",
+        idGear %in% c(70:79) ~ "Harpun/kanon",
+        idGear %in% c(90) ~ "Oppdrett/uspesifisert",
+        .default = "Andre redskap"
+      )
+    )
+
   gearCodes <- dt
-  
+
   ## Return
-  
+
   list(speciesCodes = speciesCodes, gearCodes = gearCodes)
-  
+
 }

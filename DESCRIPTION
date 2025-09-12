@@ -6,15 +6,17 @@ Date: 2025-09-12
 Authors@R: c(person("Mikko", "Vihtakari", email = "mikko.vihtakari@hi.no",
                   role = c("aut", "cre")) 
           )
-URL: https://github.com/MikkoVihtakari/RstoxUtils
-BugReports: https://github.com/MikkoVihtakari/RstoxUtils/issues
-Description: Contains utility functions for the Institute of Marine Research's (IMR) Stox Project.
-  The package has two purposes: 1) To function as a showcase and developmental platform 
-  for functions that may be included in the future releases of the Stox Project. 2) To provide a collection
-  of functions needed in the internal workflow of the Deep-sea species group at IMR.
+URL: https://github.com/DeepWaterIMR/RstoxUtils
+BugReports: https://github.com/DeepWaterIMR/RstoxUtils/issues
+Description: This package contains utility functions for stock assessment and 
+  data flow within the Institute of Marine Research (IMR). The package has two
+  purposes: 1) To function as a showcase and developmental platform for 
+  functions that may be included in the future releases of the Stox Project.
+  2) To provide a collection of functions needed in the internal workflow 
+  of the Deep-sea species group at IMR.
 Depends: R (>= 3.5.0)
-Imports: dplyr, readxl, RstoxData, data.table, geosphere, utils, xml2, magrittr,
-  sp, readr, pbmcapply, httr, vroom
+Imports: dplyr, readxl, RstoxData, data.table, utils, xml2, magrittr,
+  readr, pbmcapply, httr, vroom, RCurl, lubridate
 Suggests: reshape2, knitr, kableExtra, ggOceanMaps, ggplot2
 License: GPL-3 + file LICENSE
 Encoding: UTF-8

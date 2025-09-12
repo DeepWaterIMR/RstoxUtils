@@ -2,17 +2,19 @@
 % Please edit documentation in R/downloadLandings.R
 \name{downloadLandings}
 \alias{downloadLandings}
-\title{Download landings data for a species from the IMR database}
+\title{Download sales note data for a species from the IMR database}
 \usage{
-downloadLandings(species, years = NULL)
+downloadLandings(species, years = NULL, returned_data = "both")
 }
 \arguments{
 \item{species}{any species identification name in \code{FDIRcodes$speciesCodes} as character. Only one species at the time allowed.}
 
 \item{years}{an integer vector of years to download. If \code{NULL} (default), all years are downloaded. Please note that this option can take very long time and lead to huge datasets.}
+
+\item{returned_data}{character argument specifying what type of data should be returned. Use \code{"sales notes"} to return the original sales note data from the server, \code{"summary"} to only return summarized catches, or \code{"both"} to return both sales notes and summarized catches in a list.}
 }
 \description{
-The function downloads landings ("sluttseddel") data from IMR database. Requires access to the intranet.
+The function downloads sales note/landings ("sluttseddel") data from IMR database. Requires access to the intranet.
 }
 \examples{
 \dontrun{
@@ -20,6 +22,11 @@ downloadLandings("brugde") # Basking shark, all years
 downloadLandings("kveite", years = 2000:2001) # halibut, 2000-01
 }
 }
+\seealso{
+Other Landings functions: 
+\code{\link{readSluttseddelXLS}()}
+}
 \author{
 Mikko Vihtakari
 }
+\concept{Landings functions}

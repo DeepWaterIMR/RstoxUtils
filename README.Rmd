@@ -1,4 +1,5 @@
 ---
+title: RstoxUtils
 output: 
   html_document: 
     keep_md: yes
@@ -16,17 +17,16 @@ knitr::opts_chunk$set(
 )
 ```
 
-# RstoxUtils
 **Utility functions for the Stox Project. R package, updated `r packageDate("RstoxUtils")`.**
 
-This package contains utility functions for the Institute of Marine Research's (IMR) Stox Project. The package has two purposes: 1) To function as a showcase and developmental platform for functions that may be included in the future releases of the Stox Project. 2) To provide a collection of functions needed in the internal workflow of the Deep-sea species group at IMR.
+This package contains utility functions for stock assessment and data flow within the Institute of Marine Research (IMR). The package has two purposes: 1) To function as a showcase and developmental platform for functions that may be included in the future releases of the Stox Project. 2) To provide a collection of functions needed in the internal workflow of the Deep-sea species group at IMR.
 
 ## Installation
 
 The package requires [**RstoxData**](https://github.com/StoXProject/RstoxData/releases) [Stox project](https://github.com/StoXProject) packages to function. These packages can be installed by following the links for each package or using the [**devtools**](https://cran.r-project.org/web/packages/devtools/index.html) package. The **RstoxUtils** package can be installed using **devtools** once all Stox project packages are installed correctly. 
 
 ```{r eval = FALSE}
-devtools::install_github("MikkoVihtakari/RstoxUtils", upgrade = "never")
+devtools::install_github("DeepWaterIMR/RstoxUtils", upgrade = "never")
 ```
 
 The **RstoxUtils** uses multiple GIS packages developed for R. You may have to update these (Packages -> Update -> Select all -> Install updates in R Studio). 
@@ -40,94 +40,22 @@ If the installation of a dependency fails, try installing those packages manuall
 
 ## Usage
 
-Each numbered section below demonstrates a separate functionality in the **RstoxUtils** package. 
+See the website, function reference and specific articles for the use of the package:
 
-### 1. Read IMR .xml files
+ 1. Sales note data
+ 2. ERS data
+ 3. Biotic data
 
-The IMR database data are distributed as [.xml files of a certain structure](https://confluence.imr.no/display/API/Biotic+V3+API+documentation). The `RstoxData::readXmlFile` function reads these files, but due to the data architecture, information is spread across multiple data frames in the standard format. The `RstoxUtils::processBioticFile` function combines the data in station-based (`stnall` element in the list architecture) and individual fish-based (`indall`) formats. The `RstoxUtils::processBioticFiles` function does the same for multiple .xml files.
+Note that the strata functions from this package have been moved to the [RstoxStrata](https://deepwaterimr.github.io/RstoxStrata/index.html) package and the entire IMR Biotic database can be accessed using the [BioticExplorerServer package](https://github.com/DeepWaterIMR/BioticExplorerServer)
 
-```{r message=FALSE, warning=FALSE}
-xml.example <- system.file("extdata", "example.xml", package = "RstoxUtils")
+## Citation
 
-standard.format <- RstoxData::readXmlFile(xml.example)
+When using use the package for stock assessment or scientific articles, please cite it:
 
-## The data are as a list organized under multiple data.frames
-names(standard.format)
-
-## Station-based data are organized under 3 data frames
-dim(standard.format$mission)
-dim(standard.format$fishstation)
-dim(standard.format$catchsample)
-
-## Individual-based data have 2 additional data frames
-dim(standard.format$individual)
-dim(standard.format$agedetermination)
-
-## The user has to merge these data frames to work with the data
-## RstoxUtils addresses this issue and merges the data
-
-library(RstoxUtils)
-
-Utils.format <- RstoxUtils::processBioticFile(xml.example)
-
-## Station-based data can now be found from 1 data frame
-
-dim(Utils.format$stnall)
-
-## The same applies for individual-based-data 
-dim(Utils.format$indall)
-
-## The uniting ID tags in the Utils format are
-# missionid, startyear, serialno, catchsampleid and sometimes cruise for station based format
-# The abovementioned and specimenid
+```{r}
+citation("RstoxUtils")
 ```
-
-*NOTE:* The `RstoxUtils::processBioticFile` function have not been modified to use the improvements made to the 0.6.3 version of the `RstoxData::readXmlFile` function yet. The modifications will make the `processBioticFile` quicker as some corrections from this function were implemented in the master function. Also, the ID tags have not been proofed yet. This note will disappear once the fixes have been made. 
-
-### 2. Make strata for stock assessment
-
-Moved to the [RstoxStrata](https://github.com/DeepWaterIMR/RstoxStrata) package. 
-
-## 3. Read electronic logbook data
-
-The detailed electronic logbook data can be read using the `extractLogbook()` function. These data are confidential and require a special access to the folder on the server where they are located. If you need such access (and work at IMR), take contact with the data people at your group. Those who have the access, know where the data are located. The `path` argument should point to the folder of interest on the server (*elFangstdagbok_detaljert* for all data). The path can be defined on Mac (and Linux) as `path = "/Volumes/.../elFangstdagbok_detaljert"` and as `path = Q:/.../elFangstdagbok_detaljert` on Windows, where `...` represents the entire folder path that cannot be shown here. You can copy the folder location as path to your clip-board and past it the `extractLogbook()` function. Remember to use quotes (i.e. `" "`).
-
-The function is slow especially in Tromsø (prepare for 30 min to 1 h). It filters species out of the logbook data based on codes listed in the table under. For example, all Atlantic halibut can be extracted as follows:
-
-```{r eval = FALSE}
-extractLogbook(path, species = "HAL")
-```
-
-Or as:
-
-```{r eval = FALSE}
-extractLogbook(path, species = 2311) # Excluding farmed fish
-```
-
-The species name will be returned in Norwegian, English or Latin depending on the `language` argument.
-
-```{r, echo = FALSE}
-kable(FDIRcodes$speciesCodes, caption = "List of Directorate of Fisheries species codes. Use idNS or idFAO codes as species argument in the extractLogbook function.") %>%
-  kable_styling(bootstrap_options = c("striped", "condensed"))
-```
-
-Gear names are translated based on the table under:
-
-```{r, echo = FALSE}
-kable(FDIRcodes$gearCodes, caption = "List of Directorate of Fisheries gear codes. The codes are automatically returned by the extractLogbook function replacing any manually reported gear information (REDSKAP column)") %>%
-  kable_styling(bootstrap_options = c("striped", "condensed"))
-```
-
-The codes have been extracted from the [Norwegian Directorate of Fisheries website](https://www.fiskeridir.no/Yrkesfiske/Rapportering-ved-landing/Kodeliste).
 
 ## Contributions and contact information
 
 Any contributions to the package are more than welcome. Please contact the package creator Mikko Vihtakari (<mikko.vihtakari@hi.no>) to discuss your ideas on improving the package or place a request in the issues section. 
-
-## News
-
-2021-10-11 Strata making scripts moved to a [separate package](https://github.com/DeepWaterIMR/RstoxStrata). 
-
-2020-05-19 Added logbook data extraction.
-
-2019-12-16 The first version of the package online. Bugged as life, but available. Please excuse me for not having double-checked all references to other people's work. The references will come in future releases. 

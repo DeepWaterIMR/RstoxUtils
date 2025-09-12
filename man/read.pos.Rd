@@ -2,7 +2,7 @@
 % Please edit documentation in R/read.pos.R
 \name{read.pos}
 \alias{read.pos}
-\title{Read and compile IMR vessel position files from a folder}
+\title{Read and compile IMR vessel position files from a folder for cruise reports}
 \usage{
 read.pos(path, log.file = FALSE)
 }

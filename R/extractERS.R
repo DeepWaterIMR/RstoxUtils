@@ -260,7 +260,6 @@ extractERS <- function(path, species = NULL, translate_header = TRUE, method = "
     ### Export
 
     x %>%
-      dplyr::mutate(dplyr::across(c("targetSp", "catchSp"), factor)) %>%
       dplyr::select(-dplyr::matches("Start|End"))
   },
   mc.cores = ncores
@@ -276,6 +275,11 @@ extractERS <- function(path, species = NULL, translate_header = TRUE, method = "
       gearlist %>% dplyr::select(.data$gearName, .data$gearCategory),
       by = dplyr::join_by("gear" == "gearName")
     ) %>%
+    dplyr::mutate(
+      dplyr::across(
+        c("targetSp", "catchSp", "ICESArea", "FDIRMainArea", "EEZ", "gear",
+          "gearGroup", "gearSpecification", "gearIssues"),
+        factor)) %>%
     dplyr::filter(.data$weight > 0) %>%
     dplyr::arrange(.data$year, .data$date, .data$lat, .data$lon,
                    .data$weight) %>%

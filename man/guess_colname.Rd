@@ -19,3 +19,4 @@ Uses fuzzy matching (\code{\link[base]{agrep}}) to guess (column) names from a l
 \author{
 Mikko Vihtakari, Conrad Helgeland
 }
+\concept{helpers}

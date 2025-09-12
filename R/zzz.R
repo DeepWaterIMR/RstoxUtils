@@ -2,7 +2,7 @@
 # }
 
 .onAttach <- function(libname, pkgname) {
-  options(timeout = max(6000, getOption("timeout")))
+  options(timeout = max(10000, getOption("timeout")))
 }
 
 # Define global variables

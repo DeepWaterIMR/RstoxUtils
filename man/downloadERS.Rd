@@ -2,7 +2,7 @@
 % Please edit documentation in R/downloadERS.R
 \name{downloadERS}
 \alias{downloadERS}
-\title{Download Electronic Reporting System (ERS) catch data into a folder from the \href{https://www.fiskeridir.no/statistikk-tall-og-analyse/data-og-statistikk-om-yrkesfiske/apne-data-elektronisk-rapportering-ers}{Norwegian Directorate of Fisheries (FDIR) webpage}}
+\title{Download Electronic Reporting System (ERS) catch data into a folder from the \href{https://www.fiskeridir.no/statistikk-tall-og-analyse/data-og-statistikk-om-yrkesfiske/apne-data-elektronisk-rapportering-ers}{Norwegian Directorate of Fisheries webpage}}
 \usage{
 downloadERS(
   dest,
@@ -24,10 +24,10 @@ downloadERS(
 Returns nothing. Downloads data into folder specified by the \code{dest} argument.
 }
 \description{
-Download Electronic Reporting System (ERS) catch data into a folder from the \href{https://www.fiskeridir.no/statistikk-tall-og-analyse/data-og-statistikk-om-yrkesfiske/apne-data-elektronisk-rapportering-ers}{Norwegian Directorate of Fisheries (FDIR) webpage}
+Download Electronic Reporting System (ERS) catch data into a folder from the \href{https://www.fiskeridir.no/statistikk-tall-og-analyse/data-og-statistikk-om-yrkesfiske/apne-data-elektronisk-rapportering-ers}{Norwegian Directorate of Fisheries webpage}
 }
 \details{
-Please note that this function downloads large amounts of data and places then as zip files in the folder defined by \code{dest}.
+Please note that this function downloads large amounts of data and places then as zip files in the folder defined by \code{dest}. Use the  \code{\link{extractERS}} to extract information from the downloaded files.
 }
 \seealso{
 Other ERS functions: 

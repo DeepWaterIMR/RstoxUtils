@@ -1,57 +1,18 @@
-#' @title North East Atlantic Greenland halibut survey stations
-#' @docType data
-#' @keywords datasets
-#' @name nea_ghl_survey_stations
-#' @usage data(nea_ghl_survey_stations)
-#' @format A dataframe 
-#' @source Institute of Marine Research (\url{https://www.imr.no})
-"nea_ghl_survey_stations"
-
-#' @title North East Atlantic Greenland original strata areas
-#' @docType data
-#' @keywords datasets
-#' @name nea_ghl_original_strata
-#' @usage data(nea_ghl_original_strata)
-#' @format A dataframe 
-#' @source Institute of Marine Research (\url{https://www.imr.no})
-"nea_ghl_original_strata"
-
-#' @title List of Norwegian Directorate of Fisheries lobbook codes
+#' @title List of Norwegian Directorate of Fisheries logbook codes
 #' @docType data
 #' @keywords datasets
 #' @name FDIRcodes
 #' @usage data(FDIRcodes)
 #' @format A list of data tables
-#' @source Norwegian Directorate of Fisheries (\url{https://www.fiskeridir.no/English})
+#' @source Norwegian Directorate of Fisheries (\url{https://www.fiskeridir.no})
 "FDIRcodes"
-
-#' @title Major fishing zones of Norway
-#' @docType data
-#' @keywords datasets shapefiles
-#' @family shapefiles
-#' @name fishingAreasNor
-#' @format \code{\link[sp:SpatialPolygons]{SpatialPolygonsDataFrame}} in decimal degrees (+init=epsg:4326) containing major fishing zones defined by the Norwegian Directorate of Fisheries.
-#' @source \href{https://kart.fiskeridir.no/stat}{Norwegian Directorate of Fisheries}
-#' @import sp
-"fishingAreasNor"
-
-#' @title ICES fishing areas
-#' @description Food and Agriculture Organization Major Fishing Area 27 (i.e. ICES region) fishing area polygons. The polygons are not cut with land as opposed to the areas distributed on the ICES website (see \code{BioticExplorerServer:::prepareICESareas}). This makes the polygons smaller and consequent calculations quicker. Use this dataset instead of the function.
-#' @docType data
-#' @keywords datasets shapefiles
-#' @family shapefiles
-#' @name icesAreas
-#' @format \code{\link[sp]{SpatialPolygonsDataFrame}} in decimal degrees (+init=epsg:4326).
-#' @source \href{https://gis.ices.dk/sf/index.html}{International Council for the Exploration of the Sea}
-#' @importFrom sp SpatialPolygonsDataFrame
-"icesAreas"
 
 #' @title NMD/IMR taxa code list
 #' @description Use the \code{\link{prepareTaxaList}} function to update the list.
 #' @docType data
 #' @keywords datasets
 #' @name taxaList
-#' @format A data table 
+#' @format A data table
 #' @source Institute of Marine Research (\url{https://imr.no})
 "taxaList"
 
@@ -60,7 +21,7 @@
 #' @docType data
 #' @keywords datasets
 #' @name gearList
-#' @format A data table 
+#' @format A data table
 #' @source Institute of Marine Research (\url{https://imr.no})
 "gearList"
 
@@ -69,6 +30,33 @@
 #' @docType data
 #' @keywords datasets
 #' @name cruiseSeriesList
-#' @format A data table 
+#' @format A data table
 #' @source Institute of Marine Research (\url{https://imr.no})
 "cruiseSeriesList"
+
+#' @title Example ERS data
+#' @description Example ERS data for beaked redfish. Use the \code{\link{extractERS}} function to produce similar data.
+#' @docType data
+#' @keywords datasets
+#' @name ers_example_data
+#' @format A tibble
+#' @source Norwegian Directorate of Fisheries (\url{https://www.fiskeridir.no/})
+"ers_example_data"
+
+#' @title Example sales note data downloaded through the API
+#' @description Example sales note data for beaked redfish. Use the \code{\link{downloadLandings}} function to produce similar data.
+#' @docType data
+#' @keywords datasets
+#' @name salesnote_example_data
+#' @format A tibble
+#' @source Norwegian Directorate of Fisheries (\url{https://www.fiskeridir.no/})
+"salesnote_example_data"
+
+#' @title Example historic sales note data extracted from Excel sheets on IMR server
+#' @description Example sales note data for beaked redfish. Use the \code{\link{readSluttseddelXLS}} function to produce similar data.
+#' @docType data
+#' @keywords datasets
+#' @name salesnote_xls_data
+#' @format A tibble
+#' @source Institute of Marine Research (\url{https://imr.no}) and Norwegian Directorate of Fisheries (\url{https://www.fiskeridir.no/})
+"salesnote_xls_data"

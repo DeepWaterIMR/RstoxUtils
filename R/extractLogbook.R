@@ -1,5 +1,5 @@
-#' @title Legacy function to extract ERS information from detailed Norwegian fisheries logbooks
-#' @description Extracts information from detailed Norwegian fisheries logbook files
+#' @title Legacy function to extract ERS information from detailed Norwegian fisheries logbooks from Excel files on the IMR server
+#' @description Extracts ERS information from Excel files on the IMR server.
 #' @param path Character argument defining the path to the folder where data are located
 #' @param species Character argument defining the species. Species names can be given in Norwegian, English or Latin. Species names are sampled from \code{\link{FDIRcodes}$speciesCodes}.
 #' @param method Character argument specifying the method for position, time and depth extraction. Alternatives: \code{"start"} takes the reported start values, \code{"end"} extracts the reported end values and \code{"average"} takes an average of start and end values.
@@ -34,7 +34,6 @@
 #' @author Mikko Vihtakari (Institute of Marine Research)
 #' @import data.table
 #' @importFrom parallel mclapply
-#' @importFrom geosphere geomean
 #' @importFrom utils txtProgressBar setTxtProgressBar
 #' @family ERS functions
 #' @export
@@ -48,6 +47,8 @@ extractLogbook <- function(path, species, method = "start", language = "norwegia
   gearlist <- data.table::as.data.table(FDIRcodes$gearCodes)
 
   ## Checks
+
+  if(method == "average") stop("Average fishing position disabled. Send a message to the maintainer to add it.")
 
   if(!is.character(language) | !language %in% tolower(colnames(splist))) stop("language has to be one of the following: 'norwegian', 'english' or 'latin'")
 
@@ -195,15 +196,15 @@ extractLogbook <- function(path, species, method = "start", language = "norwegia
           x[, date := dateStart + (dateEnd - dateStart)/2]
 
           #### Average location
-          z <- parallel::mclapply(1:nrow(x), function(i) {
-            out <- x[i,]
-            tmp <- geosphere::geomean(cbind(x = c(out$lonStart, out$lonEnd), y = c(out$latStart, out$latEnd)))
-            out$lon <- tmp[1]
-            out$lat <- tmp[2]
-            out
-          })
-
-          x <- do.call(rbind, z)
+          # z <- parallel::mclapply(1:nrow(x), function(i) {
+          #   out <- x[i,]
+          #   tmp <- geosphere::geomean(cbind(x = c(out$lonStart, out$lonEnd), y = c(out$latStart, out$latEnd)))
+          #   out$lon <- tmp[1]
+          #   out$lat <- tmp[2]
+          #   out
+          # })
+          #
+          # x <- do.call(rbind, z)
 
           #### Average depth
 

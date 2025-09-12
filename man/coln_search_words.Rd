@@ -20,3 +20,4 @@ The function accepts following required column names: \code{expedition}, \code{s
 \author{
 Mikko Vihtakari
 }
+\keyword{internal}

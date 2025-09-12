@@ -4,15 +4,27 @@
 \alias{readSluttseddelXLS}
 \title{Read landing data from annually compiled Excel files}
 \usage{
-readSluttseddelXLS(species, dataDir, dropMissingMainArea = TRUE)
+readSluttseddelXLS(
+  species,
+  dataDir,
+  years = 1977:2022,
+  dropMissingMainArea = TRUE
+)
 }
 \arguments{
-\item{species}{Character string defining the species using the FDIR Norwegian species names}
+\item{species}{Character string defining the species using the FDIR Norwegian species names. \code{NULL} returns all species.}
 
 \item{dataDir}{Character vector defining the path to the folder where Excel files are located (typically "sluttseddel_xls_ferdige_År")}
+
+\item{years}{Integer vector defining the years to read. Files in later years tend to be a mess and this option avoids crashes. Use \code{NULL} to try opening all files.}
 
 \item{dropMissingMainArea}{Logical indicating whether catches with missing main area should be dropped.}
 }
 \description{
 Read landing data from annually compiled Excel files
 }
+\seealso{
+Other Landings functions: 
+\code{\link{downloadLandings}()}
+}
+\concept{Landings functions}

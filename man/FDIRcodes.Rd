@@ -3,17 +3,17 @@
 \docType{data}
 \name{FDIRcodes}
 \alias{FDIRcodes}
-\title{List of Norwegian Directorate of Fisheries lobbook codes}
+\title{List of Norwegian Directorate of Fisheries logbook codes}
 \format{
 A list of data tables
 }
 \source{
-Norwegian Directorate of Fisheries (\url{https://www.fiskeridir.no/English})
+Norwegian Directorate of Fisheries (\url{https://www.fiskeridir.no})
 }
 \usage{
 data(FDIRcodes)
 }
 \description{
-List of Norwegian Directorate of Fisheries lobbook codes
+List of Norwegian Directorate of Fisheries logbook codes
 }
 \keyword{datasets}

@@ -1,7 +1,7 @@
 #' @title Convert font sizes measured as points to ggplot font sizes
 #' @description Converts font sizes measured as points (as given by most programs such as MS Word etc.) to ggplot font sizes
 #' @param x numeric vector giving the font sizes in points
-#' @return Returns a numeric vector of lenght \code{x} of ggplot font sizes
+#' @return Returns a numeric vector of length \code{x} of ggplot font sizes
 #' @keywords internal
 #' @export
 #'
@@ -10,7 +10,7 @@ FS <- function(x) x/2.845276 # x is the desired font / line size in pt
 #' @title Convert line sizes measured as points to ggplot line sizes
 #' @description Converts line sizes measured as points (as given by most programs such as Adobe Illustrator etc.) to ggplot font sizes
 #' @param x numeric vector giving the lines sizes in points
-#' @return Returns a numeric vector of lenght \code{x} of ggplot line sizes
+#' @return Returns a numeric vector of length \code{x} of ggplot line sizes
 #' @keywords internal
 #' @export
 #'
@@ -75,15 +75,15 @@ quiet <- function(x) {
 }
 
 #' @title Find API URL from cruise number and shipname
-#' @description Searches the NMD database for API path 
+#' @description Searches the NMD database for API path
 #' @author StoxProject. Taken from the old Rstox: https://github.com/Sea2Data/Rstox/blob/master/R/rstox_NMD.R
 #'
 # getCruiseSearchURL <- function(cruisenr, shipname, datasource="biotic", ver=getRstoxDef("ver"), server="http://tomcat7.imr.no:8080/apis/nmdapi"){
 #   paste(
-#     server, 
-#     datasource, 
-#     paste0("v", ver$API[[datasource]]), 
-#     paste0("find?cruisenr=", cruisenr, "&shipname=", shipname), 
+#     server,
+#     datasource,
+#     paste0("v", ver$API[[datasource]]),
+#     paste0("find?cruisenr=", cruisenr, "&shipname=", shipname),
 #     sep="/"
 #   )
 # }

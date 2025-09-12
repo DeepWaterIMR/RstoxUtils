@@ -2,7 +2,7 @@
 % Please edit documentation in R/extractLogbook.R
 \name{extractLogbook}
 \alias{extractLogbook}
-\title{Legacy function to extract ERS information from detailed Norwegian fisheries logbooks}
+\title{Legacy function to extract ERS information from detailed Norwegian fisheries logbooks from Excel files on the IMR server}
 \usage{
 extractLogbook(
   path,
@@ -50,7 +50,7 @@ A data.table containing following columns:
 }
 }
 \description{
-Extracts information from detailed Norwegian fisheries logbook files
+Extracts ERS information from Excel files on the IMR server.
 }
 \details{
 This function extracts information from the Norwegian fisheries logbooks provided in the \code{.psv} format on the IMR server. Note that these data are confidential and protected by the Norwegian Privacy Act (personvernloven). Keep the data on the server or in another safe place (not on the cloud). Do not send the input data around on email. The \code{remove.sensitive} argument can be used to disconnect the output from the confidential input data. This output can be distributed to people who have not signed the confidentiality statement (students, ICES colleagues, etc.) also using email. The data are property of the Norwegian Directorate of Fisheries and you should consult them if you plan to publish any parts of the dataset.

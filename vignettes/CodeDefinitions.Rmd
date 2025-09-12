@@ -1,0 +1,105 @@
+---
+title: "Codes and defintions"
+author: "Mikko Vihtakari (Institute of Marine Research)"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  bookdown::html_document2:
+    toc: true
+    toc_float: true
+    code_folding: show
+    number_sections: false
+pkgdown:
+  as_is: true
+vignette: >
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r, include = FALSE}
+library(knitr)
+library(kableExtra)
+library(RstoxUtils)
+library(dplyr)
+
+knitr::opts_chunk$set(
+  fig.width = 9, fig.height = 6, collapse = TRUE, message = FALSE, 
+  warning = FALSE, comment = "#>"
+)
+```
+
+```{r, include = FALSE}
+options(ggOceanMaps.datapath = "~/Documents/ggOceanMapsLargeData")
+```
+
+# Introduction
+
+The Norwegian Directorate of Fisheries (FDir) and Institute of Marine Research (IMR) use abbreviations, codes and definitions in their data. This document contains tables of definition files within the RstoxUtils package. 
+
+# Norwegian Directorate of Fisheries 
+
+The codes have been extracted from the [Norwegian Directorate of Fisheries website](https://www.fiskeridir.no/Yrkesfiske/Rapportering-ved-landing/Kodeliste).
+
+## Species codes
+
+```{r, echo = FALSE}
+ kableExtra::kbl(
+   FDIRcodes$speciesCodes,
+   caption = "List of Directorate of Fisheries species codes. Use idNS or idFAO codes as species argument in the extractLogbook function.") %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "condensed"))
+```
+
+## Gear codes
+
+```{r, echo = FALSE}
+kableExtra::kbl(
+  FDIRcodes$gearCodes, 
+  caption = "List of Directorate of Fisheries gear codes.") %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "condensed"))
+```
+
+# Institute of Marine Research
+
+## Cruise series list
+
+```{r, include = FALSE, eval = FALSE}
+cruiseSeriesList <- prepareCruiseSeriesList()
+save(cruiseSeriesList, file = "data/cruiseSeriesList.rda", compress = "xz")
+```
+
+The `cruiseSeriesList` can be used to connect cruises in the Biotic data with their respective cruise series. The [BioticExplorerServer package](https://github.com/DeepWaterIMR/BioticExplorerServer) does this automatically allowing database search using cruise series. You can update the list with the `prepareCruiseSeriesList()` function while connected to IMR intranet.
+
+```{r}
+cruiseSeriesList
+```
+
+## Gear list 
+
+```{r, include = FALSE, eval = FALSE}
+gearList <- prepareGearList()
+save(gearList, file = "data/gearList.rda", compress = "xz")
+```
+
+The `gearList` provides gear codes used in the IMR Biotic database:
+
+```{r}
+gearList
+```
+
+You can update the list with the `prepareGearList()` function while connected to IMR intranet.
+
+## Taxa list
+
+```{r, include = FALSE, eval = FALSE}
+taxaList <- prepareTaxaList()
+save(taxaList, file = "data/taxaList.rda", compress = "xz")
+```
+
+The `taxaList` provides all taxa used in the IMR Biotic database:
+
+```{r}
+taxaList
+```
+
+You can update the list with the `prepareTaxaList()` function while connected to IMR intranet.

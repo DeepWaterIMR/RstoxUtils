@@ -1,0 +1,104 @@
+template:
+  bootstrap: 5
+  bootswatch: cerulean
+  bslib:
+    primary: "#003399"
+
+url: https://deepwaterimr.github.io/RstoxUtils/
+
+reference:
+
+- title: Package documentation
+  desc: >
+    Quick access to the package documentation
+  contents:
+  - RstoxUtils
+  - RstoxUtils-package
+
+- title: Download Norwegian sales note data
+  desc: >
+    Functions to download and access sales note data (landings from commercial
+    fisheries) distributed by the Directorate of Fisheries in Norway. See the
+    [landings data vignette]() for examples.
+  contents:
+  - downloadLandings
+  - readSluttseddelXLS
+
+- title: ERS functions
+  desc: >
+    Functions to download and access Electronic Reporting System data on exact
+    positions and times of commercial fishing events by the Norwegian fleet for
+    vessels >15 m distributed by the Directorate of Fisheries in Norway. See the
+    [ERS data vignette]() for examples.
+  contents:
+  - downloadERS
+  - extractERS
+  - extractLogbook
+
+- title: Biotic functions
+  desc: >
+    Functions to open IMR biotic data from xml files. Note that the
+    [BioticExplorerDatabase](https://github.com/DeepWaterIMR/BioticExplorerServer)
+    package offers a more flexible way to search and filter the entire
+    Biotic database.
+  contents:
+  - processBioticFile
+  - processBioticFiles
+  - print.bioticProcData
+
+- title: Other functions
+  desc: >
+    Other potentially helpful functions.
+  contents:
+  - read.pos
+
+- title: Definitions
+  desc: >
+    Lists of data definitions, codes, and classifications used by the IMR and FDir
+    and functions used to generate them. See the [vignette]()  to explore the tables
+  contents:
+  - cruiseSeriesList
+  - gearList
+  - taxaList
+  - FDIRcodes
+  - prepareCruiseSeriesList
+  - prepareGearList
+  - prepareTaxaList
+  - readFdirCodes
+
+- title: Internal helper functions
+  desc: >
+    Internal functions dealing with data and graphics for basemap. These
+    functions are run on the background and only needed if you modify your maps
+    beyond the options offered by ggOceanMaps.
+  contents:
+  - guess_colname
+  - convertColumnTypes
+
+- reference:
+- title: Datasets
+  desc: >
+    Example datasets. Note that the [Norwegian Statistical Fishing Areas](https://mikkovihtakari.github.io/ggOceanMaps/reference/fdir_main_areas.html)
+    (hovedområde) as well as [ICES areas](https://mikkovihtakari.github.io/ggOceanMaps/reference/ices_areas.html) can be accessed through the [ggOceanMaps package](https://mikkovihtakari.github.io/ggOceanMaps).
+  contents:
+  - ers_example_data
+  - salesnote_example_data
+  - salesnote_xls_data
+
+navbar:
+ components:
+   articles:
+    text: Articles
+    menu:
+    - text: Biotic
+      href: articles/BioticData.html
+    - text: -------
+    - text: Sales notes
+      href: articles/LandingsData.html
+    - text: -------
+    - text: Electronic Reporting System
+      href: articles/ERSData.html
+    - text: -------
+    - text: Definitons
+      href: articles/CodeDefinitions.html
+    - text: -------

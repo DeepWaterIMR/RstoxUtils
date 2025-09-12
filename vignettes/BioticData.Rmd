@@ -1,0 +1,97 @@
+---
+title: "Open and visualize Biotic data"
+author: "Mikko Vihtakari (Institute of Marine Research)"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  bookdown::html_document2:
+    toc: true
+    toc_float: true
+    code_folding: show
+    number_sections: false
+pkgdown:
+  as_is: true
+vignette: >
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r, include = FALSE}
+library(knitr)
+library(kableExtra)
+
+knitr::opts_chunk$set(
+  fig.width = 9, fig.height = 6, collapse = TRUE, message = FALSE, 
+  warning = FALSE, comment = "#>"
+)
+```
+
+Packages required to run the examples:
+
+```{r}
+# Package names
+packages <- c("RstoxUtils", "ggplot2")
+
+# Install packages not yet installed
+installed_packages <- packages %in% rownames(installed.packages())
+if (any(installed_packages == FALSE)) {
+  
+  if("RstoxUtils" %in% packages[!installed_packages]) {
+    remotes::install_github("DeepWaterIMR/RstoxUtils", upgrade = "never")
+  }
+  
+  installed_packages <- packages %in% rownames(installed.packages())
+  install.packages(packages[!installed_packages])
+}
+
+# Load the packages to the workspace
+invisible(lapply(packages, function(x) {
+  suppressPackageStartupMessages(library(x, character.only = TRUE))}))
+```
+
+```{r, include = FALSE}
+options(ggOceanMaps.datapath = "~/Documents/ggOceanMapsLargeData")
+ggplot2::theme_set(theme_bw(base_size = 12))
+```
+
+The IMR database data are distributed as [.xml files of a certain structure](https://confluence.imr.no/display/API/Biotic+V3+API+documentation). The `RstoxData::readXmlFile` function reads these files, but due to the data architecture, information is spread across multiple data frames in the standard format. The `RstoxUtils::processBioticFile` function combines the data in station-based (`stnall` element in the list architecture) and individual fish-based (`indall`) formats. The `RstoxUtils::processBioticFiles` function does the same for multiple .xml files.
+
+These functions may come in handy for reports and software development where only few xml files are needed. If you want to access the entire Biotic database, it is recommended to use the the [BioticExplorerServer](https://github.com/DeepWaterIMR/BioticExplorerServer) package. 
+
+```{r message=FALSE, warning=FALSE}
+xml.example <- system.file("extdata", "example.xml", package = "RstoxUtils")
+
+standard.format <- RstoxData::readXmlFile(xml.example)
+
+## The data are as a list organized under multiple data.frames
+names(standard.format)
+
+## Station-based data are organized under 3 data frames
+dim(standard.format$mission)
+dim(standard.format$fishstation)
+dim(standard.format$catchsample)
+
+## Individual-based data have 2 additional data frames
+dim(standard.format$individual)
+dim(standard.format$agedetermination)
+
+## The user has to merge these data frames to work with the data
+## RstoxUtils addresses this issue and merges the data
+
+library(RstoxUtils)
+
+Utils.format <- RstoxUtils::processBioticFile(xml.example)
+
+## Station-based data can now be found from 1 data frame
+
+dim(Utils.format$stnall)
+
+## The same applies for individual-based-data 
+dim(Utils.format$indall)
+
+## The uniting ID tags in the Utils format are
+# missionid, startyear, serialno, catchsampleid and sometimes cruise for station based format
+# The abovementioned and specimenid
+```
+

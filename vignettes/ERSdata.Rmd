@@ -1,5 +1,5 @@
 ---
-title: "Download and visualize ERS data"
+title: "Download and Visualize ERS Data"
 author: "Mikko Vihtakari (Institute of Marine Research)"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: 
@@ -11,7 +11,7 @@ output:
 pkgdown:
   as_is: true
 vignette: >
-  %\VignetteIndexEntry{RstoxStrata}
+  %\VignetteIndexEntry{ERSdata}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
@@ -22,32 +22,155 @@ editor_options:
 library(knitr)
 library(kableExtra)
 
-knitr::opts_chunk$set(collapse = TRUE, message = FALSE, warning = FALSE, comment = "#>")
+knitr::opts_chunk$set(
+  fig.width = 9, fig.height = 6, collapse = TRUE, message = FALSE, 
+  warning = FALSE, comment = "#>"
+)
 ```
-
-<!-- # Summary -->
-
-<!-- Blap -->
 
 Packages required to run the examples:
 
 ```{r}
-library(sf)
-library(dplyr)
-library(tidyr)
-library(tibble)
-library(RstoxUtils)
-library(ggOceanMaps)
-library(cowplot)
+# Package names
+packages <- 
+  c("RstoxUtils", "sf", "dplyr", "ggOceanMaps", "ggplot2", "ggspatial",
+    "lubridate", "tibble", "tidyr", "hexbin")
+
+# Install packages not yet installed
+installed_packages <- packages %in% rownames(installed.packages())
+if (any(installed_packages == FALSE)) {
+  install.packages(packages[!installed_packages])
+}
+
+# Load the packages to the workspace
+invisible(lapply(packages, function(x) {
+  suppressPackageStartupMessages(library(x, character.only = TRUE))}))
+```
+
+```{r, include = FALSE}
+options(ggOceanMaps.datapath = "~/Documents/ggOceanMapsLargeData")
 ```
 
 # Introduction
 
-The Directorate of Fisheries in Norway (FDir) collects and distributes data on [exact positions and times of commercial fishing events by the Norwegian fleet](https://www.fiskeridir.no/english/Fisheries/reporting-systems-and-innovation/electronic-reporting-ers-and-position-reporting-vms-in-norwegian-fisheries) for vessels >15 m. These data, called ERS for Electronic Registration System, are available on the [FDir website](https://www.fiskeridir.no/statistikk-tall-og-analyse/data-og-statistikk-om-yrkesfiske/apne-data-elektronisk-rapportering-ers). These data are currently only available in Norwegian compressed in large unsearchable zip files. The `downloadERS()` and `extractERS()` functions aid in efficient handling of these data. 
+The Directorate of Fisheries in Norway (FDir) collects and distributes data on the [exact positions and times of commercial fishing events by the Norwegian fleet](https://www.fiskeridir.no/english/Fisheries/reporting-systems-and-innovation/electronic-reporting-ers-and-position-reporting-vms-in-norwegian-fisheries) for vessels >15 m. These data, referred to as ERS (Electronic Registration System), are available on the [FDir website](https://www.fiskeridir.no/statistikk-tall-og-analyse/data-og-statistikk-om-yrkesfiske/apne-data-elektronisk-rapportering-ers). Currently, the data are only available in Norwegian and are compressed into large, non-searchable zip files. The `downloadERS()` and `extractERS()` functions facilitate efficient handling of these datasets.
 
 ## Download ERS data
 
+The `downloadERS` function can be used to download all .zip files listed on the [webpage](https://www.fiskeridir.no/statistikk-tall-og-analyse/data-og-statistikk-om-yrkesfiske/apne-data-elektronisk-rapportering-ers). Specify the `dest` argument to a location with sufficient storage capacity:
+
+```{r, eval = FALSE}
+downloadERS(dest = "~Documents/Fisheries data/FDIR ERS data",
+            years = c(2011, 2018, 2025))
+```
+
+In this example, only the years 2011, 2018, and 2025 are used to conserve space. However, you may omit the `years` argument to download all available data from 2011 onward.
+
 ## Process ERS data
 
+```{r, echo = FALSE}
+data("ers_example_data")
+```
 
+After downloading, use the `extractERS` function to read the data:
 
+```{r, eval = FALSE}
+ers_example_data <- 
+  extractERS(path = "~Documents/Fisheries data/FDIR ERS data",
+             species = "snabeluer")
+```
+
+The data can now be visualized and used for further analysis:
+
+```{r fig-annual-overview, fig.cap = "Spatial distribution of total beaked redfish catches by the Norwegian fleet (>15 m) based on ERS data. Facets represent different years. The color scale, indicating aggregated total catches in tons, has been square-root transformed.", fig.height=8}
+pp <- ggOceanMaps::basemap(
+  ers_example_data, bathy.style = "contour_grey", base_size = 12) +
+  stat_summary_hex(
+    data = ers_example_data %>%
+      ggOceanMaps:: transform_coord(bind = TRUE),
+    aes(x = lon.proj, y = lat.proj, z = weight/1e3), bins = 30,
+    fun = "sum") +
+  scale_fill_distiller(
+    palette = "Spectral", na.value = "grey", limits = c(0, NA),
+    trans = "sqrt")  +
+  facet_wrap(~year, ncol = 1) + 
+  labs(x = NULL, y = NULL, fill = "Catch (t)") + 
+  theme(
+    legend.box.margin = margin(0, 0, 10, 0),
+    legend.background = element_rect(fill = "transparent", color = NA),
+    legend.box.background = element_rect(fill = "transparent", color = NA))
+
+reorder_layers(pp)
+```
+
+```{r fig-gear-allocation, fig.cap = "Beaked redfish catches by gear type and year based on ERS data for the Norwegian fleet (>15 m)."}
+ers_example_data %>% 
+  mutate(gear = case_when(
+    grepl("Bunntr|Udefinert tr|Snurrevad", gear) ~ "Bottom\ntrawls",
+    grepl("Reketr", gear) ~ "Shrimp\ntrawls",
+    grepl("Flytetr", gear) ~ "Pelagic\ntrawls",
+    grepl("Garn", gearGroup) ~ "Gillnets",
+    grepl("Krokredskap", gearGroup) ~ "Hooks",
+    .default = "Other"
+  )) %>% 
+  group_by(year, gear) %>% 
+  reframe(value = sum(weight)/1e3) %>% 
+  group_by(gear) %>% 
+  mutate(total = sum(value)) %>% 
+  arrange(-total) %>% 
+  mutate(gear = factor(gear, levels = unique(.$gear))) %>% 
+  ggplot(aes(x = gear, y = value)) +
+  geom_col() +
+  facet_wrap(~ year) +
+  labs(x = "Gear category", y = "Catch (t)") +
+  theme_bw(base_size = 12)
+```
+
+```{r fig-nea-map, fig.cap = "Spatial distribution of beaked redfish catches by bottom and pelagic trawls within the Northeast Arctic (ICES areas 1 and 2) stock, based on ERS data for the Norwegian fleet (>15 m). Data are aggregated across 2011, 2018, and 2025"}
+
+x <- ers_example_data %>% 
+  filter(grepl("Bunntr|Udefinert tr|Snurrevad|Reketr|Flytetr", gear)) %>% 
+  filter(grepl("27_2_|27_1_", ICESArea)) %>% 
+  mutate(gear = case_when(
+    grepl("Flytetr", gear) ~ "Pelagic trawls",
+    .default = "Bottom trawls"
+  ))
+
+ggOceanMaps::basemap(x, base_size = 12, bathy.style = "contour_grey") +
+  ggspatial::geom_spatial_point(
+    data = x %>% 
+      mutate(weight = weight/1e3),
+    aes(x = lon, y = lat, size = weight),
+    color = "red", shape = 21, alpha = 0.5, stroke = LS(1)) +
+  scale_size_area(
+    max_size = 12,
+    breaks = c(1,5,10,20,40,60.80)
+    ) +
+  labs(x = NULL, y = NULL, size = "Catch (t)") + 
+  facet_wrap(~gear) + 
+  guides(size = guide_legend(nrow = 1)) +
+  theme(legend.position = "bottom",
+        legend.box.margin = margin(0, 0, 10, 0),
+        legend.background = element_rect(fill = "transparent", color = NA),
+        legend.box.background = element_rect(fill = "transparent", color = NA))
+```
+
+## Accessing data for vessels <15 m
+
+ERS data for vessels <15 m (*elFangstdagbok_detaljert*) are also available on IMR servers. These datasets are distributed in .psv format. You can use the `extractLogbook` function to access them. Please note that this function has not been updated since 2021 and may require further development.
+
+These data are confidential and require a special access to the folder on the server where they are located. If you need such access (and work at IMR), take contact with the data people at your group. Those who have the access, know where the data are located. The `path` argument should point to the folder of interest on the server (*elFangstdagbok_detaljert* for all data). The path can be defined on Mac (and Linux) as `path = "/Volumes/.../elFangstdagbok_detaljert"` and as `path = Q:/.../elFangstdagbok_detaljert` on Windows, where `...` represents the entire folder path that cannot be shown here. You can copy the folder location as path to your clip-board and past it the `extractLogbook()` function. Remember to use quotes (i.e. `" "`).
+
+The function is slow especially in Tromsø (prepare for 30 min to 1 h). It filters species out of the logbook data based on codes listed in the table under. For example, all Atlantic halibut can be extracted as follows:
+
+```{r eval = FALSE}
+extractLogbook(path, species = "HAL")
+```
+
+Or as:
+
+```{r eval = FALSE}
+extractLogbook(path, species = 2311) # Excluding farmed fish
+```
+
+The species name will be returned in Norwegian, English or Latin depending on the `language` argument.

@@ -21,7 +21,7 @@ processBioticFile(
 
 \item{lengthUnit}{character string specifying the unit for length output. Alternatives: "mm", "cm" or "m".}
 
-\item{weightUnit}{character string specifying the unit for weigth output. Alternatives: "g" or "kg".}
+\item{weightUnit}{character string specifying the unit for weight output. Alternatives: "g" or "kg".}
 
 \item{removeEmpty}{logical indicating whether empty columns should be removed from the output. This option also influences "coreData" columns.}
 
@@ -41,6 +41,12 @@ Returns a list of Biotic data with \code{$mission}, \code{$fishstation}, \code{$
 \description{
 A wrapper for \code{\link[RstoxData]{readXmlFile}} to enable further use in the BioticExplorer
 }
+\seealso{
+Other Biotic functions: 
+\code{\link{print.bioticProcData}()},
+\code{\link{processBioticFiles}()}
+}
 \author{
 Mikko Vihtakari (Institute of Marine Research)
 }
+\concept{Biotic functions}

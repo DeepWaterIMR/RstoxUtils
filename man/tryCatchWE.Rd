@@ -18,3 +18,4 @@ tryCatch both warnings (with value) and errors
 \author{
 Martin Maechler; Copyright (C) 2010-2012 The R Core Team, Mikko Vihtakari (Institute of Marine Research)
 }
+\keyword{internal}
