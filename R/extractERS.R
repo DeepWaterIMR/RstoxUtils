@@ -157,6 +157,12 @@ extractERS <- function(path, species = NULL, translate_header = TRUE, method = "
 
     # Species ###
 
+    x <- x %>%
+      dplyr::mutate(
+        catchSpCode = dplyr::recode(
+          .data$catchSp, !!!setNames(splist$idFAO, splist$norwegian))
+      )
+
     if(language == "english") {
       x <- x %>%
         dplyr::mutate(
@@ -177,9 +183,15 @@ extractERS <- function(path, species = NULL, translate_header = TRUE, method = "
         )
     }
 
+    # if(!is.null(species)) {
+    #   x <- x %>%
+    #     dplyr::filter(grepl(sp, .data$catchSp, ignore.case = TRUE))
+    # }
+
     if(!is.null(species)) {
       x <- x %>%
-        dplyr::filter(grepl(species, .data$catchSp, ignore.case = TRUE))
+        dplyr::filter(.data$catchSpCode %in% spCode) %>%
+        dplyr::select(-.data$catchSpCode)
     }
 
     if(nrow(x) == 0) return(x)

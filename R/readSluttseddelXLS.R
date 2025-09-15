@@ -66,7 +66,7 @@ guess_colname <- function(cols, df, candidates = coln_search_words) {
 #' @family Landings functions
 #' @export
 
-# dataDir = "/Volumes/prosjekt/ressurs/mare/fiskstat/sluttseddel/sluttseddel_XLS_ferdige_År"; species = "Snabeluer"; dropMissingMainArea = TRUE; years = 1977:2022
+# dataDir = "~/ownCloud/Workstuff/Data/Landings data/sluttseddel_xls_ferdige_År/"; species = "Snabeluer"; dropMissingMainArea = TRUE; years = 1977:2022
 readSluttseddelXLS <- function(species, dataDir, years = 1977:2022, dropMissingMainArea = TRUE) {
 
   ## Test connection
@@ -200,14 +200,19 @@ readSluttseddelXLS <- function(species, dataDir, years = 1977:2022, dropMissingM
 
   dt$ices_area <- factor(dt$ices_area, levels = sort(unique(dt$ices_area)))
 
-  dt$gear_id <- factor(as.numeric(dt$gear_id), levels = sort(unique(as.numeric(dt$gear_id))))
+  dt <- dt %>%
+    dplyr::mutate_at(
+      dplyr::vars(.data$year, .data$month, .data$main_area, .data$sub_area, .data$gear_id),
+      as.integer)
+
+  # dt$gear_id <- factor(as.numeric(dt$gear_id), levels = sort(unique(as.numeric(dt$gear_id))))
 
   gear_list <- FDIRcodes$gearCodes
   names(gear_list)[names(gear_list) == "idGear"] <- "gear_id"
   names(gear_list)[names(gear_list) == "gearName"] <- "gear"
   names(gear_list)[names(gear_list) == "gearCategory"] <- "gear_category"
 
-  gear_list$gear_id <- factor(gear_list$gear_id, levels = as.character(sort(as.numeric(gear_list$gear_id))))
+  # gear_list$gear_id <- factor(gear_list$gear_id, levels = as.character(sort(as.numeric(gear_list$gear_id))))
   gear_list$gear_category <- factor(gear_list$gear_category, levels = unique(gear_list$gear_category))
   if(any(duplicated(gear_list$gear_id))) stop("Duplicated gear IDs in the gear_list")
 
@@ -220,10 +225,6 @@ readSluttseddelXLS <- function(species, dataDir, years = 1977:2022, dropMissingM
 
   dt <- dplyr::left_join(dt, gear_list[c("gear_id", "gear_category")], by = "gear_id")
 
-  dt <- dt %>%
-    dplyr::mutate_at(
-      dplyr::vars(.data$year, .data$main_area, .data$sub_area, .data$gear_id),
-      as.integer)
 
   dt <- dt[c("year", "month","main_area", "sub_area", "ices_area", "gear_id", "gear_category", "gear", if(is.null(species)) {"species"}, "weight")]
 
