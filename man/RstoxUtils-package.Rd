@@ -17,7 +17,7 @@ of the Deep-sea species group at IMR.
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/DeepWaterIMR/RstoxUtils}
+  \item \url{https://deepwaterimr.github.io/RstoxUtils}
   \item Report bugs at \url{https://github.com/DeepWaterIMR/RstoxUtils/issues}
 }
 

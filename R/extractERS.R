@@ -290,7 +290,7 @@ extractERS <- function(path, species = NULL, translate_header = TRUE, method = "
       c("year", "month", "id", "vesselName", "radioCallSign", "EEZ", "ICESArea",
         "FDIRMainArea", "date", "lon", "lat", "depth", "gear", "gearGroup",
         "gearCategory", "gearSpecification", "gearMeshSize", "gearAmount", "gearIssues",
-        "fishTime", "fistDistance", "targetSp", "catchSp", "weight"
+        "fishTime", "fishDistance", "targetSp", "catchSp", "weight"
       )
     ) %>%
     droplevels()
