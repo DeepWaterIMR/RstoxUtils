@@ -19,7 +19,7 @@ reference:
   desc: >
     Functions to download and access sales note data (landings from commercial
     fisheries) distributed by the Directorate of Fisheries in Norway. See the
-    [landings data vignette]() for examples.
+    [landings data vignette](https://deepwaterimr.github.io/RstoxUtils/articles/LandingsData.html) for examples.
   contents:
   - downloadLandings
   - readSluttseddelXLS
@@ -29,7 +29,7 @@ reference:
     Functions to download and access Electronic Reporting System data on exact
     positions and times of commercial fishing events by the Norwegian fleet for
     vessels >15 m distributed by the Directorate of Fisheries in Norway. See the
-    [ERS data vignette]() for examples.
+    [ERS data vignette](https://deepwaterimr.github.io/RstoxUtils/articles/ERSdata.html) for examples.
   contents:
   - downloadERS
   - extractERS
@@ -37,8 +37,9 @@ reference:
 
 - title: Biotic functions
   desc: >
-    Functions to open IMR biotic data from xml files. Note that the
-    [BioticExplorerDatabase](https://github.com/DeepWaterIMR/BioticExplorerServer)
+    Functions to open IMR biotic data from xml files.
+    See the [vignette](https://deepwaterimr.github.io/RstoxUtils/articles/BioticData.html) for details.
+    Note that the [BioticExplorerDatabase](https://github.com/DeepWaterIMR/BioticExplorerServer)
     package offers a more flexible way to search and filter the entire
     Biotic database.
   contents:
@@ -55,7 +56,9 @@ reference:
 - title: Definitions
   desc: >
     Lists of data definitions, codes, and classifications used by the IMR and FDir
-    and functions used to generate them. See the [vignette]()  to explore the tables
+    and functions used to generate them.
+    See the [vignette](https://deepwaterimr.github.io/RstoxUtils/articles/CodeDefinitions.html)
+    to explore the tables
   contents:
   - cruiseSeriesList
   - gearList

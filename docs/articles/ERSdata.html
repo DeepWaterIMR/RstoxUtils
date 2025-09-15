@@ -64,7 +64,7 @@
       <h1>Download and Visualize ERS Data</h1>
                         <h4 data-toc-skip class="author">Mikko Vihtakari (Institute of Marine Research)</h4>
             
-            <h4 data-toc-skip class="date">12 September, 2025</h4>
+            <h4 data-toc-skip class="date">15 September, 2025</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/DeepWaterIMR/RstoxUtils/blob/HEAD/vignettes/ERSdata.Rmd" class="external-link"><code>vignettes/ERSdata.Rmd</code></a></small>
       <div class="d-none name"><code>ERSdata.Rmd</code></div>
@@ -75,13 +75,18 @@
 <p>Packages required to run the examples:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Package names</span></span>
-<span><span class="va">packages</span> <span class="op">&lt;-</span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"RstoxUtils"</span>, <span class="st">"sf"</span>, <span class="st">"dplyr"</span>, <span class="st">"ggOceanMaps"</span>, <span class="st">"ggplot2"</span>, <span class="st">"ggspatial"</span>,</span>
+<span><span class="va">packages</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"RstoxUtils"</span>, <span class="st">"sf"</span>, <span class="st">"dplyr"</span>, <span class="st">"ggOceanMaps"</span>, <span class="st">"ggplot2"</span>, <span class="st">"ggspatial"</span>,</span>
 <span>    <span class="st">"lubridate"</span>, <span class="st">"tibble"</span>, <span class="st">"tidyr"</span>, <span class="st">"hexbin"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Install packages not yet installed</span></span>
 <span><span class="va">installed_packages</span> <span class="op">&lt;-</span> <span class="va">packages</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/any.html" class="external-link">any</a></span><span class="op">(</span><span class="va">installed_packages</span> <span class="op">==</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  </span>
+<span>  <span class="kw">if</span><span class="op">(</span><span class="st">"RstoxUtils"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">packages</span><span class="op">[</span><span class="op">!</span><span class="va">installed_packages</span><span class="op">]</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"DeepWaterIMR/RstoxUtils"</span>, upgrade <span class="op">=</span> <span class="st">"never"</span><span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span>  </span>
+<span>  <span class="va">installed_packages</span> <span class="op">&lt;-</span> <span class="va">packages</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="va">packages</span><span class="op">[</span><span class="op">!</span><span class="va">installed_packages</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>

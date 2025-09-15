@@ -6,7 +6,7 @@ Date: 2025-09-12
 Authors@R: c(person("Mikko", "Vihtakari", email = "mikko.vihtakari@hi.no",
                   role = c("aut", "cre")) 
           )
-URL: https://github.com/DeepWaterIMR/RstoxUtils
+URL: https://deepwaterimr.github.io/RstoxUtils
 BugReports: https://github.com/DeepWaterIMR/RstoxUtils/issues
 Description: This package contains utility functions for stock assessment and 
   data flow within the Institute of Marine Research (IMR). The package has two

@@ -1,5 +1,5 @@
 ---
-title: "Codes and defintions"
+title: "Codes and definitions"
 author: "Mikko Vihtakari (Institute of Marine Research)"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: 
