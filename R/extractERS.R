@@ -60,7 +60,10 @@ extractERS <- function(path, species = NULL, translate_header = TRUE, method = "
   ## Define species
 
   spvec <- splist %>% dplyr::pull(tolower(language))
-  sp <- gsub("\\)", "\\\\)", gsub("\\(", "\\\\(", species, perl = TRUE))
+  sp <- paste0(
+    "^", gsub("\\)", "\\\\)",
+              gsub("\\(", "\\\\(", tolower(species), perl = TRUE)),
+    "$")
 
   if(!any(grepl(sp, spvec, ignore.case = TRUE))) {
     stop(paste0(species, " not found from ", "FDIRcodes$speciesCodes[,", language, "]"))
