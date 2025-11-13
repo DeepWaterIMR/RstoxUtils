@@ -31,8 +31,8 @@ Packages required to run the examples:
 
 ```{r}
 # Package names
-packages <- c("RstoxUtils", "sf", "dplyr", "ggOceanMaps", "ggplot2", "data.table",
-              "lubridate", "tidyr")
+packages <- c("RstoxUtils", "sf", "dplyr", "ggOceanMaps", "ggplot2",
+              "data.table", "lubridate", "tidyr")
 
 # Install packages not yet installed
 installed_packages <- packages %in% rownames(installed.packages())
@@ -125,7 +125,8 @@ pn <- pnd %>%
   ) +
   scale_y_continuous(
     expand = expansion(c(0,0.01)),
-    sec.axis = sec_axis(~ . *100 / sum(pnd$mean), name = "Percentage of total average landings")
+    sec.axis = sec_axis(~ . *100 / sum(pnd$mean), 
+                        name = "Percentage of total average landings")
   ) +
   theme_bw(base_size = 12) +
   theme(axis.title.y.right = element_blank())
@@ -153,7 +154,8 @@ pg <- pgd %>%
   ) +
   scale_y_continuous(
     expand = expansion(c(0,0.01)),
-    sec.axis = sec_axis(~ . *100 / sum(pgd$mean), name = "Percentage of total average landings")
+    sec.axis = sec_axis(~ . *100 / sum(pgd$mean), 
+                        name = "Percentage of total average landings")
   ) +
   theme_bw(base_size = 12) +
   theme(axis.title.y.left = element_blank())
@@ -220,7 +222,8 @@ salesnote_xls_data <- RstoxUtils::readSluttseddelXLS(
 ```
 
 ```{r, include = FALSE, eval = FALSE}
-sluttseddel_excel_path <- "~/ownCloud/Workstuff/Data/Landings data/sluttseddel_xls_ferdige_År/"
+sluttseddel_excel_path <- 
+  "~/ownCloud/Workstuff/Data/Landings data/sluttseddel_xls_ferdige_År/"
 
 salesnote_xls_data <- RstoxUtils::readSluttseddelXLS(
   species = "Snabeluer",

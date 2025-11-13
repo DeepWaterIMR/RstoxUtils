@@ -21,7 +21,7 @@ downloadERS(
 \item{fdir_url}{Character defining the URL where data should be downloaded from. You'll only need to modify this if the source URL has changed. In that case, send an email to the maintainer such that the address can be updated.}
 }
 \value{
-Returns nothing. Downloads data into folder specified by the \code{dest} argument.
+Returns a data frame showing which files were modified. Downloads data into folder specified by the \code{dest} argument.
 }
 \description{
 Download Electronic Reporting System (ERS) catch data into a folder from the \href{https://www.fiskeridir.no/statistikk-tall-og-analyse/data-og-statistikk-om-yrkesfiske/apne-data-elektronisk-rapportering-ers}{Norwegian Directorate of Fisheries webpage}

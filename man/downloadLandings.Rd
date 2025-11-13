@@ -4,7 +4,12 @@
 \alias{downloadLandings}
 \title{Download sales note data for a species from the IMR database}
 \usage{
-downloadLandings(species, years = NULL, returned_data = "both")
+downloadLandings(
+  species,
+  years = NULL,
+  returned_data = "both",
+  separate = TRUE
+)
 }
 \arguments{
 \item{species}{any species identification name in \code{FDIRcodes$speciesCodes} as character. Only one species at the time allowed.}
@@ -12,6 +17,8 @@ downloadLandings(species, years = NULL, returned_data = "both")
 \item{years}{an integer vector of years to download. If \code{NULL} (default), all years are downloaded. Please note that this option can take very long time and lead to huge datasets.}
 
 \item{returned_data}{character argument specifying what type of data should be returned. Use \code{"sales notes"} to return the original sales note data from the server, \code{"summary"} to only return summarized catches, or \code{"both"} to return both sales notes and summarized catches in a list.}
+
+\item{separate}{logical indicating whether years should be downloaded as separate API calls or as one call. Setting this to \code{FALSE} can save time, but lead to unexpected behavior because the download sometimes gets truncated for large datasets. Only relevant when the \code{years} argument contains multiple years.}
 }
 \description{
 The function downloads sales note/landings ("sluttseddel") data from IMR database. Requires access to the intranet.

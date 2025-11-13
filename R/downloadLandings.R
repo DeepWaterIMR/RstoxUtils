@@ -3,6 +3,7 @@
 #' @param species any species identification name in \code{FDIRcodes$speciesCodes} as character. Only one species at the time allowed.
 #' @param years an integer vector of years to download. If \code{NULL} (default), all years are downloaded. Please note that this option can take very long time and lead to huge datasets.
 #' @param returned_data character argument specifying what type of data should be returned. Use \code{"sales notes"} to return the original sales note data from the server, \code{"summary"} to only return summarized catches, or \code{"both"} to return both sales notes and summarized catches in a list.
+#' @param separate logical indicating whether years should be downloaded as separate API calls or as one call. Setting this to \code{FALSE} can save time, but lead to unexpected behavior because the download sometimes gets truncated for large datasets. Only relevant when the \code{years} argument contains multiple years.
 #' @author Mikko Vihtakari
 #' @family Landings functions
 #' @examples \dontrun{
@@ -12,7 +13,7 @@
 #' @export
 
 # species  <- "blåkveite"; years <- c(1900:2020)
-downloadLandings <- function(species, years = NULL, returned_data = "both") {
+downloadLandings <- function(species, years = NULL, returned_data = "both", separate = TRUE) {
 
   ## Set up variables
 
@@ -52,49 +53,65 @@ downloadLandings <- function(species, years = NULL, returned_data = "both") {
 
   ## Set up the download path
 
-  if(is.null(years)) {
+  if(is.null(years) & !separate) {
     DownloadPath <- paste0(APIpath, "&Art_kode=", spCode)
+  } else if(is.null(years) & separate) {
+    DownloadPath <- sapply(2005:as.integer(format(Sys.Date(), "%Y")), function(k) {
+      paste0(APIpath, "&Art_kode=", spCode, "&Fangstar=", k)
+    })
+  } else if(separate) {
+    DownloadPath <- sapply(years, function(k) {
+      paste0(APIpath, "&Art_kode=", spCode, "&Fangstar=", k)
+    })
   } else {
     DownloadPath <- paste0(APIpath, "&Art_kode=", spCode, "&Fangstar=", paste(years, collapse = ","))
   }
 
   ## Download the data from the database
 
-  status <- suppressMessages(suppressWarnings(try(utils::download.file(DownloadPath, dest), silent = TRUE)))
+  out <- lapply(DownloadPath, function(k) {
 
-  if(inherits(status, "try-error")) {
+    status <- suppressMessages(
+      suppressWarnings(try(utils::download.file(k, dest), silent = TRUE)))
 
-    ## Stop processing if not found
+    if(inherits(status, "try-error")) {
 
-    stop(paste("Species code", spCode, "with years", paste(years, collapse = ","), "not found from the database."))
+      ## Warn if not found
 
-  } else {
+      warning(paste("Species code", spCode, "with years", paste(k, collapse = ","), "not found from the database. Returning NULL"))
+      return(NULL)
 
-    ## Read the data
-
-    sales_notes <- RstoxData::readXmlFile(dest)
-
-    sn_sum <-
-      sales_notes$Produkt %>%
-      dplyr::select(
-        "Fangst\u00e5r", "SisteFangstdato", "Redskap_kode", "St\u00f8rsteLengde",
-        "Hovedomr\u00e5de_kode", "Lokasjon_kode", "Fart\u00f8ynasjonalitet_kode",
-        "Rundvekt") %>%
-      stats::setNames(c("year", "date", "gear_id", "vessel_length", "main_area",
-                        "sub_area", "nation", "weight")) %>%
-      dplyr::mutate(date = as.Date(.data$date, format = "%d.%m.%Y")) %>%
-      dplyr::filter(!is.na(.data$weight) & .data$weight > 0) %>%
-      dplyr::mutate(month = lubridate::month(.$date), .before = "date") %>%
-      dplyr::mutate_at(
-        dplyr::vars(.data$main_area, .data$sub_area, .data$gear_id), as.integer) %>%
-      dplyr::arrange(dplyr::desc(date))
-
-    if(returned_data == "both") {
-      c(sales_notes, list(summary = sn_sum))
-    } else if(returned_data == "summary") {
-      sn_sum
     } else {
-      sales_notes
+
+      ## Read the data
+
+      sales_notes <- RstoxData::readXmlFile(dest)
+
+      sn_sum <-
+        sales_notes$Produkt %>%
+        dplyr::select(
+          "Fangst\u00e5r", "SisteFangstdato", "Redskap_kode", "St\u00f8rsteLengde",
+          "Hovedomr\u00e5de_kode", "Lokasjon_kode", "Fart\u00f8ynasjonalitet_kode",
+          "Rundvekt") %>%
+        stats::setNames(c("year", "date", "gear_id", "vessel_length", "main_area",
+                          "sub_area", "nation", "weight")) %>%
+        dplyr::mutate(date = as.Date(.data$date, format = "%d.%m.%Y")) %>%
+        dplyr::filter(!is.na(.data$weight) & .data$weight > 0) %>%
+        dplyr::mutate(month = lubridate::month(.$date), .before = "date") %>%
+        dplyr::mutate_at(
+          dplyr::vars(.data$main_area, .data$sub_area, .data$gear_id), as.integer) %>%
+        dplyr::arrange(dplyr::desc(date))
+
+      if(returned_data == "both") {
+        c(sales_notes, list(summary = sn_sum))
+      } else if(returned_data == "summary") {
+        sn_sum
+      } else {
+        sales_notes
+      }
     }
-  }
+  })
+
+  # Return
+  do.call(Map, c(f = rbind, out, fill = TRUE))
 }
