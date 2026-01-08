@@ -26,6 +26,11 @@ downloadERS <- function(
     message("Year ", k)
     file_name <- paste0("elektronisk-rapportering-ers-", k, ".zip")
     file_dir <- grep(k, existing_files, value = TRUE)
+
+    if(length(file_dir) == 0) {
+      file_dir <- file.path(dest, file_name)
+    }
+
     file_url <- file.path(fdir_url, file_name)
 
     response <- httr::HEAD(file_url)
@@ -116,7 +121,7 @@ downloadERS <- function(
             file_dir = file_dir)
         })
 
-      } else if(last_mod_fdir > last_mod_disk) {
+      } else if(last_mod_fdir > last_mod_disk | is.na(last_mod_disk)) {
 
         message("Updates found from the server. Downloading and overwriting.")
 
