@@ -1,7 +1,7 @@
 Package: RstoxUtils
 Type: Package
 Title: Utility Functions for the Stox Project Within the Institute of Marine Research, Norway
-Version: 0.4.4
+Version: 0.4.5
 Date: 2026-04-28
 Authors@R: c(person("Mikko", "Vihtakari", email = "mikko.vihtakari@hi.no",
                   role = c("aut", "cre")) 
@@ -16,7 +16,7 @@ Description: This package contains utility functions for stock assessment and
   of the Deep-sea species group at IMR.
 Depends: R (>= 3.5.0)
 Imports: dplyr, readxl, RstoxData, data.table, utils, xml2, magrittr,
-  readr, pbmcapply, httr, vroom, RCurl, lubridate
+  readr, parallel, httr, vroom, RCurl, lubridate
 Suggests: reshape2, knitr, kableExtra, ggOceanMaps, ggplot2
 License: GPL-3 + file LICENSE
 Encoding: UTF-8

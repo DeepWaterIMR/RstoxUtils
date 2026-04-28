@@ -44,10 +44,19 @@
 #' @author Mikko Vihtakari (Institute of Marine Research)
 #' @export
 
+# Debugging parameters
 # path = '/Users/a22357/ownCloud/Workstuff/Data/Norwegian Electronic Logbooks/Data/ERS data'
-# species = "kveite"; translate_header = TRUE; method = "start"; language = "norwegian"; print.filename = FALSE; ncores = parallel::detectCores() - 2
-extractERS <- function(path, species = NULL, translate_header = TRUE, method = "start", language = "norwegian", print.filename = FALSE, ncores = parallel::detectCores() - 2) {
-
+# species = "Snabeluer"
+# translate_header = TRUE; method = "start"; language = "norwegian"; print.filename = FALSE; ncores = 1 #parallel::detectCores() - 2
+extractERS <- function(
+  path,
+  species = NULL,
+  translate_header = TRUE,
+  method = "start",
+  language = "norwegian",
+  print.filename = FALSE,
+  ncores = 1
+) {
   ## Load species list ####
 
   splist <- FDIRcodes$speciesCodes %>% stats::na.omit()
@@ -55,22 +64,41 @@ extractERS <- function(path, species = NULL, translate_header = TRUE, method = "
 
   ## Checks
 
-  if(!is.character(language) | !language %in% tolower(colnames(splist))) stop("language has to be one of the following: 'norwegian', 'english' or 'latin'")
+  if (!is.character(language) | !language %in% tolower(colnames(splist))) {
+    stop(
+      "language has to be one of the following: 'norwegian', 'english' or 'latin'"
+    )
+  }
 
   ## Define species
 
   spvec <- splist %>% dplyr::pull(tolower(language))
   sp <- paste0(
-    "^", gsub("\\)", "\\\\)",
-              gsub("\\(", "\\\\(", tolower(species), perl = TRUE)),
-    "$")
+    "^",
+    gsub("\\)", "\\\\)", gsub("\\(", "\\\\(", tolower(species), perl = TRUE)),
+    "$"
+  )
 
-  if(!any(grepl(sp, spvec, ignore.case = TRUE))) {
-    stop(paste0(species, " not found from ", "FDIRcodes$speciesCodes[,", language, "]"))
+  if (!any(grepl(sp, spvec, ignore.case = TRUE))) {
+    stop(paste0(
+      species,
+      " not found from ",
+      "FDIRcodes$speciesCodes[,",
+      language,
+      "]"
+    ))
   }
 
-  if(length(unique(grep(sp, spvec, ignore.case = TRUE,value = TRUE))) > 1) {
-    stop(paste0("Multiple matches with ", species, ": ", paste(unique(grep(sp, spvec, ignore.case = TRUE,value = TRUE), collapse = ", "))))
+  if (length(unique(grep(sp, spvec, ignore.case = TRUE, value = TRUE))) > 1) {
+    stop(paste0(
+      "Multiple matches with ",
+      species,
+      ": ",
+      paste(unique(
+        grep(sp, spvec, ignore.case = TRUE, value = TRUE),
+        collapse = ", "
+      ))
+    ))
   }
 
   spCode <-
@@ -112,81 +140,102 @@ extractERS <- function(path, species = NULL, translate_header = TRUE, method = "
 
   ## Find files
 
-  if(grepl(".zip$", path)) {
+  if (grepl(".zip$", path)) {
     files <- path
   } else {
     files <- dir(path, pattern = ".zip", full.names = TRUE)
   }
 
-  # pb <- utils::txtProgressBar(min = 1, max = length(files) + 5, style = 3)
-  # utils::setTxtProgressBar(pb, 1)
-
   ## Reading loop ####
 
-  out <- pbmcapply::pbmclapply(seq_along(files), function(i) {
-    # lapply(seq_along(files), function(i) {
-    if(print.filename) print(files[i])
+  read_ers_file <- function(i) {
+    fileyear <- gsub("\\D", "", basename(files[i]))
 
-    # utils::setTxtProgressBar(pb, i + 1)
+    if (print.filename) {
+      message(files[i])
+    } else if (ncores > 1) {
+      message("  Year ", fileyear, " (", i, "/", length(files), ")")
+    }
 
-    ## ####
-
-    fileyear <- unlist(strsplit(files[i], "/"))
-    fileyear <- gsub("\\D", "", fileyear[length(fileyear)])
-
-    x <- try({
-      unz(
-        files[i],
-        paste0("elektronisk-rapportering-ers-", fileyear, "-fangstmelding-dca.csv")
-      ) %>%
-          vroom::vroom(
-            delim = ";", col_types = readr::cols(),
-            locale = readr::locale(decimal_mark = ",")
-          ) %>%
+    # altrep = FALSE forces eager loading; num_threads = 1 prevents vroom's
+    # internal C++ threads from conflicting with fork-based parallelism.
+    x <- try(
+      {
+        vroom::vroom(
+          unz(
+            files[i],
+            paste0(
+              "elektronisk-rapportering-ers-",
+              fileyear,
+              "-fangstmelding-dca.csv"
+            )
+          ),
+          delim = ";",
+          col_types = readr::cols(),
+          locale = readr::locale(decimal_mark = ","),
+          altrep = FALSE,
+          num_threads = 1
+        ) %>%
           suppressWarnings()
-      }, silent = TRUE)
+      },
+      silent = TRUE
+    )
 
-    if(inherits(x, "try-error")) {
+    if (inherits(x, "try-error")) {
       message("Year ", fileyear, " did not contain data. Skipping...")
       return(NULL)
     }
 
-    if(!translate_header) return(x)
+    if (!translate_header) {
+      return(x)
+    }
 
     # Rename and select relevant columns
     x <- x %>%
       dplyr::rename_with(~ gsub("\u00e5|\u00f8", "X", .x)) %>%
       dplyr::select(unname(columns)) %>%
       dplyr::rename(dplyr::all_of(columns)) %>%
-      dplyr::filter(!is.na(.data$catchSp)) # Remove NAs from the catch species column
+      dplyr::filter(!is.na(.data$catchSp))
 
-    if(nrow(x) == 0) return(x)
+    if (nrow(x) == 0) {
+      return(x)
+    }
 
-    # Species ###
+    # Species
 
     x <- x %>%
       dplyr::mutate(
         catchSpCode = dplyr::recode(
-          .data$catchSp, !!!setNames(splist$idFAO, splist$norwegian))
+          .data$catchSp,
+          !!!setNames(splist$idFAO, splist$norwegian)
+        )
       )
 
-    if(language == "english") {
+    if (language == "english") {
       x <- x %>%
         dplyr::mutate(
           targetSp = dplyr::recode(
-            .data$targetSp, !!!setNames(splist$english, splist$norwegian)),
+            .data$targetSp,
+            !!!setNames(splist$english, splist$norwegian)
+          ),
           catchSp = dplyr::recode(
-            .data$catchSp, !!!setNames(splist$english, splist$norwegian))
+            .data$catchSp,
+            !!!setNames(splist$english, splist$norwegian)
+          )
         )
     }
 
-    if(language == "latin") {
+    if (language == "latin") {
       x <- x %>%
         dplyr::mutate(
           targetSp = dplyr::recode(
-            .data$targetSp, !!!setNames(splist$latin, splist$norwegian)),
+            .data$targetSp,
+            !!!setNames(splist$latin, splist$norwegian)
+          ),
           catchSp = dplyr::recode(
-            .data$catchSp, !!!setNames(splist$latin, splist$norwegian))
+            .data$catchSp,
+            !!!setNames(splist$latin, splist$norwegian)
+          )
         )
     }
 
@@ -195,83 +244,91 @@ extractERS <- function(path, species = NULL, translate_header = TRUE, method = "
     #     dplyr::filter(grepl(sp, .data$catchSp, ignore.case = TRUE))
     # }
 
-    if(!is.null(species)) {
+    if (!is.null(species)) {
       x <- x %>%
         dplyr::filter(.data$catchSpCode %in% spCode) %>%
         dplyr::select(-.data$catchSpCode)
     }
 
-    if(nrow(x) == 0) return(x)
+    if (nrow(x) == 0) {
+      return(x)
+    }
 
-    ### Column classes and values
+    # Column classes and values
 
-    if(method == "start") {
-
+    if (method == "start") {
       x <- x %>%
         dplyr::mutate(
-          date =
-            dplyr::case_when(
-              nchar(dateStart) < 11 ~
-                as.POSIXct(
-                  paste(.data$dateStart, "00:00:01"),
-                  format = "%d.%m.%Y %H:%M:%S", tz = "UTC"),
-              .default =
-                as.POSIXct(.data$dateStart,
-                           format = "%d.%m.%Y %H:%M:%S", tz = "UTC")
-            ),
+          date = dplyr::case_when(
+            nchar(dateStart) < 11 ~
+              as.POSIXct(
+                paste(.data$dateStart, "00:00:01"),
+                format = "%d.%m.%Y %H:%M:%S",
+                tz = "UTC"
+              ),
+            .default = as.POSIXct(
+              .data$dateStart,
+              format = "%d.%m.%Y %H:%M:%S",
+              tz = "UTC"
+            )
+          ),
           lon = .data$lonStart,
           lat = .data$latStart,
           depth = abs(.data$depthStart)
         )
-
     } else if (method == "end") {
-
       x <- x %>%
         dplyr::mutate(
-          date =
-            dplyr::case_when(
-              nchar(dateEnd) < 11 ~
-                as.POSIXct(
-                  paste(.data$dateEnd, "00:00:01"),
-                  format = "%d.%m.%Y %H:%M:%S", tz = "UTC"),
-              .default =
-                as.POSIXct(.data$dateEnd,
-                           format = "%d.%m.%Y %H:%M:%S", tz = "UTC")
-            ),
+          date = dplyr::case_when(
+            nchar(dateEnd) < 11 ~
+              as.POSIXct(
+                paste(.data$dateEnd, "00:00:01"),
+                format = "%d.%m.%Y %H:%M:%S",
+                tz = "UTC"
+              ),
+            .default = as.POSIXct(
+              .data$dateEnd,
+              format = "%d.%m.%Y %H:%M:%S",
+              tz = "UTC"
+            )
+          ),
           lon = .data$lonEnd,
           lat = .data$latEnd,
           depth = abs(.data$depthEnd)
         )
-
     } else {
-
-      #### Averages
       x <- x %>%
         dplyr::mutate(
-          dateStart =
-            dplyr::case_when(
-              nchar(dateStart) < 11 ~
-                as.POSIXct(
-                  paste(.data$dateStart, "00:00:01"),
-                  format = "%d.%m.%Y %H:%M:%S", tz = "UTC"),
-              .default =
-                as.POSIXct(.data$dateStart,
-                           format = "%d.%m.%Y %H:%M:%S", tz = "UTC")
-            ),
-          dateEnd =
-            dplyr::case_when(
-              nchar(dateEnd) < 11 ~
-                as.POSIXct(
-                  paste(.data$dateEnd, "00:00:01"),
-                  format = "%d.%m.%Y %H:%M:%S", tz = "UTC"),
-              .default =
-                as.POSIXct(.data$dateEnd,
-                           format = "%d.%m.%Y %H:%M:%S", tz = "UTC")
+          dateStart = dplyr::case_when(
+            nchar(dateStart) < 11 ~
+              as.POSIXct(
+                paste(.data$dateStart, "00:00:01"),
+                format = "%d.%m.%Y %H:%M:%S",
+                tz = "UTC"
+              ),
+            .default = as.POSIXct(
+              .data$dateStart,
+              format = "%d.%m.%Y %H:%M:%S",
+              tz = "UTC"
             )
+          ),
+          dateEnd = dplyr::case_when(
+            nchar(dateEnd) < 11 ~
+              as.POSIXct(
+                paste(.data$dateEnd, "00:00:01"),
+                format = "%d.%m.%Y %H:%M:%S",
+                tz = "UTC"
+              ),
+            .default = as.POSIXct(
+              .data$dateEnd,
+              format = "%d.%m.%Y %H:%M:%S",
+              tz = "UTC"
+            )
+          )
         ) %>%
         dplyr::rowwise() %>%
         dplyr::mutate(
-          date = dateStart + (dateEnd - dateStart)/2,
+          date = dateStart + (dateEnd - dateStart) / 2,
           depth = mean(abs(.data$depthStart), abs(.data$depthEnd)),
           lon = mean(.data$lonStart, .data$lonEnd),
           lat = mean(.data$latStart, .data$latEnd)
@@ -279,15 +336,34 @@ extractERS <- function(path, species = NULL, translate_header = TRUE, method = "
         dplyr::ungroup()
     }
 
-    ### Export
-
     x %>%
       dplyr::select(-dplyr::matches("Start|End"))
-  },
-  mc.cores = ncores
-  )
+  }
 
-  ## ####
+  if (ncores == 1) {
+    message("Reading ", length(files), " ERS file(s):")
+    pb <- utils::txtProgressBar(min = 0, max = length(files), style = 3)
+    out <- lapply(seq_along(files), function(i) {
+      res <- read_ers_file(i)
+      utils::setTxtProgressBar(pb, i)
+      res
+    })
+    close(pb)
+  } else {
+    message(
+      "Reading ",
+      length(files),
+      " ERS file(s) using ",
+      ncores,
+      " cores..."
+    )
+    out <- parallel::mclapply(
+      seq_along(files),
+      read_ers_file,
+      mc.cores = ncores,
+      mc.preschedule = FALSE
+    )
+  }
 
   ## Compile and return
 
@@ -299,22 +375,58 @@ extractERS <- function(path, species = NULL, translate_header = TRUE, method = "
     ) %>%
     dplyr::mutate(
       dplyr::across(
-        c("targetSp", "catchSp", "ICESArea", "FDIRMainArea", "EEZ", "gear",
-          "gearGroup", "gearSpecification", "gearIssues"),
-        factor)) %>%
+        c(
+          "targetSp",
+          "catchSp",
+          "ICESArea",
+          "FDIRMainArea",
+          "EEZ",
+          "gear",
+          "gearGroup",
+          "gearSpecification",
+          "gearIssues"
+        ),
+        factor
+      )
+    ) %>%
     dplyr::filter(.data$weight > 0) %>%
-    dplyr::arrange(.data$year, .data$date, .data$lat, .data$lon,
-                   .data$weight) %>%
+    dplyr::arrange(
+      .data$year,
+      .data$date,
+      .data$lat,
+      .data$lon,
+      .data$weight
+    ) %>%
     dplyr::mutate(
-      month = format(date,"%m")
+      month = format(date, "%m")
     ) %>%
     dplyr::relocate(
-      c("year", "month", "id", "vesselName", "radioCallSign", "EEZ", "ICESArea",
-        "FDIRMainArea", "date", "lon", "lat", "depth", "gear", "gearGroup",
-        "gearCategory", "gearSpecification", "gearMeshSize", "gearAmount", "gearIssues",
-        "fishTime", "fishDistance", "targetSp", "catchSp", "weight"
+      c(
+        "year",
+        "month",
+        "id",
+        "vesselName",
+        "radioCallSign",
+        "EEZ",
+        "ICESArea",
+        "FDIRMainArea",
+        "date",
+        "lon",
+        "lat",
+        "depth",
+        "gear",
+        "gearGroup",
+        "gearCategory",
+        "gearSpecification",
+        "gearMeshSize",
+        "gearAmount",
+        "gearIssues",
+        "fishTime",
+        "fishDistance",
+        "targetSp",
+        "catchSp",
+        "weight"
       )
     ) %>%
     droplevels()
-
 }

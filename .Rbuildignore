@@ -17,3 +17,4 @@
 ^vignettes$
 ^\.positai$
 ^\.claude$
+^CLAUDE\.md$

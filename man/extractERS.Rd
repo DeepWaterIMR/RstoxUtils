@@ -11,7 +11,7 @@ extractERS(
   method = "start",
   language = "norwegian",
   print.filename = FALSE,
-  ncores = parallel::detectCores() - 2
+  ncores = 1
 )
 }
 \arguments{

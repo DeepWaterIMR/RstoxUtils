@@ -48,3 +48,7 @@ vignettes/*.pdf
 README.html
 
 .positai
+
+# Claude Code
+.claude/
+CLAUDE.md
