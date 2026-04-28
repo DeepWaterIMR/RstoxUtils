@@ -65,8 +65,8 @@ processBioticFile <- function(file, lengthUnit = "cm", weightUnit = "g", removeE
 
   if (convertColumns) {
     # stn <- convertColumnTypes(stn)
-    date.cols <- grep("date", names(msn), value = TRUE)
-    msn[, eval(date.cols) := lapply(.SD, as.Date), .SDcols = eval(date.cols)]
+    date.cols <- grep("date", names(stn), value = TRUE)
+    stn[, eval(date.cols) := lapply(.SD, as.Date), .SDcols = eval(date.cols)]
   }
 
   ### Fix FDIR area code
@@ -96,8 +96,8 @@ processBioticFile <- function(file, lengthUnit = "cm", weightUnit = "g", removeE
   }
 
   if (convertColumns) {
-    date.cols <- grep("date", names(age), value = TRUE)
-    age[, eval(date.cols) := lapply(.SD, as.Date), .SDcols = eval(date.cols)]
+    date.cols <- grep("date", names(ind), value = TRUE)
+    ind[, eval(date.cols) := lapply(.SD, as.Date), .SDcols = eval(date.cols)]
     # ind <- convertColumnTypes(ind)
   }
 

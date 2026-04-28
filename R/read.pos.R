@@ -40,7 +40,7 @@ read.pos <- function(path, log.file = FALSE) {
                              tz = "UTC")
 
       test <- as.POSIXct(paste(hd$Date, "00:00:00"),
-                         format = "%d.%m.%Y %H:%M:%S", tz = "UTC") == out$Date[nrow(out)]
+                         format = "%Y-%m-%d %H:%M:%S", tz = "UTC") == out$Date[nrow(out)]
       if(is.na(test)) test <- FALSE
 
       if(test) {

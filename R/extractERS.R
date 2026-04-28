@@ -72,39 +72,41 @@ extractERS <- function(
 
   ## Define species
 
-  spvec <- splist %>% dplyr::pull(tolower(language))
-  sp <- paste0(
-    "^",
-    gsub("\\)", "\\\\)", gsub("\\(", "\\\\(", tolower(species), perl = TRUE)),
-    "$"
-  )
+  if (!is.null(species)) {
+    spvec <- splist %>% dplyr::pull(tolower(language))
+    sp <- paste0(
+      "^",
+      gsub("\\)", "\\\\)", gsub("\\(", "\\\\(", tolower(species), perl = TRUE)),
+      "$"
+    )
 
-  if (!any(grepl(sp, spvec, ignore.case = TRUE))) {
-    stop(paste0(
-      species,
-      " not found from ",
-      "FDIRcodes$speciesCodes[,",
-      language,
-      "]"
-    ))
-  }
-
-  if (length(unique(grep(sp, spvec, ignore.case = TRUE, value = TRUE))) > 1) {
-    stop(paste0(
-      "Multiple matches with ",
-      species,
-      ": ",
-      paste(unique(
-        grep(sp, spvec, ignore.case = TRUE, value = TRUE),
-        collapse = ", "
+    if (!any(grepl(sp, spvec, ignore.case = TRUE))) {
+      stop(paste0(
+        species,
+        " not found from ",
+        "FDIRcodes$speciesCodes[,",
+        language,
+        "]"
       ))
-    ))
-  }
+    }
 
-  spCode <-
-    splist %>%
-    dplyr::slice(grep(sp, spvec, ignore.case = TRUE)) %>%
-    dplyr::pull(idFAO)
+    if (length(unique(grep(sp, spvec, ignore.case = TRUE, value = TRUE))) > 1) {
+      stop(paste0(
+        "Multiple matches with ",
+        species,
+        ": ",
+        paste(unique(
+          grep(sp, spvec, ignore.case = TRUE, value = TRUE),
+          collapse = ", "
+        ))
+      ))
+    }
+
+    spCode <-
+      splist %>%
+      dplyr::slice(grep(sp, spvec, ignore.case = TRUE)) %>%
+      dplyr::pull(idFAO)
+  }
 
   ## Define columns
 
@@ -246,9 +248,9 @@ extractERS <- function(
 
     if (!is.null(species)) {
       x <- x %>%
-        dplyr::filter(.data$catchSpCode %in% spCode) %>%
-        dplyr::select(-.data$catchSpCode)
+        dplyr::filter(.data$catchSpCode %in% spCode)
     }
+    x <- x %>% dplyr::select(-.data$catchSpCode)
 
     if (nrow(x) == 0) {
       return(x)
