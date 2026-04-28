@@ -45,7 +45,7 @@
 #' @export
 
 # path = '/Users/a22357/ownCloud/Workstuff/Data/Norwegian Electronic Logbooks/Data/ERS data'
-# species = "snabeluer"; translate_header = TRUE; method = "start"; language = "norwegian"; subspecies = FALSE; print.filename = FALSE; ncores = parallel::detectCores() - 2
+# species = "kveite"; translate_header = TRUE; method = "start"; language = "norwegian"; print.filename = FALSE; ncores = parallel::detectCores() - 2
 extractERS <- function(path, species = NULL, translate_header = TRUE, method = "start", language = "norwegian", print.filename = FALSE, ncores = parallel::detectCores() - 2) {
 
   ## Load species list ####
@@ -134,15 +134,22 @@ extractERS <- function(path, species = NULL, translate_header = TRUE, method = "
     fileyear <- unlist(strsplit(files[i], "/"))
     fileyear <- gsub("\\D", "", fileyear[length(fileyear)])
 
-    x <- unz(
-      files[i],
-      paste0("elektronisk-rapportering-ers-", fileyear, "-fangstmelding-dca.csv")
-    ) %>%
-      vroom::vroom(
-        delim = ";", col_types = readr::cols(),
-        locale = readr::locale(decimal_mark = ",")
+    x <- try({
+      unz(
+        files[i],
+        paste0("elektronisk-rapportering-ers-", fileyear, "-fangstmelding-dca.csv")
       ) %>%
-      suppressWarnings()
+          vroom::vroom(
+            delim = ";", col_types = readr::cols(),
+            locale = readr::locale(decimal_mark = ",")
+          ) %>%
+          suppressWarnings()
+      }, silent = TRUE)
+
+    if(inherits(x, "try-error")) {
+      message("Year ", fileyear, " did not contain data. Skipping...")
+      return(NULL)
+    }
 
     if(!translate_header) return(x)
 

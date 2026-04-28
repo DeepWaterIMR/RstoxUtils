@@ -15,3 +15,5 @@
 ^\.github$
 ^NEWS\.md$
 ^vignettes$
+^\.positai$
+^\.claude$
