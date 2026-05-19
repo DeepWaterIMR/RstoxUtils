@@ -1,3 +1,7 @@
+# RstoxUtils 0.5.0
+
+2026-05-19 Bug fixes, consistency checks and documentation improvement using Claude. RstoxUtils now sources the prepare* functions from [BioticExplorerServer](https://github.com/DeepWaterIMR/BioticExplorerServer). These changes may have broken some dependencies and hence a new major version number. 
+
 # RstoxUtils 0.4.0
 
 2025-09-12 Major update. Added ERS functions and webpage. Moved the package under DeepWaterIMR. Cleaned the package and tested all functions. 

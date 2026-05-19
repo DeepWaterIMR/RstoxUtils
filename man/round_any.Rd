@@ -14,8 +14,11 @@ round_any(x, accuracy, f = round)
 \item{f}{rounding function: \code{\link{floor}}, \code{\link{ceiling}} or
 \code{\link{round}}}
 }
+\value{
+A numeric vector of the same length as \code{x}.
+}
 \description{
-Round to multiple of any number
+Rounds values to the nearest multiple of a given accuracy.
 }
 \author{
 Hadley Wickham

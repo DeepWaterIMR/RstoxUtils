@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">RstoxUtils</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,7 +67,7 @@
 
 
 <dl><dt id="arg-files">files<a class="anchor" aria-label="anchor" href="#arg-files"></a></dt>
-<dd><p>character string specifying the file path to the xml file. Accepts only one file at the time.</p></dd>
+<dd><p>character vector specifying the file paths to the xml files. Accepts multiple files.</p></dd>
 
 
 <dt id="arg-lengthunit">lengthUnit<a class="anchor" aria-label="anchor" href="#arg-lengthunit"></a></dt>
@@ -100,11 +100,14 @@
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>Returns a list of Biotic data with <code>$mission</code>, <code>$fishstation</code>, <code>$catchsample</code>, <code>$individual</code> and <code>$agedetermination</code> data frames. The <code>$stnall</code> and <code>$indall</code> data frames are merged from <code>$fishstation</code> and <code>$catchsample</code> (former) and  <code>$fishstation</code>, <code>$catchsample</code>, <code>$individual</code> and <code>$agedetermination</code> (latter).</p>
+    <p>Returns a list of Biotic data with <code>$mission</code>, <code>$fishstation</code>, <code>$catchsample</code>, <code>$individual</code> and <code>$agedetermination</code> data frames (when <code>returnOriginal = TRUE</code>). The <code>$stnall</code> and <code>$indall</code> data frames are merged from <code>$fishstation</code> and <code>$catchsample</code> (former) and <code>$fishstation</code>, <code>$catchsample</code>, <code>$individual</code> and <code>$agedetermination</code> (latter). <code>$ageall</code> contains all age readings per fish (one row per reading).</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>Other Biotic functions:
+<code><a href="prepareCruiseSeriesList.html">prepareCruiseSeriesList()</a></code>,
+<code><a href="prepareGearList.html">prepareGearList()</a></code>,
+<code><a href="prepareTaxaList.html">prepareTaxaList()</a></code>,
 <code><a href="print.bioticProcData.html">print.bioticProcData()</a></code>,
 <code><a href="processBioticFile.html">processBioticFile()</a></code></p></div>
     </div>

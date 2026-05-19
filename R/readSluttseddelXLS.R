@@ -34,6 +34,7 @@ coln_search_words <- function(column, return_name = FALSE) {
 #' @param cols Character vector of approximate column names to be guessed
 #' @param df data frame containing column names
 #' @param candidates a switch argument or a character vector giving the candidates to be used in matching. The \code{\link{coln_search_words}} function is used by default.
+#' @return A named character vector mapping each required column name in \code{cols} to the best-matching column name found in \code{df}.
 #' @author Mikko Vihtakari, Conrad Helgeland
 #' @family helpers
 #' @export
@@ -56,10 +57,12 @@ guess_colname <- function(cols, df, candidates = coln_search_words) {
 ## ####
 
 #' @title Read landing data from annually compiled Excel files
+#' @description Reads and compiles landing (sales note / sluttseddel) data from the annually compiled Excel files stored on the IMR server. Requires access to the IMR intranet and the Excel files to be in place.
 #' @param species Character string defining the species using the FDIR Norwegian species names. \code{NULL} returns all species.
 #' @param dataDir Character vector defining the path to the folder where Excel files are located (typically "sluttseddel_xls_ferdige_År")
 #' @param years Integer vector defining the years to read. Files in later years tend to be a mess and this option avoids crashes. Use \code{NULL} to try opening all files.
 #' @param dropMissingMainArea Logical indicating whether catches with missing main area should be dropped.
+#' @return A data.frame with columns \code{year}, \code{month}, \code{main_area}, \code{sub_area}, \code{ices_area}, \code{gear_id}, \code{gear_category}, \code{gear}, and \code{weight} (and \code{species} when \code{species = NULL}).
 #' @importFrom utils data
 #' @importFrom dplyr left_join recode
 #' @importFrom stats setNames
@@ -85,7 +88,7 @@ readSluttseddelXLS <- function(species, dataDir, years = 1977:2022, dropMissingM
 
   # i = 1
   x <- lapply(seq_along(dirs), function(i) {
-    print(dirs[i])
+    message(dirs[i])
 
     # Files ###
     DR <- paste(dataDir, dirs[i], sep = "/")
@@ -110,7 +113,7 @@ readSluttseddelXLS <- function(species, dataDir, years = 1977:2022, dropMissingM
     ## The file reading loop ###
     # j = 1; target_sp = species; colns = COLS
     out <- lapply(seq_along(files), function(j, target_sp = species, colns = COLS) {
-      print(files[j])
+      message(files[j])
 
       # Read ###
 

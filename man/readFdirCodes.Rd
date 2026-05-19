@@ -26,6 +26,9 @@ readFdirCodes(
 
 \item{gearStartRow}{Integer specifying the \code{skip} argument for \code{\link[readxl]{read_xlsx}} in the gear code tab.}
 }
+\value{
+A named list with two elements: \code{$speciesCodes} (data frame with columns \code{idNS}, \code{idFAO}, \code{norwegian}, \code{english}, \code{latin}) and \code{$gearCodes} (data frame with columns \code{idGear}, \code{gearName}, \code{gearCategory}, \code{Hovedgruppe}, \code{Subgruppe}).
+}
 \description{
 This function retrieves codes used in the electronic logbook data from an Excel sheet published by the Directorate of Fisheries. This list is already supplied in the package and the function is only required to update the codes.
 }

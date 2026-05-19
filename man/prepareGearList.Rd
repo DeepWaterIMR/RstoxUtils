@@ -6,7 +6,19 @@
 \usage{
 prepareGearList()
 }
+\value{
+A data.table of gear codes and categories from the IMR reference API.
+}
 \description{
 Wrapper for \code{\link[BioticExplorerServer]{prepareGearList}}.
 Uses the updated IMR reference API. See BioticExplorerServer for full documentation.
 }
+\seealso{
+Other Biotic functions:
+\code{\link[=prepareCruiseSeriesList]{prepareCruiseSeriesList()}},
+\code{\link[=prepareTaxaList]{prepareTaxaList()}},
+\code{\link[=print.bioticProcData]{print.bioticProcData()}},
+\code{\link[=processBioticFile]{processBioticFile()}},
+\code{\link[=processBioticFiles]{processBioticFiles()}}
+}
+\concept{Biotic functions}

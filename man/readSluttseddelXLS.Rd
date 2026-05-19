@@ -20,8 +20,11 @@ readSluttseddelXLS(
 
 \item{dropMissingMainArea}{Logical indicating whether catches with missing main area should be dropped.}
 }
+\value{
+A data.frame with columns \code{year}, \code{month}, \code{main_area}, \code{sub_area}, \code{ices_area}, \code{gear_id}, \code{gear_category}, \code{gear}, and \code{weight} (and \code{species} when \code{species = NULL}).
+}
 \description{
-Read landing data from annually compiled Excel files
+Reads and compiles landing (sales note / sluttseddel) data from the annually compiled Excel files stored on the IMR server. Requires access to the IMR intranet and the Excel files to be in place.
 }
 \seealso{
 Other Landings functions:

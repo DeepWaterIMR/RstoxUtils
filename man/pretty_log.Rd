@@ -12,8 +12,11 @@ pretty_log(x, f = round)
 \item{f}{rounding function: \code{\link{floor}}, \code{\link{ceiling}} or
 \code{\link{round}}}
 }
+\value{
+A numeric vector of the same length as \code{x}.
+}
 \description{
-Round to pretty log breaks
+Rounds values to human-readable breaks suitable for logarithmic scales.
 }
 \seealso{
 \code{\link{round_any}}

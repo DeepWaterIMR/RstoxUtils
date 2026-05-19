@@ -5,7 +5,7 @@
 \alias{FDIRcodes}
 \title{List of Norwegian Directorate of Fisheries logbook codes}
 \format{
-A list of data tables
+A list of two data frames
 }
 \source{
 Norwegian Directorate of Fisheries (\url{https://www.fiskeridir.no})
@@ -14,6 +14,6 @@ Norwegian Directorate of Fisheries (\url{https://www.fiskeridir.no})
 data(FDIRcodes)
 }
 \description{
-List of Norwegian Directorate of Fisheries logbook codes
+A named list with two elements: \code{$speciesCodes} (FDIR species codes with FAO codes, Norwegian, English, and Latin names) and \code{$gearCodes} (FDIR gear codes with Norwegian/English categories). Use \code{\link{readFdirCodes}} to update from the FDIR Excel code list.
 }
 \keyword{datasets}

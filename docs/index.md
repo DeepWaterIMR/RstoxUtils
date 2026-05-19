@@ -46,11 +46,30 @@ and specific articles for the use of the package:
 3.  [Biotic
     data](https://deepwaterimr.github.io/RstoxUtils/articles/BioticData.html)
 
+The package also includes functions not covered by the vignettes above:
+[`processBioticFile()`](https://deepwaterimr.github.io/RstoxUtils/reference/processBioticFile.md)
+/
+[`processBioticFiles()`](https://deepwaterimr.github.io/RstoxUtils/reference/processBioticFiles.md)
+for reading and merging NMD Biotic XML files into data.table objects;
+[`readFdirCodes()`](https://deepwaterimr.github.io/RstoxUtils/reference/readFdirCodes.md)
+for updating the bundled FDIR species and gear code list;
+[`read.pos()`](https://deepwaterimr.github.io/RstoxUtils/reference/read.pos.md)
+for reading IMR vessel position tracking files; and
+[`extractLogbook()`](https://deepwaterimr.github.io/RstoxUtils/reference/extractLogbook.md)
+for legacy confidential logbook data from IMR servers. Reference data
+(cruise series, gear lists, taxa lists) can be refreshed using
+[`prepareCruiseSeriesList()`](https://deepwaterimr.github.io/RstoxUtils/reference/prepareCruiseSeriesList.md),
+[`prepareGearList()`](https://deepwaterimr.github.io/RstoxUtils/reference/prepareGearList.md),
+and
+[`prepareTaxaList()`](https://deepwaterimr.github.io/RstoxUtils/reference/prepareTaxaList.md),
+which delegate to
+[BioticExplorerServer](https://github.com/DeepWaterIMR/BioticExplorerServer).
+
 Note that the strata functions from this package have been moved to the
 [RstoxStrata](https://deepwaterimr.github.io/RstoxStrata/index.html)
 package and the entire IMR Biotic database can be accessed using the
 [BioticExplorerServer
-package](https://github.com/DeepWaterIMR/BioticExplorerServer)
+package](https://github.com/DeepWaterIMR/BioticExplorerServer).
 
 ## Citation
 
@@ -64,7 +83,7 @@ citation("RstoxUtils")
 #> 
 #>   Vihtakari M (2026). _RstoxUtils: Utility Functions for the Stox
 #>   Project Within the Institute of Marine Research, Norway_. R package
-#>   version 0.4.7, <https://deepwaterimr.github.io/RstoxUtils>.
+#>   version 0.5.0, <https://deepwaterimr.github.io/RstoxUtils>.
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
@@ -72,7 +91,7 @@ citation("RstoxUtils")
 #>     title = {RstoxUtils: Utility Functions for the Stox Project Within the Institute of Marine Research, Norway},
 #>     author = {Mikko Vihtakari},
 #>     year = {2026},
-#>     note = {R package version 0.4.7},
+#>     note = {R package version 0.5.0},
 #>     url = {https://deepwaterimr.github.io/RstoxUtils},
 #>   }
 ```

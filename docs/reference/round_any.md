@@ -1,6 +1,6 @@
 # Round to multiple of any number
 
-Round to multiple of any number
+Rounds values to the nearest multiple of a given accuracy.
 
 ## Usage
 
@@ -23,6 +23,10 @@ round_any(x, accuracy, f = round)
   rounding function: [`floor`](https://rdrr.io/r/base/Round.html),
   [`ceiling`](https://rdrr.io/r/base/Round.html) or
   [`round`](https://rdrr.io/r/base/Round.html)
+
+## Value
+
+A numeric vector of the same length as `x`.
 
 ## Author
 

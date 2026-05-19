@@ -36,13 +36,16 @@ processBioticFile(
 \item{missionidPrefix}{A prefix for the \code{missionid} identifier, which separates cruises. Used in \code{\link{processBioticFiles}} function when several xml files are put together. \code{NULL} (default) omits the prefix. Not needed in \code{processBioticFile} function.}
 }
 \value{
-Returns a list of Biotic data with \code{$mission}, \code{$fishstation}, \code{$catchsample}, \code{$individual} and \code{$agedetermination} data frames. The \code{$stnall} and \code{$indall} data frames are merged from \code{$fishstation} and \code{$catchsample} (former) and  \code{$fishstation}, \code{$catchsample}, \code{$individual} and \code{$agedetermination} (latter).
+Returns a list of Biotic data with \code{$mission}, \code{$fishstation}, \code{$catchsample}, \code{$individual} and \code{$agedetermination} data frames (when \code{returnOriginal = TRUE}). The \code{$stnall} and \code{$indall} data frames are merged from \code{$fishstation} and \code{$catchsample} (former) and \code{$fishstation}, \code{$catchsample}, \code{$individual} and \code{$agedetermination} (latter). \code{$ageall} contains all age readings per fish (one row per reading), while \code{$indall} retains only the preferred age reading per fish.
 }
 \description{
 A wrapper for \code{\link[RstoxData]{readXmlFile}} to enable further use in the BioticExplorer
 }
 \seealso{
 Other Biotic functions:
+\code{\link[=prepareCruiseSeriesList]{prepareCruiseSeriesList()}},
+\code{\link[=prepareGearList]{prepareGearList()}},
+\code{\link[=prepareTaxaList]{prepareTaxaList()}},
 \code{\link[=print.bioticProcData]{print.bioticProcData()}},
 \code{\link[=processBioticFiles]{processBioticFiles()}}
 }

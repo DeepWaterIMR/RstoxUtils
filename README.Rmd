@@ -46,7 +46,9 @@ See the [website](https://deepwaterimr.github.io/RstoxUtils), [function referenc
  2. [ERS data](https://deepwaterimr.github.io/RstoxUtils/articles/ERSdata.html)
  3. [Biotic data](https://deepwaterimr.github.io/RstoxUtils/articles/BioticData.html)
 
-Note that the strata functions from this package have been moved to the [RstoxStrata](https://deepwaterimr.github.io/RstoxStrata/index.html) package and the entire IMR Biotic database can be accessed using the [BioticExplorerServer package](https://github.com/DeepWaterIMR/BioticExplorerServer)
+The package also includes functions not covered by the vignettes above: `processBioticFile()` / `processBioticFiles()` for reading and merging NMD Biotic XML files into data.table objects; `readFdirCodes()` for updating the bundled FDIR species and gear code list; `read.pos()` for reading IMR vessel position tracking files; and `extractLogbook()` for legacy confidential logbook data from IMR servers. Reference data (cruise series, gear lists, taxa lists) can be refreshed using `prepareCruiseSeriesList()`, `prepareGearList()`, and `prepareTaxaList()`, which delegate to [BioticExplorerServer](https://github.com/DeepWaterIMR/BioticExplorerServer).
+
+Note that the strata functions from this package have been moved to the [RstoxStrata](https://deepwaterimr.github.io/RstoxStrata/index.html) package and the entire IMR Biotic database can be accessed using the [BioticExplorerServer package](https://github.com/DeepWaterIMR/BioticExplorerServer).
 
 ## Citation
 

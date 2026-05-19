@@ -1,6 +1,8 @@
 # Read landing data from annually compiled Excel files
 
-Read landing data from annually compiled Excel files
+Reads and compiles landing (sales note / sluttseddel) data from the
+annually compiled Excel files stored on the IMR server. Requires access
+to the IMR intranet and the Excel files to be in place.
 
 ## Usage
 
@@ -35,6 +37,12 @@ readSluttseddelXLS(
 
   Logical indicating whether catches with missing main area should be
   dropped.
+
+## Value
+
+A data.frame with columns `year`, `month`, `main_area`, `sub_area`,
+`ices_area`, `gear_id`, `gear_category`, `gear`, and `weight` (and
+`species` when `species = NULL`).
 
 ## See also
 

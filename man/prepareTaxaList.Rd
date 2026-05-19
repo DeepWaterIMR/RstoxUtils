@@ -9,7 +9,19 @@ prepareTaxaList(verbose = FALSE)
 \arguments{
 \item{verbose}{Logical. Print status messages during download. Defaults to \code{FALSE}.}
 }
+\value{
+A data.table of taxon codes and names from the IMR reference API.
+}
 \description{
 Wrapper for \code{\link[BioticExplorerServer]{prepareTaxaList}}.
 Uses the updated IMR reference API. See BioticExplorerServer for full documentation.
 }
+\seealso{
+Other Biotic functions:
+\code{\link[=prepareCruiseSeriesList]{prepareCruiseSeriesList()}},
+\code{\link[=prepareGearList]{prepareGearList()}},
+\code{\link[=print.bioticProcData]{print.bioticProcData()}},
+\code{\link[=processBioticFile]{processBioticFile()}},
+\code{\link[=processBioticFiles]{processBioticFiles()}}
+}
+\concept{Biotic functions}

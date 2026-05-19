@@ -20,6 +20,9 @@ downloadLandings(
 
 \item{separate}{logical indicating whether years should be downloaded as separate API calls or as one call. Setting this to \code{FALSE} can save time, but lead to unexpected behavior because the download sometimes gets truncated for large datasets. Only relevant when the \code{years} argument contains multiple years.}
 }
+\value{
+Depends on \code{returned_data}: a list of sales note data frames when \code{"sales notes"}; a data.frame with columns \code{year}, \code{date}, \code{month}, \code{gear_id}, \code{vessel_length}, \code{main_area}, \code{sub_area}, \code{nation}, \code{weight} when \code{"summary"}; or a list containing both when \code{"both"} (default).
+}
 \description{
 The function downloads sales note/landings ("sluttseddel") data from IMR database. Requires access to the intranet.
 }

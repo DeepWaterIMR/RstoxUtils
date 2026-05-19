@@ -1,6 +1,6 @@
 # Round to pretty log breaks
 
-Round to pretty log breaks
+Rounds values to human-readable breaks suitable for logarithmic scales.
 
 ## Usage
 
@@ -19,6 +19,10 @@ pretty_log(x, f = round)
   rounding function: [`floor`](https://rdrr.io/r/base/Round.html),
   [`ceiling`](https://rdrr.io/r/base/Round.html) or
   [`round`](https://rdrr.io/r/base/Round.html)
+
+## Value
+
+A numeric vector of the same length as `x`.
 
 ## See also
 

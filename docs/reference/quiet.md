@@ -15,6 +15,10 @@ quiet(x)
 
   function
 
+## Value
+
+The return value of `x`, invisibly.
+
 ## Author
 
 Hadley Wickham

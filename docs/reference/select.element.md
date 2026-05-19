@@ -17,3 +17,7 @@ select.element(x, y)
 - y:
 
   number of element. Must be integer
+
+## Value
+
+A vector of the y'th element from each vector in `x`.

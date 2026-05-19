@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">RstoxUtils</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -88,6 +88,10 @@
 <dd><p>Integer specifying the <code>skip</code> argument for <code><a href="https://readxl.tidyverse.org/reference/read_excel.html" class="external-link">read_xlsx</a></code> in the gear code tab.</p></dd>
 
 </dl></div>
+    <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    <p>A named list with two elements: <code>$speciesCodes</code> (data frame with columns <code>idNS</code>, <code>idFAO</code>, <code>norwegian</code>, <code>english</code>, <code>latin</code>) and <code>$gearCodes</code> (data frame with columns <code>idGear</code>, <code>gearName</code>, <code>gearCategory</code>, <code>Hovedgruppe</code>, <code>Subgruppe</code>).</p>
+    </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The function has been written for <a href="https://www.fiskeridir.no/Yrkesfiske/Rapportering-ved-landing/Kodeliste" class="external-link">the code list Excel sheet</a> published on 2020-10-30. You may have to adjust the function depending on changes in newer versions of the file.</p>

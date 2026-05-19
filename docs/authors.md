@@ -11,12 +11,12 @@ Source:
 
 Vihtakari M (2026). *RstoxUtils: Utility Functions for the Stox Project
 Within the Institute of Marine Research, Norway*. R package version
-0.4.7, <https://deepwaterimr.github.io/RstoxUtils>.
+0.5.0, <https://deepwaterimr.github.io/RstoxUtils>.
 
     @Manual{,
       title = {RstoxUtils: Utility Functions for the Stox Project Within the Institute of Marine Research, Norway},
       author = {Mikko Vihtakari},
       year = {2026},
-      note = {R package version 0.4.7},
+      note = {R package version 0.5.0},
       url = {https://deepwaterimr.github.io/RstoxUtils},
     }

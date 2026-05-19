@@ -20,16 +20,19 @@ LS <- function(x) x/2.13
 #' @description Selects y'th element of each vector from a list
 #' @param x list
 #' @param y number of element. Must be integer
+#' @return A vector of the y'th element from each vector in \code{x}.
 #' @keywords internal
 #' @export
 #'
 select.element <- function(x,y) sapply(x, "[", y)
 
 #' @title Round to multiple of any number
+#' @description Rounds values to the nearest multiple of a given accuracy.
 #' @param x numeric vector to round
 #' @param accuracy number to round to; for POSIXct objects, a number of seconds
 #' @param f rounding function: \code{\link{floor}}, \code{\link{ceiling}} or
 #'  \code{\link{round}}
+#' @return A numeric vector of the same length as \code{x}.
 #' @keywords internal
 #' @author Hadley Wickham
 #' @export
@@ -39,9 +42,11 @@ round_any <- function(x, accuracy, f = round) {
 }
 
 #' @title Round to pretty log breaks
+#' @description Rounds values to human-readable breaks suitable for logarithmic scales.
 #' @param x numeric vector to round
 #' @param f rounding function: \code{\link{floor}}, \code{\link{ceiling}} or
 #'  \code{\link{round}}
+#' @return A numeric vector of the same length as \code{x}.
 #' @keywords internal
 #' @author Mikko Vihtakari
 #' @seealso \code{\link{round_any}}
@@ -64,6 +69,7 @@ pretty_log <- function(x, f = round) {
 #' @title Return function output quietly
 #' @description Returns function output without printed \code{\link{cat}} messages
 #' @param x function
+#' @return The return value of \code{x}, invisibly.
 #' @keywords internal
 #' @author Hadley Wickham
 #' @export
@@ -74,16 +80,3 @@ quiet <- function(x) {
   invisible(force(x))
 }
 
-#' @title Find API URL from cruise number and shipname
-#' @description Searches the NMD database for API path
-#' @author StoxProject. Taken from the old Rstox: https://github.com/Sea2Data/Rstox/blob/master/R/rstox_NMD.R
-#'
-# getCruiseSearchURL <- function(cruisenr, shipname, datasource="biotic", ver=getRstoxDef("ver"), server="http://tomcat7.imr.no:8080/apis/nmdapi"){
-#   paste(
-#     server,
-#     datasource,
-#     paste0("v", ver$API[[datasource]]),
-#     paste0("find?cruisenr=", cruisenr, "&shipname=", shipname),
-#     sep="/"
-#   )
-# }

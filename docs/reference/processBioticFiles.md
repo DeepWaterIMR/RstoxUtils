@@ -23,8 +23,8 @@ processBioticFiles(
 
 - files:
 
-  character string specifying the file path to the xml file. Accepts
-  only one file at the time.
+  character vector specifying the file paths to the xml files. Accepts
+  multiple files.
 
 - lengthUnit:
 
@@ -72,14 +72,19 @@ processBioticFiles(
 ## Value
 
 Returns a list of Biotic data with `$mission`, `$fishstation`,
-`$catchsample`, `$individual` and `$agedetermination` data frames. The
-`$stnall` and `$indall` data frames are merged from `$fishstation` and
-`$catchsample` (former) and `$fishstation`, `$catchsample`,
-`$individual` and `$agedetermination` (latter).
+`$catchsample`, `$individual` and `$agedetermination` data frames (when
+`returnOriginal = TRUE`). The `$stnall` and `$indall` data frames are
+merged from `$fishstation` and `$catchsample` (former) and
+`$fishstation`, `$catchsample`, `$individual` and `$agedetermination`
+(latter). `$ageall` contains all age readings per fish (one row per
+reading).
 
 ## See also
 
 Other Biotic functions:
+[`prepareCruiseSeriesList()`](https://deepwaterimr.github.io/RstoxUtils/reference/prepareCruiseSeriesList.md),
+[`prepareGearList()`](https://deepwaterimr.github.io/RstoxUtils/reference/prepareGearList.md),
+[`prepareTaxaList()`](https://deepwaterimr.github.io/RstoxUtils/reference/prepareTaxaList.md),
 [`print.bioticProcData()`](https://deepwaterimr.github.io/RstoxUtils/reference/print.bioticProcData.md),
 [`processBioticFile()`](https://deepwaterimr.github.io/RstoxUtils/reference/processBioticFile.md)
 

@@ -26,6 +26,11 @@ guess_colname(cols, df, candidates = coln_search_words)
   [`coln_search_words`](https://deepwaterimr.github.io/RstoxUtils/reference/coln_search_words.md)
   function is used by default.
 
+## Value
+
+A named character vector mapping each required column name in `cols` to
+the best-matching column name found in `df`.
+
 ## Author
 
 Mikko Vihtakari, Conrad Helgeland

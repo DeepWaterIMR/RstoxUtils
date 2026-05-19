@@ -4,6 +4,7 @@
 #' @param years an integer vector of years to download. If \code{NULL} (default), all years are downloaded. Please note that this option can take very long time and lead to huge datasets.
 #' @param returned_data character argument specifying what type of data should be returned. Use \code{"sales notes"} to return the original sales note data from the server, \code{"summary"} to only return summarized catches, or \code{"both"} to return both sales notes and summarized catches in a list.
 #' @param separate logical indicating whether years should be downloaded as separate API calls or as one call. Setting this to \code{FALSE} can save time, but lead to unexpected behavior because the download sometimes gets truncated for large datasets. Only relevant when the \code{years} argument contains multiple years.
+#' @return Depends on \code{returned_data}: a list of sales note data frames when \code{"sales notes"}; a data.frame with columns \code{year}, \code{date}, \code{month}, \code{gear_id}, \code{vessel_length}, \code{main_area}, \code{sub_area}, \code{nation}, \code{weight} when \code{"summary"}; or a list containing both when \code{"both"} (default).
 #' @author Mikko Vihtakari
 #' @family Landings functions
 #' @examples \dontrun{

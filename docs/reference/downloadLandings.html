@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">RstoxUtils</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,6 +78,10 @@
 <dd><p>logical indicating whether years should be downloaded as separate API calls or as one call. Setting this to <code>FALSE</code> can save time, but lead to unexpected behavior because the download sometimes gets truncated for large datasets. Only relevant when the <code>years</code> argument contains multiple years.</p></dd>
 
 </dl></div>
+    <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    <p>Depends on <code>returned_data</code>: a list of sales note data frames when <code>"sales notes"</code>; a data.frame with columns <code>year</code>, <code>date</code>, <code>month</code>, <code>gear_id</code>, <code>vessel_length</code>, <code>main_area</code>, <code>sub_area</code>, <code>nation</code>, <code>weight</code> when <code>"summary"</code>; or a list containing both when <code>"both"</code> (default).</p>
+    </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>Other Landings functions:

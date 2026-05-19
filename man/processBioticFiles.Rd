@@ -16,7 +16,7 @@ processBioticFiles(
 )
 }
 \arguments{
-\item{files}{character string specifying the file path to the xml file. Accepts only one file at the time.}
+\item{files}{character vector specifying the file paths to the xml files. Accepts multiple files.}
 
 \item{lengthUnit}{character string specifying the unit for length output. Alternatives: "mm", "cm" or "m".}
 
@@ -33,13 +33,16 @@ processBioticFiles(
 \item{convertColumns}{logical indicating whether the column types should be converted. See \code{link{convertColumnTypes}}. Setting this to \code{FALSE} considerably speeds up the function.}
 }
 \value{
-Returns a list of Biotic data with \code{$mission}, \code{$fishstation}, \code{$catchsample}, \code{$individual} and \code{$agedetermination} data frames. The \code{$stnall} and \code{$indall} data frames are merged from \code{$fishstation} and \code{$catchsample} (former) and  \code{$fishstation}, \code{$catchsample}, \code{$individual} and \code{$agedetermination} (latter).
+Returns a list of Biotic data with \code{$mission}, \code{$fishstation}, \code{$catchsample}, \code{$individual} and \code{$agedetermination} data frames (when \code{returnOriginal = TRUE}). The \code{$stnall} and \code{$indall} data frames are merged from \code{$fishstation} and \code{$catchsample} (former) and \code{$fishstation}, \code{$catchsample}, \code{$individual} and \code{$agedetermination} (latter). \code{$ageall} contains all age readings per fish (one row per reading).
 }
 \description{
 A wrapper for \code{\link{processBioticFile}} allowing processing multiple files simultaneously
 }
 \seealso{
 Other Biotic functions:
+\code{\link[=prepareCruiseSeriesList]{prepareCruiseSeriesList()}},
+\code{\link[=prepareGearList]{prepareGearList()}},
+\code{\link[=prepareTaxaList]{prepareTaxaList()}},
 \code{\link[=print.bioticProcData]{print.bioticProcData()}},
 \code{\link[=processBioticFile]{processBioticFile()}}
 }

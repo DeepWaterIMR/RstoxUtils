@@ -42,6 +42,13 @@ downloadLandings(
   for large datasets. Only relevant when the `years` argument contains
   multiple years.
 
+## Value
+
+Depends on `returned_data`: a list of sales note data frames when
+`"sales notes"`; a data.frame with columns `year`, `date`, `month`,
+`gear_id`, `vessel_length`, `main_area`, `sub_area`, `nation`, `weight`
+when `"summary"`; or a list containing both when `"both"` (default).
+
 ## See also
 
 Other Landings functions:

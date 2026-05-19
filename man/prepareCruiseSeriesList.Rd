@@ -6,7 +6,19 @@
 \usage{
 prepareCruiseSeriesList()
 }
+\value{
+A data.table of cruise series metadata from the IMR reference API.
+}
 \description{
 Wrapper for \code{\link[BioticExplorerServer]{prepareCruiseSeriesList}}.
 Uses the updated IMR reference API. See BioticExplorerServer for full documentation.
 }
+\seealso{
+Other Biotic functions:
+\code{\link[=prepareGearList]{prepareGearList()}},
+\code{\link[=prepareTaxaList]{prepareTaxaList()}},
+\code{\link[=print.bioticProcData]{print.bioticProcData()}},
+\code{\link[=processBioticFile]{processBioticFile()}},
+\code{\link[=processBioticFiles]{processBioticFiles()}}
+}
+\concept{Biotic functions}

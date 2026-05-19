@@ -9,6 +9,9 @@ quiet(x)
 \arguments{
 \item{x}{function}
 }
+\value{
+The return value of \code{x}, invisibly.
+}
 \description{
 Returns function output without printed \code{\link{cat}} messages
 }

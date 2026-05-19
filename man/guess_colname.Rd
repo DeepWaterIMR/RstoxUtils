@@ -13,6 +13,9 @@ guess_colname(cols, df, candidates = coln_search_words)
 
 \item{candidates}{a switch argument or a character vector giving the candidates to be used in matching. The \code{\link{coln_search_words}} function is used by default.}
 }
+\value{
+A named character vector mapping each required column name in \code{cols} to the best-matching column name found in \code{df}.
+}
 \description{
 Uses fuzzy matching (\code{\link[base]{agrep}}) to guess (column) names from a list of allowed character strings.
 }

@@ -25,6 +25,9 @@ print(x, ...)
 ## See also
 
 Other Biotic functions:
+[`prepareCruiseSeriesList()`](https://deepwaterimr.github.io/RstoxUtils/reference/prepareCruiseSeriesList.md),
+[`prepareGearList()`](https://deepwaterimr.github.io/RstoxUtils/reference/prepareGearList.md),
+[`prepareTaxaList()`](https://deepwaterimr.github.io/RstoxUtils/reference/prepareTaxaList.md),
 [`processBioticFile()`](https://deepwaterimr.github.io/RstoxUtils/reference/processBioticFile.md),
 [`processBioticFiles()`](https://deepwaterimr.github.io/RstoxUtils/reference/processBioticFiles.md)
 

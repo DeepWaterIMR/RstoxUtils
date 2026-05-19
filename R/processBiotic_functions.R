@@ -9,7 +9,7 @@
 #' @param dataTable logical indicating whether the output should be returned as \link[data.table]{data.table}s instead of \link{data.frame}s. Setting this to \code{TRUE} speeds up further calculations using the data (but requires the \link[data.table]{data.table} syntax).
 #' @param convertColumns logical indicating whether the column types should be converted. See \code{link{convertColumnTypes}}. Setting this to \code{FALSE} considerably speeds up the function, but leads to problems with non-unicode characters.
 #' @param missionidPrefix A prefix for the \code{missionid} identifier, which separates cruises. Used in \code{\link{processBioticFiles}} function when several xml files are put together. \code{NULL} (default) omits the prefix. Not needed in \code{processBioticFile} function.
-#' @return Returns a list of Biotic data with \code{$mission}, \code{$fishstation}, \code{$catchsample}, \code{$individual} and \code{$agedetermination} data frames. The \code{$stnall} and \code{$indall} data frames are merged from \code{$fishstation} and \code{$catchsample} (former) and  \code{$fishstation}, \code{$catchsample}, \code{$individual} and \code{$agedetermination} (latter).
+#' @return Returns a list of Biotic data with \code{$mission}, \code{$fishstation}, \code{$catchsample}, \code{$individual} and \code{$agedetermination} data frames (when \code{returnOriginal = TRUE}). The \code{$stnall} and \code{$indall} data frames are merged from \code{$fishstation} and \code{$catchsample} (former) and \code{$fishstation}, \code{$catchsample}, \code{$individual} and \code{$agedetermination} (latter). \code{$ageall} contains all age readings per fish (one row per reading), while \code{$indall} retains only the preferred age reading per fish.
 #' @author Mikko Vihtakari (Institute of Marine Research)
 #' @family Biotic functions
 #' @import RstoxData data.table
@@ -130,10 +130,6 @@ processBioticFile <- function(file, lengthUnit = "cm", weightUnit = "g", removeE
     age <- convertColumnTypes(age)
   }
 
-  # if (nrow(age) == 0) {
-  #   age <- rapply(age, as.integer, how = "replace")
-  # }
-
   ## Compiled datasets ----
 
   if (coreDataOnly) {
@@ -149,7 +145,6 @@ processBioticFile <- function(file, lengthUnit = "cm", weightUnit = "g", removeE
   # Stndat
 
   stndat <- merge(coredat, cth, all = TRUE, by = c("missiontype", "missionnumber", "startyear", "platform", "serialnumber"))
-  stndat[is.na(commonname), commonname := "Empty"]
 
   # Inddat
 
@@ -157,8 +152,12 @@ processBioticFile <- function(file, lengthUnit = "cm", weightUnit = "g", removeE
 
   # Agedat
 
-  agedat <- merge(inddat, age, by = intersect(names(inddat), names(age)), all.y = T)
-  agedat[,numberofreads:=length(age),.(startyear,platform,serialnumber,catchpartnumber,specimenid)]
+  if (nrow(age) > 0) {
+    agedat <- merge(inddat, age, by = intersect(names(inddat), names(age)), all.y = TRUE)
+    agedat[, numberofreads := length(age), .(startyear, platform, serialnumber, catchpartnumber, specimenid)]
+  } else {
+    agedat <- inddat[0, ]
+  }
 
   # More inddat
 
@@ -175,9 +174,9 @@ processBioticFile <- function(file, lengthUnit = "cm", weightUnit = "g", removeE
   ## Return ----
 
   if (returnOriginal) {
-    out <- list(mission = msn, fishstation = stn, catchsample = cth, individual = ind, agedetermination = age, stnall = stndat, indall = inddat)
+    out <- list(mission = msn, fishstation = stn, catchsample = cth, individual = ind, agedetermination = age, stnall = stndat, indall = inddat, ageall = agedat)
   } else {
-    out <- list(stnall = stndat, indall = inddat)
+    out <- list(stnall = stndat, indall = inddat, ageall = agedat)
   }
 
   out <- lapply(out, function(k) {
@@ -220,7 +219,7 @@ processBioticFile <- function(file, lengthUnit = "cm", weightUnit = "g", removeE
 
 #' @title Read and process NMD Biotic xml files for further use in the BioticExplorer
 #' @description A wrapper for \code{\link{processBioticFile}} allowing processing multiple files simultaneously
-#' @param files character string specifying the file path to the xml file. Accepts only one file at the time.
+#' @param files character vector specifying the file paths to the xml files. Accepts multiple files.
 #' @param lengthUnit character string specifying the unit for length output. Alternatives: "mm", "cm" or "m".
 #' @param weightUnit character string specifying the unit for weight output. Alternatives: "g" or "kg".
 #' @param removeEmpty logical indicating whether empty columns should be removed from output. This option also influences "coreData" columns.
@@ -228,7 +227,7 @@ processBioticFile <- function(file, lengthUnit = "cm", weightUnit = "g", removeE
 #' @param returnOriginal logical indicating whether the original data (\code{$mission} through \code{$agedetermination}) should be returned together with combined data.
 #' @param dataTable logical indicating whether the output should be returned as \link[data.table]{data.table}s instead of \link{data.frame}s. Setting this to \code{TRUE} speeds up further calculations using the data (but requires the \link[data.table]{data.table} syntax).
 #' @param convertColumns logical indicating whether the column types should be converted. See \code{link{convertColumnTypes}}. Setting this to \code{FALSE} considerably speeds up the function.
-#' @return Returns a list of Biotic data with \code{$mission}, \code{$fishstation}, \code{$catchsample}, \code{$individual} and \code{$agedetermination} data frames. The \code{$stnall} and \code{$indall} data frames are merged from \code{$fishstation} and \code{$catchsample} (former) and  \code{$fishstation}, \code{$catchsample}, \code{$individual} and \code{$agedetermination} (latter).
+#' @return Returns a list of Biotic data with \code{$mission}, \code{$fishstation}, \code{$catchsample}, \code{$individual} and \code{$agedetermination} data frames (when \code{returnOriginal = TRUE}). The \code{$stnall} and \code{$indall} data frames are merged from \code{$fishstation} and \code{$catchsample} (former) and \code{$fishstation}, \code{$catchsample}, \code{$individual} and \code{$agedetermination} (latter). \code{$ageall} contains all age readings per fish (one row per reading).
 #' @author Mikko Vihtakari (Institute of Marine Research)
 #' @import RstoxData data.table parallel
 #' @family Biotic functions
@@ -250,8 +249,8 @@ processBioticFiles <- function(
 
     # Debug parameters: lengthUnit. = lengthUnit; weightUnit. = weightUnit; coreDataOnly. = coreDataOnly; returnOriginal. = returnOriginal
     out <- lapply(seq_along(files), function(i, lengthUnit. = lengthUnit, weightUnit. = weightUnit, coreDataOnly. = coreDataOnly, returnOriginal. = returnOriginal) {
-      print(paste("i =", i, "file = ", files[i]))
-      print(paste(round(100*i/length(files), 0), "%"))
+      message(paste("i =", i, "file = ", files[i]))
+      message(paste(round(100*i/length(files), 0), "%"))
       processBioticFile(files[i], lengthUnit = lengthUnit., weightUnit = weightUnit., removeEmpty = FALSE, coreDataOnly = coreDataOnly., returnOriginal = returnOriginal., dataTable = TRUE, convertColumns = FALSE, missionidPrefix = i)
     })
 
@@ -414,27 +413,42 @@ print.bioticProcData <- function(x, ...) {
   cat(NULL, sep = "\n")
   cat("A list of data containing following elements:", sep = "\n")
   cat(NULL, sep = "\n")
-  cat(paste0("$mission: ", nrow(x$mission), " rows and ", ncol(x$mission), " columns"), sep = "\n")
-  cat(paste0("$fishstation: ", nrow(x$fishstation), " rows and ", ncol(x$fishstation), " columns"), sep = "\n")
-  cat(paste0("$catchsample: ", nrow(x$catchsample), " rows and ", ncol(x$catchsample), " columns"), sep = "\n")
-  cat(paste0("$individual: ", nrow(x$individual), " rows and ", ncol(x$individual), " columns"), sep = "\n")
-  cat(paste0("$agedetermination: ", nrow(x$agedetermination), " rows and ", ncol(x$agedetermination), " columns"), sep = "\n")
-  cat(paste0("$stnall: ", nrow(x$stnall), " rows and ", ncol(x$stnall), " columns"), sep = "\n")
-  cat(paste0("$indall: ", nrow(x$indall), " rows and ", ncol(x$indall), " columns"), sep = "\n")
+
+  printElement <- function(name, elem) {
+    if (!is.null(elem)) {
+      cat(paste0("$", name, ": ", nrow(elem), " rows and ", ncol(elem), " columns"), sep = "\n")
+    }
+  }
+
+  printElement("mission", x$mission)
+  printElement("fishstation", x$fishstation)
+  printElement("catchsample", x$catchsample)
+  printElement("individual", x$individual)
+  printElement("agedetermination", x$agedetermination)
+  printElement("stnall", x$stnall)
+  printElement("indall", x$indall)
+  printElement("ageall", x$ageall)
+
   cat(NULL, sep = "\n")
   cat("Object size: ", sep = "")
   print(utils::object.size(x), unit = "auto")
-  cat("Years: ", sep = "")
-  cat(unique(x$mission$startyear), sep = ", ")
-  cat(NULL, sep = "\n")
-  cat(paste0(length(unique(x$mission$cruise)), " cruises, ", length(unique(paste(x$stnall$startyear, x$stnall$serialnumber))), " separate stations and ", nrow(x$indall), " measured fish."), sep = "\n")
+
+  if (!is.null(x$mission)) {
+    cat("Years: ", sep = "")
+    cat(unique(x$mission$startyear), sep = ", ")
+    cat(NULL, sep = "\n")
+    cat(paste0(length(unique(x$mission$cruise)), " cruises, ", length(unique(paste(x$stnall$startyear, x$stnall$serialnumber))), " separate stations and ", nrow(x$indall), " measured fish."), sep = "\n")
+  } else {
+    cat(paste0(length(unique(paste(x$stnall$startyear, x$stnall$serialnumber))), " separate stations and ", nrow(x$indall), " measured fish."), sep = "\n")
+  }
+
   cat(NULL, sep = "\n")
   cat(paste0("Geographic range: ", round(min(x$stnall$longitudestart, na.rm = TRUE), 1), "-", round(max(x$stnall$longitudestart, na.rm = TRUE), 1), " degrees longitude and ", round(min(x$stnall$latitudestart, na.rm = TRUE), 1), "-", round(max(x$stnall$latitudestart, na.rm = TRUE), 1), " latitude."), sep = "\n")
   cat("Number of missing station coordinates: ", sep = "")
   cat(sum(is.na(x$stnall$longitudestart) | is.na(x$stnall$latitudestart)))
   cat(NULL, sep = "\n")
   cat("Unique species: ", sep = "")
-  cat(sort(unique(x$stnall$commonname)), sep = ", ")
+  cat(sort(unique(x$stnall$commonname[!is.na(x$stnall$commonname)])), sep = ", ")
   cat(NULL, sep = "\n")
   cat(NULL, sep = "\n")
 

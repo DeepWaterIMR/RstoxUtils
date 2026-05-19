@@ -16,6 +16,9 @@
 }
 \seealso{
 Other Biotic functions:
+\code{\link[=prepareCruiseSeriesList]{prepareCruiseSeriesList()}},
+\code{\link[=prepareGearList]{prepareGearList()}},
+\code{\link[=prepareTaxaList]{prepareTaxaList()}},
 \code{\link[=processBioticFile]{processBioticFile()}},
 \code{\link[=processBioticFiles]{processBioticFiles()}}
 }

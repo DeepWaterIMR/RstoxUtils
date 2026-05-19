@@ -21,7 +21,7 @@ if (any(installed_packages == FALSE)) {
 }
 #> 
 #> The downloaded binary packages are in
-#>  /var/folders/9j/t7m30trx0s33zy79x20y3wyh0000gn/T//RtmpBdk6fw/downloaded_packages
+#>  /var/folders/9j/t7m30trx0s33zy79x20y3wyh0000gn/T//RtmplmZBv9/downloaded_packages
 
 # Load the packages to the workspace
 invisible(lapply(packages, function(x) {

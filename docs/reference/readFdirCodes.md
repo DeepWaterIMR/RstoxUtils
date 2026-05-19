@@ -52,6 +52,13 @@ readFdirCodes(
   [`read_xlsx`](https://readxl.tidyverse.org/reference/read_excel.html)
   in the gear code tab.
 
+## Value
+
+A named list with two elements: `$speciesCodes` (data frame with columns
+`idNS`, `idFAO`, `norwegian`, `english`, `latin`) and `$gearCodes` (data
+frame with columns `idGear`, `gearName`, `gearCategory`, `Hovedgruppe`,
+`Subgruppe`).
+
 ## Details
 
 The function has been written for [the code list Excel

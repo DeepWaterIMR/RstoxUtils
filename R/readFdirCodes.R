@@ -7,6 +7,7 @@
 #' @param gearSheet Character string specifying the name of the tab containing species codes.
 #' @param gearStartRow Integer specifying the \code{skip} argument for \code{\link[readxl]{read_xlsx}} in the gear code tab.
 #' @details The function has been written for \href{https://www.fiskeridir.no/Yrkesfiske/Rapportering-ved-landing/Kodeliste}{the code list Excel sheet} published on 2020-10-30. You may have to adjust the function depending on changes in newer versions of the file.
+#' @return A named list with two elements: \code{$speciesCodes} (data frame with columns \code{idNS}, \code{idFAO}, \code{norwegian}, \code{english}, \code{latin}) and \code{$gearCodes} (data frame with columns \code{idGear}, \code{gearName}, \code{gearCategory}, \code{Hovedgruppe}, \code{Subgruppe}).
 #' @author Mikko Vihtakari
 #' @export
 
