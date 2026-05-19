@@ -60,9 +60,9 @@ Note that the structure of logbook files is not confidential and therefore this 
 There are many duplicate records in the logbook files on the server. This function removes these duplicates automatically, but the process takes time and is not very controlled. If you want to be sure about the data you include, copy the desired files to another folder (in a safe place) and run the function for that folder.
 }
 \seealso{
-Other ERS functions: 
-\code{\link{downloadERS}()},
-\code{\link{extractERS}()}
+Other ERS functions:
+\code{\link[=downloadERS]{downloadERS()}},
+\code{\link[=extractERS]{extractERS()}}
 }
 \author{
 Mikko Vihtakari (Institute of Marine Research)

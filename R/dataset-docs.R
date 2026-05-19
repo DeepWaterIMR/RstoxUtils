@@ -8,7 +8,7 @@
 "FDIRcodes"
 
 #' @title NMD/IMR taxa code list
-#' @description Use the \code{\link{prepareTaxaList}} function to update the list.
+#' @description Use the \code{\link[BioticExplorerServer]{prepareTaxaList}} function to update the list.
 #' @docType data
 #' @keywords datasets
 #' @name taxaList
@@ -17,7 +17,7 @@
 "taxaList"
 
 #' @title NMD/IMR gear code list
-#' @description Use the \code{\link{prepareGearList}} function to update the list.
+#' @description Use the \code{\link[BioticExplorerServer]{prepareGearList}} function to update the list.
 #' @docType data
 #' @keywords datasets
 #' @name gearList
@@ -26,7 +26,7 @@
 "gearList"
 
 #' @title NMD/IMR cruise series list
-#' @description Use the \code{\link{prepareCruiseSeriesList}} function to update the list. Need to be updated every time data from the database are downloaded.
+#' @description Use the \code{\link[BioticExplorerServer]{prepareCruiseSeriesList}} function to update the list. Need to be updated every time data from the database are downloaded.
 #' @docType data
 #' @keywords datasets
 #' @name cruiseSeriesList

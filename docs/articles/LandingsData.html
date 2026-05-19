@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">RstoxUtils</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.7</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,7 +64,7 @@
       <h1>Download and Visualize Landings Data</h1>
                         <h4 data-toc-skip class="author">Mikko Vihtakari (Institute of Marine Research)</h4>
             
-            <h4 data-toc-skip class="date">15 September, 2025</h4>
+            <h4 data-toc-skip class="date">19 May, 2026</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/DeepWaterIMR/RstoxUtils/blob/HEAD/vignettes/LandingsData.Rmd" class="external-link"><code>vignettes/LandingsData.Rmd</code></a></small>
       <div class="d-none name"><code>LandingsData.Rmd</code></div>
@@ -75,8 +75,8 @@
 <p>Packages required to run the examples:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Package names</span></span>
-<span><span class="va">packages</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"RstoxUtils"</span>, <span class="st">"sf"</span>, <span class="st">"dplyr"</span>, <span class="st">"ggOceanMaps"</span>, <span class="st">"ggplot2"</span>, <span class="st">"data.table"</span>,</span>
-<span>              <span class="st">"lubridate"</span>, <span class="st">"tidyr"</span><span class="op">)</span></span>
+<span><span class="va">packages</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"RstoxUtils"</span>, <span class="st">"sf"</span>, <span class="st">"dplyr"</span>, <span class="st">"ggOceanMaps"</span>, <span class="st">"ggplot2"</span>,</span>
+<span>              <span class="st">"data.table"</span>, <span class="st">"lubridate"</span>, <span class="st">"tidyr"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Install packages not yet installed</span></span>
 <span><span class="va">installed_packages</span> <span class="op">&lt;-</span> <span class="va">packages</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/installed.packages.html" class="external-link">installed.packages</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
@@ -145,7 +145,8 @@
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">scale_y_continuous</span><span class="op">(</span></span>
 <span>    expand <span class="op">=</span> <span class="fu">expansion</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0.01</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>    sec.axis <span class="op">=</span> <span class="fu">sec_axis</span><span class="op">(</span><span class="op">~</span> <span class="va">.</span> <span class="op">*</span><span class="fl">100</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">pnd</span><span class="op">$</span><span class="va">mean</span><span class="op">)</span>, name <span class="op">=</span> <span class="st">"Percentage of total average landings"</span><span class="op">)</span></span>
+<span>    sec.axis <span class="op">=</span> <span class="fu">sec_axis</span><span class="op">(</span><span class="op">~</span> <span class="va">.</span> <span class="op">*</span><span class="fl">100</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">pnd</span><span class="op">$</span><span class="va">mean</span><span class="op">)</span>, </span>
+<span>                        name <span class="op">=</span> <span class="st">"Percentage of total average landings"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">theme_bw</span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">12</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">theme</span><span class="op">(</span>axis.title.y.right <span class="op">=</span> <span class="fu">element_blank</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
@@ -173,7 +174,8 @@
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">scale_y_continuous</span><span class="op">(</span></span>
 <span>    expand <span class="op">=</span> <span class="fu">expansion</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0.01</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>    sec.axis <span class="op">=</span> <span class="fu">sec_axis</span><span class="op">(</span><span class="op">~</span> <span class="va">.</span> <span class="op">*</span><span class="fl">100</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">pgd</span><span class="op">$</span><span class="va">mean</span><span class="op">)</span>, name <span class="op">=</span> <span class="st">"Percentage of total average landings"</span><span class="op">)</span></span>
+<span>    sec.axis <span class="op">=</span> <span class="fu">sec_axis</span><span class="op">(</span><span class="op">~</span> <span class="va">.</span> <span class="op">*</span><span class="fl">100</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">pgd</span><span class="op">$</span><span class="va">mean</span><span class="op">)</span>, </span>
+<span>                        name <span class="op">=</span> <span class="st">"Percentage of total average landings"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">theme_bw</span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">12</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">theme</span><span class="op">(</span>axis.title.y.left <span class="op">=</span> <span class="fu">element_blank</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
@@ -305,7 +307,7 @@ Species code 2202 with years not found from the database.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>

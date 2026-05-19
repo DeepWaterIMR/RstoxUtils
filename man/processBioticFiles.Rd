@@ -39,9 +39,9 @@ Returns a list of Biotic data with \code{$mission}, \code{$fishstation}, \code{$
 A wrapper for \code{\link{processBioticFile}} allowing processing multiple files simultaneously
 }
 \seealso{
-Other Biotic functions: 
-\code{\link{print.bioticProcData}()},
-\code{\link{processBioticFile}()}
+Other Biotic functions:
+\code{\link[=print.bioticProcData]{print.bioticProcData()}},
+\code{\link[=processBioticFile]{processBioticFile()}}
 }
 \author{
 Mikko Vihtakari (Institute of Marine Research)

@@ -30,8 +30,8 @@ downloadLandings("kveite", years = 2000:2001) # halibut, 2000-01
 }
 }
 \seealso{
-Other Landings functions: 
-\code{\link{readSluttseddelXLS}()}
+Other Landings functions:
+\code{\link[=readSluttseddelXLS]{readSluttseddelXLS()}}
 }
 \author{
 Mikko Vihtakari

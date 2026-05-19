@@ -69,9 +69,9 @@ Extracts information from detailed Norwegian fisheries logbook files downloaded 
 This function extracts information from the Norwegian fisheries logbooks provided in the \code{.zip} format on the \href{https://www.fiskeridir.no/statistikk-tall-og-analyse/data-og-statistikk-om-yrkesfiske/apne-data-elektronisk-rapportering-ers}{Norwegian Directorate of Fisheries (FDIR) webpage}. Use the \code{\link{downloadERS}} function to download these data on your computer. Note that at the time of writing, FDIR only provided ERS data for > 15 m vessels due to unclarities in the Norwegian Privacy Act. If you want to access ERS data from smaller vessels, use the legacy function \code{\link{extractLogbook}}, which reads the confidential ERS data on IMR servers.
 }
 \seealso{
-Other ERS functions: 
-\code{\link{downloadERS}()},
-\code{\link{extractLogbook}()}
+Other ERS functions:
+\code{\link[=downloadERS]{downloadERS()}},
+\code{\link[=extractLogbook]{extractLogbook()}}
 }
 \author{
 Mikko Vihtakari (Institute of Marine Research)

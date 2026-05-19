@@ -1,5 +1,15 @@
+---
+output: 
+  html_document: 
+    keep_md: yes
+editor_options: 
+  chunk_output_type: console
+---
+
+
+
 # RstoxUtils
-**Utility functions for the Stox Project. R package, updated 2025-09-12.**
+**Utility functions for the Stox Project. R package, updated 2026-05-19.**
 
 This package contains utility functions for stock assessment and data flow within the Institute of Marine Research (IMR). The package has two purposes: 1) To function as a showcase and developmental platform for functions that may be included in the future releases of the Stox Project. 2) To provide a collection of functions needed in the internal workflow of the Deep-sea species group at IMR.
 
@@ -37,18 +47,18 @@ When using use the package for stock assessment or scientific articles, please c
 citation("RstoxUtils")
 #> To cite package 'RstoxUtils' in publications use:
 #> 
-#>   Vihtakari M (2025). _RstoxUtils: Utility Functions for the Stox
+#>   Vihtakari M (2026). _RstoxUtils: Utility Functions for the Stox
 #>   Project Within the Institute of Marine Research, Norway_. R package
-#>   version 0.4.0, <https://github.com/DeepWaterIMR/RstoxUtils>.
+#>   version 0.4.7, <https://deepwaterimr.github.io/RstoxUtils>.
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
 #>   @Manual{,
 #>     title = {RstoxUtils: Utility Functions for the Stox Project Within the Institute of Marine Research, Norway},
 #>     author = {Mikko Vihtakari},
-#>     year = {2025},
-#>     note = {R package version 0.4.0},
-#>     url = {https://github.com/DeepWaterIMR/RstoxUtils},
+#>     year = {2026},
+#>     note = {R package version 0.4.7},
+#>     url = {https://deepwaterimr.github.io/RstoxUtils},
 #>   }
 ```
 

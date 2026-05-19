@@ -42,9 +42,9 @@ Returns a list of Biotic data with \code{$mission}, \code{$fishstation}, \code{$
 A wrapper for \code{\link[RstoxData]{readXmlFile}} to enable further use in the BioticExplorer
 }
 \seealso{
-Other Biotic functions: 
-\code{\link{print.bioticProcData}()},
-\code{\link{processBioticFiles}()}
+Other Biotic functions:
+\code{\link[=print.bioticProcData]{print.bioticProcData()}},
+\code{\link[=processBioticFiles]{processBioticFiles()}}
 }
 \author{
 Mikko Vihtakari (Institute of Marine Research)

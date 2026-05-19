@@ -24,7 +24,7 @@ readSluttseddelXLS(
 Read landing data from annually compiled Excel files
 }
 \seealso{
-Other Landings functions: 
-\code{\link{downloadLandings}()}
+Other Landings functions:
+\code{\link[=downloadLandings]{downloadLandings()}}
 }
 \concept{Landings functions}

@@ -14,6 +14,6 @@ Institute of Marine Research (\url{https://imr.no})
 gearList
 }
 \description{
-Use the \code{\link{prepareGearList}} function to update the list.
+Use the \code{\link[BioticExplorerServer]{prepareGearList}} function to update the list.
 }
 \keyword{datasets}

@@ -25,4 +25,9 @@ Useful links:
 \author{
 \strong{Maintainer}: Mikko Vihtakari \email{mikko.vihtakari@hi.no}
 
+Authors:
+\itemize{
+  \item Mikko Vihtakari \email{mikko.vihtakari@hi.no}
+}
+
 }

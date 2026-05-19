@@ -30,9 +30,9 @@ Download Electronic Reporting System (ERS) catch data into a folder from the \hr
 Please note that this function downloads large amounts of data and places then as zip files in the folder defined by \code{dest}. Use the  \code{\link{extractERS}} to extract information from the downloaded files.
 }
 \seealso{
-Other ERS functions: 
-\code{\link{extractERS}()},
-\code{\link{extractLogbook}()}
+Other ERS functions:
+\code{\link[=extractERS]{extractERS()}},
+\code{\link[=extractLogbook]{extractLogbook()}}
 }
 \author{
 Mikko Vihtakari

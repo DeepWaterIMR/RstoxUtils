@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">RstoxUtils</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.7</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,14 +62,14 @@
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header"><h1 id="rstoxutils">RstoxUtils<a class="anchor" aria-label="anchor" href="#rstoxutils"></a>
 </h1></div>
-<p><strong>Utility functions for the Stox Project. R package, updated 2025-09-12.</strong></p>
+<p><strong>Utility functions for the Stox Project. R package, updated 2026-05-19.</strong></p>
 <p>This package contains utility functions for stock assessment and data flow within the Institute of Marine Research (IMR). The package has two purposes: 1) To function as a showcase and developmental platform for functions that may be included in the future releases of the Stox Project. 2) To provide a collection of functions needed in the internal workflow of the Deep-sea species group at IMR.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <p>The package requires the <a href="https://github.com/StoXProject/RstoxData/releases" class="external-link"><strong>RstoxData</strong></a> <a href="https://github.com/StoXProject" class="external-link">Stox project</a> package to function. These packages can be installed by following the links for each package or using the <a href="https://cran.r-project.org/web/packages/devtools/index.html" class="external-link"><strong>devtools</strong></a> package. The <strong>RstoxUtils</strong> package can be installed using <strong>devtools</strong> once all Stox project packages are installed correctly.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"DeepWaterIMR/RstoxUtils"</span>, upgrade <span class="op">=</span> <span class="st">"never"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/install-deprecated.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"DeepWaterIMR/RstoxUtils"</span>, upgrade <span class="op">=</span> <span class="st">"never"</span><span class="op">)</span></span></code></pre></div>
 <p>The <strong>RstoxUtils</strong> uses multiple GIS packages developed for R. You may have to update these (Packages -&gt; Update -&gt; Select all -&gt; Install updates in R Studio).</p>
 <p>If the installation of a dependency fails, try installing those packages manually (using RStudio or <code>install.packages</code>).</p>
 </div>
@@ -92,18 +92,18 @@
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"RstoxUtils"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; To cite package 'RstoxUtils' in publications use:</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   Vihtakari M (2025). _RstoxUtils: Utility Functions for the Stox</span></span>
+<span><span class="co">#&gt;   Vihtakari M (2026). _RstoxUtils: Utility Functions for the Stox</span></span>
 <span><span class="co">#&gt;   Project Within the Institute of Marine Research, Norway_. R package</span></span>
-<span><span class="co">#&gt;   version 0.4.0, &lt;https://github.com/DeepWaterIMR/RstoxUtils&gt;.</span></span>
+<span><span class="co">#&gt;   version 0.4.7, &lt;https://deepwaterimr.github.io/RstoxUtils&gt;.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; A BibTeX entry for LaTeX users is</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   @Manual{,</span></span>
 <span><span class="co">#&gt;     title = {RstoxUtils: Utility Functions for the Stox Project Within the Institute of Marine Research, Norway},</span></span>
 <span><span class="co">#&gt;     author = {Mikko Vihtakari},</span></span>
-<span><span class="co">#&gt;     year = {2025},</span></span>
-<span><span class="co">#&gt;     note = {R package version 0.4.0},</span></span>
-<span><span class="co">#&gt;     url = {https://github.com/DeepWaterIMR/RstoxUtils},</span></span>
+<span><span class="co">#&gt;     year = {2026},</span></span>
+<span><span class="co">#&gt;     note = {R package version 0.4.7},</span></span>
+<span><span class="co">#&gt;     url = {https://deepwaterimr.github.io/RstoxUtils},</span></span>
 <span><span class="co">#&gt;   }</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -155,7 +155,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>

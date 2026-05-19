@@ -14,6 +14,6 @@ Institute of Marine Research (\url{https://imr.no})
 taxaList
 }
 \description{
-Use the \code{\link{prepareTaxaList}} function to update the list.
+Use the \code{\link[BioticExplorerServer]{prepareTaxaList}} function to update the list.
 }
 \keyword{datasets}
