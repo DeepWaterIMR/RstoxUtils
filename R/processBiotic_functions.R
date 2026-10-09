@@ -150,6 +150,12 @@ processBioticFile <- function(file, lengthUnit = "cm", weightUnit = "g", removeE
 
   inddat <- merge(stndat[, setdiff(names(stndat), c("purpose", "stationcomment", "catchcomment")), with = FALSE], ind, all.y = TRUE, by = intersect(names(stndat), names(ind)))
 
+  n_na_ind <- sum(is.na(inddat$commonname))
+  if (n_na_ind > 0) {
+    warning(paste(n_na_ind, "individual records could not be matched to a catch sample entry and will be excluded from indall. This may indicate a data quality issue in the source XML."))
+    inddat <- inddat[!is.na(commonname)]
+  }
+
   # Agedat
 
   if (nrow(age) > 0) {
@@ -163,11 +169,9 @@ processBioticFile <- function(file, lengthUnit = "cm", weightUnit = "g", removeE
 
   inddat[is.na(preferredagereading), preferredagereading := 1]
 
-  if(nrow(age) > 0) {
-  inddat <- merge(inddat, age, by.x = c(intersect(names(inddat), names(age)), "preferredagereading"), by.y = c(intersect(names(inddat), names(age)), "agedeterminationid"), all.x = TRUE)
+  if (nrow(age) > 0) {
+    inddat <- merge(inddat, age, by.x = c(intersect(names(inddat), names(age)), "preferredagereading"), by.y = c(intersect(names(inddat), names(age)), "agedeterminationid"), all.x = TRUE)
   }
-
-  if(sum(is.na(inddat$commonname)) > 0) stop(paste(sum(is.na(inddat$commonname)), "missing commonname records. This is likely due to merging error between individual and agedetermination data tables. File a bug report."))
 
 
 
